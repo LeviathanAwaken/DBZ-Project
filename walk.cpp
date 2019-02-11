@@ -345,6 +345,7 @@ void initOpengl(void)
 }
 
 void init() {
+    //CHANGED
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
 }
 
