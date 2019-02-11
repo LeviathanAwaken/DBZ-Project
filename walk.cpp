@@ -399,19 +399,23 @@ int checkKeys(XEvent *e)
             break;
         case XK_a:
         case XK_Left:
-            goku.pos[0] -= 5;
+            if (goku.pos[0] > (-g.xres / 2 + 50))
+                goku.pos[0] -= 5;
             break;
         case XK_d:
         case XK_Right:
-            goku.pos[0] += 5;
+            if (goku.pos[0] < (g.xres / 2 - 50))
+                goku.pos[0] += 5;
             break;
         case XK_w:
         case XK_Up:
-            goku.pos[1] += 5;
+            if (goku.pos[1] < (g.yres / 2 - 50) )
+                goku.pos[1] += 5;
             break;
         case XK_s:
         case XK_Down:
-            goku.pos[1] -= 5;
+            if (goku.pos[1] > (- g.yres / 2 + 50))
+                goku.pos[1] -= 5;
             break;
         case XK_equal:
             g.delay -= 0.005;
