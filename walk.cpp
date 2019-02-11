@@ -36,6 +36,13 @@ const float timeslice = 1.0f;
 const float gravity = -0.2f;
 #define ALPHA 1
 
+//CHANGED
+//Tracks character's position
+class Protag {
+public:
+    Vec pos;
+} goku;
+
 
 class Image {
     public:
@@ -69,8 +76,8 @@ class Image {
                 sscanf(line, "%i %i", &width, &height);
                 fgets(line, 200, fpi);
                 //get pixel data
-                int n = width * height * 3;			
-                data = new unsigned char[n];			
+                int n = width * height * 3;
+                data = new unsigned char[n];
                 for (int i=0; i<n; i++)
                     data[i] = fgetc(fpi);
                 fclose(fpi);
@@ -153,7 +160,7 @@ class X11_wrapper {
             if (vi == NULL) {
                 printf("\n\tno appropriate visual found\n\n");
                 exit(EXIT_FAILURE);
-            } 
+            }
             Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
             swa.colormap = cmap;
             swa.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask |
@@ -313,7 +320,7 @@ void initOpengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     //
     //must build a new set of data...
-    unsigned char *walkData = buildAlphaData(&img[0]);	
+    unsigned char *walkData = buildAlphaData(&img[0]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //free(walkData);
@@ -330,7 +337,7 @@ void initOpengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     //
     //must build a new set of data...
-    walkData = buildAlphaData(&img[1]);	
+    walkData = buildAlphaData(&img[1]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
@@ -338,7 +345,7 @@ void initOpengl(void)
 }
 
 void init() {
-
+    MakeVector(-150.0, 180.0, 0.0, goku.pos);
 }
 
 void checkMouse(XEvent *e)
@@ -383,18 +390,27 @@ int checkKeys(XEvent *e)
         return 0;
     }
     (void)shift;
+    //CHANGED
     switch (key) {
-        case XK_w:
+        case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
             break;
+        case XK_a:
         case XK_Left:
+            goku.pos[0] -= 5;
             break;
+        case XK_d:
         case XK_Right:
+            goku.pos[0] += 5;
             break;
+        case XK_w:
         case XK_Up:
+            goku.pos[1] += 5;
             break;
+        case XK_s:
         case XK_Down:
+            goku.pos[1] -= 5;
             break;
         case XK_equal:
             g.delay -= 0.005;
@@ -516,6 +532,8 @@ void render(void)
     float h = 50.0;
     float w = h * 1;
     glPushMatrix();
+    //CHANGED - Moves the Character
+    glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
     glColor3f(1.0, 1.0, 1.0);
     glBindTexture(GL_TEXTURE_2D, g.walkTexture);
     //
@@ -547,17 +565,12 @@ void render(void)
     r.bot = g.yres - 20;
     r.left = 10;
     r.center = 0;
-    ggprint8b(&r, 16, c, "W   Walk cycle");
+    ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
     ggprint8b(&r, 16, c, "+   faster");
     ggprint8b(&r, 16, c, "-   slower");
-    ggprint8b(&r, 16, c, "right arrow -> walk right");
-    ggprint8b(&r, 16, c, "left arrow  <- walk left");
+    ggprint8b(&r, 16, c, "right arrow/d -> fly right");
+    ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
+    ggprint8b(&r, 16, c, "up arrow/w -> fly up");
+    ggprint8b(&r, 16, c, "down arrow/s -> fly down");
     ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
 }
-
-
-
-
-
-
-
