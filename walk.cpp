@@ -26,6 +26,7 @@ typedef Flt	Matrix[4][4];
 #define rnd() (((double)rand())/(double)RAND_MAX)
 #define random(a) (rand()%a)
 #define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
+#define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
 #define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
 #define VecDot(a,b)	((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
 #define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
@@ -41,6 +42,7 @@ const float gravity = -0.2f;
 class Protag {
 public:
     Vec pos;
+    Vec vel;
 } goku;
 
 
@@ -129,9 +131,10 @@ class Global {
             done=0;
             xres=800;
             yres=600;
-            walk=0;
+            //CHANGED - back scroll starts on launch now
+            walk=1;
             walkFrame=0;
-            delay = 0.1;
+            delay = 0.09;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;
                 box[i][1] = rnd() * (yres-220) + 220.0;
@@ -345,8 +348,9 @@ void initOpengl(void)
 }
 
 void init() {
-    //CHANGED
+    //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
+    VecZero(goku.vel);
 }
 
 void checkMouse(XEvent *e)
@@ -391,7 +395,7 @@ int checkKeys(XEvent *e)
         return 0;
     }
     (void)shift;
-    //CHANGED
+    //CHANGED - updates velocity with the listed keys
     switch (key) {
         case XK_space:
             timers.recordTime(&timers.walkTime);
@@ -399,23 +403,19 @@ int checkKeys(XEvent *e)
             break;
         case XK_a:
         case XK_Left:
-            if (goku.pos[0] > (-g.xres / 2 + 50))
-                goku.pos[0] -= 5;
+            goku.vel[0]--;
             break;
         case XK_d:
         case XK_Right:
-            if (goku.pos[0] < (g.xres / 2 - 50))
-                goku.pos[0] += 5;
+            goku.vel[0]++;
             break;
         case XK_w:
         case XK_Up:
-            if (goku.pos[1] < (g.yres / 2 - 50) )
-                goku.pos[1] += 5;
+            goku.vel[1]++;
             break;
         case XK_s:
         case XK_Down:
-            if (goku.pos[1] > (- g.yres / 2 + 50))
-                goku.pos[1] -= 5;
+            goku.vel[1]--;
             break;
         case XK_equal:
             g.delay -= 0.005;
@@ -462,6 +462,12 @@ void physics(void)
             //advance
             //CHANGED
             //++g.walkFrame;
+            if ((goku.pos[0] > (- g.xres / 2 + 50) && goku.vel[0] < 0)
+                || (goku.pos[0] < (g.xres / 2 - 50) && goku.vel[0] > 0))
+                goku.pos[0] += goku.vel[0];
+            if ((goku.pos[1] > (- g.yres / 2 + 50) && goku.vel[1] < 0)
+                || (goku.pos[1] < (g.yres / 2 - 50) && goku.vel[1] > 0))
+                goku.pos[1] += goku.vel[1];
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);
