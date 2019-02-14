@@ -123,6 +123,7 @@ class Global {
         int xres, yres;
         int walk;
         int walkFrame;
+        int creditFlag;
         double delay;
         GLuint walkTexture;
         GLuint cloudTexture;
@@ -134,6 +135,7 @@ class Global {
             //CHANGED - back scroll starts on launch now
             walk=1;
             walkFrame=0;
+            creditFlag = 0;
             delay = 0.09;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;
@@ -397,6 +399,9 @@ int checkKeys(XEvent *e)
     (void)shift;
     //CHANGED - updates velocity with the listed keys
     switch (key) {
+        case XK_c:
+            g.creditFlag ^= 1;
+            break;
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
@@ -460,14 +465,25 @@ void physics(void)
         double timeSpan = timers.timeDiff(&timers.walkTime, &timers.timeCurrent);
         if (timeSpan > g.delay) {
             //advance
-            //CHANGED
+            //CHANGED - shifts goku's pos by velocity, resets velocity
+            //          if character hits window edges
             //++g.walkFrame;
             if ((goku.pos[0] > (- g.xres / 2 + 50) && goku.vel[0] < 0)
                 || (goku.pos[0] < (g.xres / 2 - 50) && goku.vel[0] > 0))
                 goku.pos[0] += goku.vel[0];
-            if ((goku.pos[1] > (- g.yres / 2 + 50) && goku.vel[1] < 0)
+            else
+                goku.vel[0] = 0;
+            if ((goku.pos[1] > (-g.yres / 2 + 50) && goku.vel[1] < 0)
                 || (goku.pos[1] < (g.yres / 2 - 50) && goku.vel[1] > 0))
                 goku.pos[1] += goku.vel[1];
+            else
+                goku.vel[1] = 0;
+            /*if ((goku.pos[0] <= -g.xres / 2 + 50)
+                || goku.pos[0] >= (g.xres / 2 - 50))
+                goku.vel[0] = 0;
+            if ((goku.pos[1] <= -g.xres / 2 + 50)
+                || goku.pos[1] >= (g.xres / 2 - 50))
+                goku.vel[1] = 0;*/
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);
@@ -480,108 +496,114 @@ void physics(void)
     }
 }
 
+extern void creditPic();
+
 void render(void)
 {
-    Rect r;
-    //Clear the screen
-    glClearColor(0.1, 0.1, 0.1, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    float cx = g.xres/2.0;
-    float cy = g.yres/2.0;
-    //
-    //show ground
-    glBegin(GL_QUADS);
-    glColor3f(0.2, 0.2, 0.2);
-    glVertex2i(0,       220);
-    glVertex2i(g.xres, 220);
-    glColor3f(0.4, 0.4, 0.4);
-    glVertex2i(g.xres,   0);
-    glVertex2i(0,         0);
-    glEnd();
-    //
-    //fake shadow
-    //glColor3f(0.25, 0.25, 0.25);
-    //glBegin(GL_QUADS);
-    //	glVertex2i(cx-60, 150);
-    //	glVertex2i(cx+50, 150);
-    //	glVertex2i(cx+50, 130);
-    //	glVertex2i(cx-60, 130);
-    //glEnd();
-    //
-    //show boxes as background
-    for (int i=0; i<20; i++) {
-        glPushMatrix();
-        glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, g.cloudTexture);
-    //
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
-
-
-        float tx = 0, ty = 0;
-
-        // Render Clouds
+    if (creditFlag) {
+        //Put picture functions here
+    } else {
+        Rect r;
+        //Clear the screen
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        float cx = g.xres/2.0;
+        float cy = g.yres/2.0;
+        //
+        //show ground
         glBegin(GL_QUADS);
-        glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
-        glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
-        glTexCoord2f(tx, ty);    glVertex2i(40, 30);
-        glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
+        glColor3f(0.2, 0.2, 0.2);
+        glVertex2i(0,       220);
+        glVertex2i(g.xres, 220);
+        glColor3f(0.4, 0.4, 0.4);
+        glVertex2i(g.xres,   0);
+        glVertex2i(0,         0);
         glEnd();
+        //
+        //fake shadow
+        //glColor3f(0.25, 0.25, 0.25);
+        //glBegin(GL_QUADS);
+        //	glVertex2i(cx-60, 150);
+        //	glVertex2i(cx+50, 150);
+        //	glVertex2i(cx+50, 130);
+        //	glVertex2i(cx-60, 130);
+        //glEnd();
+        //
+        //show boxes as background
+        for (int i=0; i<20; i++) {
+            glPushMatrix();
+            glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
+        glColor3f(1.0, 1.0, 1.0);
+        glBindTexture(GL_TEXTURE_2D, g.cloudTexture);
+        //
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.0f);
+        glColor4ub(255,255,255,255);
+
+
+            float tx = 0, ty = 0;
+
+            // Render Clouds
+            glBegin(GL_QUADS);
+            glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
+            glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
+            glTexCoord2f(tx, ty);    glVertex2i(40, 30);
+            glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
+            glEnd();
 
 
 
+            glPopMatrix();
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_ALPHA_TEST);
+        }
+
+        // CHANGED
+        // THIS IS THE CHARACTERS SIZE
+        float h = 50.0;
+        float w = h * 1;
+        glPushMatrix();
+        //CHANGED - Moves the Character
+        glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
+        glColor3f(1.0, 1.0, 1.0);
+        glBindTexture(GL_TEXTURE_2D, g.walkTexture);
+        //
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.0f);
+        glColor4ub(255,255,255,255);
+
+        // CHANGED
+        int ix = 0; //g.walkFrame % 8;
+        int iy = 0;
+        if (g.walkFrame >= 8)
+            iy = 1;
+
+        //CHANGED
+        float tx = (float)ix; // / 8.0;
+        float ty = (float)iy; // / 2.0;
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
+        glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
+        glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
+        glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
+        glEnd();
         glPopMatrix();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_ALPHA_TEST);
+        //
+        unsigned int c = 0x00ffff44;
+        r.bot = g.yres - 20;
+        r.left = 10;
+        r.center = 0;
+        ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
+        ggprint8b(&r, 16, c, "+   faster");
+        ggprint8b(&r, 16, c, "-   slower");
+        ggprint8b(&r, 16, c, "right arrow/d -> fly right");
+        ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
+        ggprint8b(&r, 16, c, "up arrow/w -> fly up");
+        ggprint8b(&r, 16, c, "down arrow/s -> fly down");
+        ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
     }
-
-    // CHANGED
-    // THIS IS THE CHARACTERS SIZE
-    float h = 50.0;
-    float w = h * 1;
-    glPushMatrix();
-    //CHANGED - Moves the Character
-    glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, g.walkTexture);
-    //
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
-
-    // CHANGED
-    int ix = 0; //g.walkFrame % 8;
-    int iy = 0;
-    if (g.walkFrame >= 8)
-        iy = 1;
-
-    //CHANGED
-    float tx = (float)ix; // / 8.0;
-    float ty = (float)iy; // / 2.0;
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-    glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-    glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-    glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
-    glEnd();
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
-    //
-    unsigned int c = 0x00ffff44;
-    r.bot = g.yres - 20;
-    r.left = 10;
-    r.center = 0;
-    ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
-    ggprint8b(&r, 16, c, "+   faster");
-    ggprint8b(&r, 16, c, "-   slower");
-    ggprint8b(&r, 16, c, "right arrow/d -> fly right");
-    ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
-    ggprint8b(&r, 16, c, "up arrow/w -> fly up");
-    ggprint8b(&r, 16, c, "down arrow/s -> fly down");
-    ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
 }
