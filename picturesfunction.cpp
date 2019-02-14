@@ -10,6 +10,10 @@
 #include <GL/glx.h>
 #include "fonts.h"
 
+class Global {
+    public:
+        GLuint lawrenceTexture;
+} glob;
 class Image {
     public:
         int width, height;
@@ -56,6 +60,31 @@ class Image {
 };
 Image img[] = {"images/Goku.gif", "images/cloud.gif","images/lawrence.jpg"};
 
+extern unsigned char *buildAlphaData(Image *);
+
+void initialize()
+{
+    int w = imag[0].width;
+    int h = imag[0].height;
+    glGenTextures(1, &glob.lawrenceTexture);
+    glBindTexture(GL_TEXTURE_2D, glob.lawrenceTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    unsigned char *walkData = buildAlphaData(&imag[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+}
+
+void showText(int x, int y)
+{
+    Rect r;
+    unsigned int c = 0x00ffff44;
+    r.bot = y-20;
+    r.left = x;
+    r.center = 0;
+    ggprint8b(&r, 16, c, "lawrence marquez");
+}
+
 void showLawrencePicture (int x, int y, GLuint textid)
 {
     glColor3ub(255,255,255);
@@ -71,7 +100,7 @@ void showLawrencePicture (int x, int y, GLuint textid)
     glPushMatrix();
     glTranslate(fx,fy,0);
     glRotatef(a,0,0,1.0);
-    glBindTexture(GL_TEXTURE_2D,textid);
+    glBindTexture(GL_TEXTURE_2D,glob.lawrenceTexture);
 
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid,-wid);
@@ -82,7 +111,11 @@ void showLawrencePicture (int x, int y, GLuint textid)
     glEnd();
     glPopMatrix();
 
-
-
+}
+void showLawrence(int x, int y)
+{
+    initialize();
+    showLawrencePicture(x+200, y);
+    showText(x, y);
 }
 
