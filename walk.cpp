@@ -90,7 +90,7 @@ class Image {
             unlink(ppmname);
         }
 };
-Image img[] = {"images/Goku.gif", "images/cloud.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -127,6 +127,7 @@ class Global {
         double delay;
         GLuint walkTexture;
         GLuint cloudTexture;
+        GLuint seanTexture;
         Vec box[20];
         Global() {
             done=0;
@@ -347,6 +348,16 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
+    w = img[2].width;
+    h = img[2].height;
+    glGenTextures(1, &g.seanTexture);
+    glBindTexture(GL_TEXTURE_2D, g.seanTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
 }
 
 void init() {
@@ -496,7 +507,7 @@ void physics(void)
     }
 }
 
-extern void showSean(int, int);
+extern void showSean(int, int, GLuint);
 
 void render(void)
 {
@@ -504,7 +515,7 @@ void render(void)
         //Put picture functions here
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        showSean(20, g.yres);
+        showSean(20, g.yres, g.seanTexture);
     } else {
         Rect r;
         //Clear the screen
