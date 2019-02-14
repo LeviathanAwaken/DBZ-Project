@@ -496,12 +496,13 @@ void physics(void)
     }
 }
 
-extern void creditPic();
+extern void showSean(int, int);
 
 void render(void)
 {
-    if (creditFlag) {
+    if (g.creditFlag) {
         //Put picture functions here
+        showSean(10, g.yres-20);
     } else {
         Rect r;
         //Clear the screen
