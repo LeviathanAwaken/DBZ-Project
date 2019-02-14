@@ -502,7 +502,9 @@ void render(void)
 {
     if (g.creditFlag) {
         //Put picture functions here
-        showSean(10, g.yres-20);
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        showSean(20, g.yres);
     } else {
         Rect r;
         //Clear the screen
