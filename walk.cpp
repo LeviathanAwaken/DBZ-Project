@@ -88,7 +88,7 @@ class Image {
             unlink(ppmname);
         }
 };
-Image img[] = {"images/Goku.gif", "images/cloud.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif","images/lawrence.jpg";
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -309,6 +309,7 @@ void initOpengl(void)
     //create opengl texture elements
     glGenTextures(1, &g.walkTexture);   //Goku
     glGenTextures(1, &g.cloudTexture);  //Cloud
+    glGenTextures(1, &g.lawrenceTexture); // lawrence's picture
 
     //--------------------------------Goku Texture--------------------------------
     //silhouette
@@ -341,6 +342,35 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
+
+}
+void showLawrencePicture (int x, int y, GLuint textid)
+{
+    glColor3ub(255,255,255);
+    static float angle = 0.0f;
+    static int wtd = 30;
+    wid += sin(angle) * 10;
+    float fx = (float)x;
+    float fy = (float)y;
+    float a = 0;
+    a+= sin(angle) * 10.0f;
+    fx += a;
+    angle += 0.2f;
+    glPushMatrix();
+    glTranslate(fx,fy,0);
+    glRotatef(a,0,0,1.0);
+    glBindTexture(GL_TEXTURE_2D,textid);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid,-wid);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid,wid);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i(wid,wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(wid,-wid);
+
+    glEnd();
+    glPopMatrix();
+
+
 
 }
 
@@ -428,6 +458,8 @@ int checkKeys(XEvent *e)
         case XK_Escape:
             return 1;
             break;
+        case XK_c:
+            showLawrencePicture();
     }
     return 0;
 }
@@ -524,6 +556,10 @@ void render(void)
         glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
         glEnd();
 
+        
+
+        
+
 
 
         glPopMatrix();
@@ -578,4 +614,5 @@ void render(void)
     ggprint8b(&r, 16, c, "up arrow/w -> fly up");
     ggprint8b(&r, 16, c, "down arrow/s -> fly down");
     ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+    ggprint8b(&r, 16, c, "c  to play credits")
 }
