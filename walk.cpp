@@ -88,7 +88,7 @@ class Image {
             unlink(ppmname);
         }
 };
-Image img[] = {"images/Goku.gif", "images/cloud.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/memeJuan.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -121,9 +121,11 @@ class Global {
         int xres, yres;
         int walk;
         int walkFrame;
+	int creditFlag;
         double delay;
         GLuint walkTexture;
         GLuint cloudTexture;
+	GLuint juanTexture;
         Vec box[20];
         Global() {
             done=0;
@@ -131,6 +133,7 @@ class Global {
             yres=600;
             walk=0;
             walkFrame=0;
+	    creditFlag=0;
             delay = 0.1;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;
@@ -341,6 +344,15 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
+    w = img[2].width;
+    h = img[2].height;
+    glGenTextures(1, &g.juanTexture);
+    glBindTexture(GL_TEXTURE_2D, g.juanTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 
 }
 
@@ -393,6 +405,9 @@ int checkKeys(XEvent *e)
     (void)shift;
     //CHANGED
     switch (key) {
+	    case XK_c:
+		    g.creditFlag ^= 1;
+		    break;
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
@@ -474,8 +489,15 @@ void physics(void)
     }
 }
 
+extern void showJuan(int,int,GLuint);
 void render(void)
 {
+    if (g.creditFlag) {
+        //Put picture functions here
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        showJuan(20, g.yres, g.juanTexture);
+    } else {
     Rect r;
     //Clear the screen
     glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -578,4 +600,5 @@ void render(void)
     ggprint8b(&r, 16, c, "up arrow/w -> fly up");
     ggprint8b(&r, 16, c, "down arrow/s -> fly down");
     ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+}
 }
