@@ -14,11 +14,6 @@
 #include <GL/glx.h>
 #include "fonts.h"
 
-class Global {
-    public:
-        GLuint seanTexture;
-} glob;
-
 void showText(int x, int y)
 {
     Rect r;
@@ -31,7 +26,7 @@ void showText(int x, int y)
 
 void showPic(int x, int y, GLuint textInt)
 {
-    glColor3ub(255, 255, 255);
+    /*glColor3ub(255, 255, 255);
     static float angle = 0.0f;
     static int wid = 30;
     wid += sin(angle) * 10;
@@ -43,16 +38,16 @@ void showPic(int x, int y, GLuint textInt)
     angle += 0.2f;
     glPushMatrix();
     glTranslatef(sx, sy, 0);
-    glRotatef(a, 0, 0, 1.0);
+    glRotatef(a, 0, 0, 1.0);*/
+    
     glBindTexture(GL_TEXTURE_2D, textInt);
-
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(0, 0);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(0, y/2);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i(x, y/2);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(x, 0);
     glEnd();
-    glPopMatrix();
+    //glPopMatrix();
 }
 
 void showSean(int x, int y, GLuint textInt)

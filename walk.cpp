@@ -515,7 +515,7 @@ void render(void)
         //Put picture functions here
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        showSean(20, g.yres, g.seanTexture);
+        showSean(20, img[2].height, g.seanTexture);
     } else {
         Rect r;
         //Clear the screen
