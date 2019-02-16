@@ -128,8 +128,8 @@ class Global {
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
-	GLuint joshTexture;
 	GLuint juanTexture;
+	GLuint joshTexture;
         Vec box[20];
         Global() {
             done=0;
@@ -349,7 +349,7 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
-    
+
     //--------------------------Sean's Face-------------------------------------
     w = img[2].width;
     h = img[2].height;

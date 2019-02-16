@@ -26,32 +26,17 @@ void showText(int x, int y)
 
 void showPic(int x, int y, GLuint textInt)
 {
-    /*glColor3ub(255, 255, 255);
-    static float angle = 0.0f;
-    static int wid = 30;
-    wid += sin(angle) * 10;
-    float sx = (float)x;
-    float sy = (float)y-40;
-    float a = 0;
-    a += sin(angle) * 10.0f;
-    sx += a;
-    angle += 0.2f;
-    glPushMatrix();
-    glTranslatef(sx, sy, 0);
-    glRotatef(a, 0, 0, 1.0);*/
-    
     glBindTexture(GL_TEXTURE_2D, textInt);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(0, 0);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(0, y/2);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(x, y/2);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x, 0);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(x+100, y+100);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(x+100, y+250);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i(x+250, y+250);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+250, y+100);
     glEnd();
-    //glPopMatrix();
 }
 
 void showSean(int x, int y, GLuint textInt)
 {
-    showPic(x+200, y, textInt);
-    showText(x, y);
+    showPic(0, 0, textInt);
+    showText(x+100, y+100);
 }
