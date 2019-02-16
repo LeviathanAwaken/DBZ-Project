@@ -90,7 +90,7 @@ class Image {
             unlink(ppmname);
         }
 };
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/Drakepic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -128,7 +128,9 @@ class Global {
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
-	GLuint joshTexture;
+	    GLuint joshTexture;
+        GLuint drakeTexture;
+
         Vec box[20];
         Global() {
             done=0;
@@ -371,6 +373,17 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
+     //---------------------------Drake's Pic---------------------------------------
+    w = img[4].width;
+    h = img[4].height;
+    glGenTextures(1, &g.drakeTexture);
+    glBindTexture(GL_TEXTURE_2D, g.drakeTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[4]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
 
 
 }
@@ -524,6 +537,7 @@ void physics(void)
 
 extern void showSean(int, int, GLuint);
 extern void showJoshua(int, int, GLuint);
+extern void showDrake(int, int, GLuint);
 void render(void)
 {
     if (g.creditFlag) {
@@ -531,7 +545,8 @@ void render(void)
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
-	showJoshua(40, img[3].height, g.joshTexture);
+	    showJoshua(40, img[3].height, g.joshTexture);
+        showDrake(70, img[4].height, g.drakeTexture);
     } else {
         Rect r;
         //Clear the screen
