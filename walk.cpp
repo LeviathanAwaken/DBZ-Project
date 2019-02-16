@@ -90,7 +90,10 @@ class Image {
             unlink(ppmname);
         }
 };
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/Drakepic.gif"};
+
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif"};
+
+
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -130,6 +133,7 @@ class Global {
         GLuint seanTexture;
 	    GLuint joshTexture;
         GLuint drakeTexture;
+        GLuint juanTexture;
 
         Vec box[20];
         Global() {
@@ -350,7 +354,7 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
-    
+
     //--------------------------Sean's Face-------------------------------------
     w = img[2].width;
     h = img[2].height;
@@ -366,6 +370,7 @@ void initOpengl(void)
     //---------------------------Josh Pic---------------------------------------
     w = img[3].width;
     h = img[3].height;
+    glGenTextures(1, &g.joshTexture);
     glBindTexture(GL_TEXTURE_2D, g.joshTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -385,6 +390,17 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
+    //---------------------------Juan Pic---------------------------------------
+    w = img[5].width;
+    h = img[5].height;
+    glGenTextures(1, &g.juanTexture);
+    glBindTexture(GL_TEXTURE_2D, g.juanTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[5]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
 
 }
 
@@ -538,6 +554,8 @@ void physics(void)
 extern void showSean(int, int, GLuint);
 extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
+extern void showJuan(int, int, GLuint);
+
 void render(void)
 {
     if (g.creditFlag) {
@@ -547,6 +565,8 @@ void render(void)
         showSean(20, img[2].height, g.seanTexture);
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[4].height, g.drakeTexture);
+	    showJuan(40, img[4].height, g.juanTexture);
+
     } else {
         Rect r;
         //Clear the screen
