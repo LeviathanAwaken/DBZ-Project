@@ -124,6 +124,10 @@ class Global {
         double delay;
         GLuint walkTexture;
         GLuint cloudTexture;
+        GLuint lawrenceTexture;
+         GLuint drakeTexture;
+	    GLuint juanTexture;
+        GLuint seanTexture;
         Vec box[20];
         Global() {
             done=0;
@@ -344,34 +348,17 @@ void initOpengl(void)
     //--------------------------------------------------------------------------
 
 }
-void showLawrencePicture (int x, int y, GLuint textid)
-{
-    glColor3ub(255,255,255);
-    static float angle = 0.0f;
-    static int wtd = 30;
-    wid += sin(angle) * 10;
-    float fx = (float)x;
-    float fy = (float)y;
-    float a = 0;
-    a+= sin(angle) * 10.0f;
-    fx += a;
-    angle += 0.2f;
-    glPushMatrix();
-    glTranslate(fx,fy,0);
-    glRotatef(a,0,0,1.0);
-    glBindTexture(GL_TEXTURE_2D,textid);
-
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid,-wid);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid,wid);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(wid,wid);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(wid,-wid);
-
-    glEnd();
-    glPopMatrix();
-
-
-
+ //---------------------------Juan Pic---------------------------------------
+    w = img[6].width;
+    h = img[6].height;
+    glGenTextures(1, &g.lawrenceTexture);
+    glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[6]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
 }
 
 void init() {
@@ -506,8 +493,21 @@ void physics(void)
     }
 }
 
+extern void showLawrence (int, int, GLuint);
 void render(void)
 {
+
+    if (g.creditFlag) {
+        //Put picture functions here
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        showSean(20, img[2].height, g.seanTexture);
+        showLawrence(30, img(5.height, g.lawrenceTexture);
+	    showJoshua(40, img[3].height, g.joshTexture);
+        showDrake(70, img[5].height, g.drakeTexture);
+        showJuan(40, img[4].height, g.juanTexture);
+
+
     Rect r;
     //Clear the screen
     glClearColor(0.1, 0.1, 0.1, 1.0);
