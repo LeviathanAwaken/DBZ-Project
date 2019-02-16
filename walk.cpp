@@ -128,7 +128,7 @@ class Global {
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
-	GLuint joshTexture;
+	      GLuint joshTexture;
         Vec box[20];
         Global() {
             done=0;
@@ -348,7 +348,7 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
-    
+
     //--------------------------Sean's Face-------------------------------------
     w = img[2].width;
     h = img[2].height;
@@ -364,6 +364,7 @@ void initOpengl(void)
     //---------------------------Josh Pic---------------------------------------
     w = img[3].width;
     h = img[3].height;
+    glGenTextures(1, &g.joshTexture);
     glBindTexture(GL_TEXTURE_2D, g.joshTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -531,7 +532,7 @@ void render(void)
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
-	showJoshua(40, img[3].height, g.joshTexture);
+        showJoshua(40, img[3].height, g.joshTexture);
     } else {
         Rect r;
         //Clear the screen
