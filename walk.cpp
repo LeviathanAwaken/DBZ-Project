@@ -576,7 +576,7 @@ void render(void)
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
-        showLawrence(40, img[6].height,g.lawrenceTexture)
+        showLawrence(40, img[6].height,g.lawrenceTexture);
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);

@@ -13,7 +13,7 @@
 #include "fonts.h"
 
 
-void showText(int x, int y)
+void showLawrenceText(int x, int y)
 {
     Rect r;
     unsigned int c = 0x00ffff44;
@@ -41,6 +41,6 @@ void showLawrencePicture (int x, int y, GLuint textid)
 void showLawrence(int x, int y,  GLuint textInt);
 {
     showLawrencePicture(0,0,textint);
-    showText(x+525, y+100);
+    showLawrenceText(x+525, y+100);
 }
 
