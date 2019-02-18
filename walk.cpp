@@ -91,7 +91,7 @@ class Image {
         }
 };
 
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/LawrencePic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -401,9 +401,9 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-    //---------------------------Juan Pic---------------------------------------
+    //---------------------------Lawrence Pic---------------------------------------
     w = img[6].width;
-    h = img[46.height;
+    h = img[6].height;
     glGenTextures(1, &g.lawrenceTexture);
     glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
