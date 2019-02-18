@@ -3,14 +3,8 @@
 //Author:   Drake Floyd
 //Date:     2/15/19
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <math.h>
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
+
+
 #include <GL/glx.h>
 #include "fonts.h"
 
