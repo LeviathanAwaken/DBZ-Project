@@ -7,6 +7,7 @@
 void showJuanPic(int x, int y, GLuint textid)
 {
 	glBindTexture(GL_TEXTURE_2D, textid);
+	glColor4f(1, 1, 1, 1);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0.0f,1.0f);glVertex2i(x+450,y+150);
 		glTexCoord2f(0.0f,0.0f);glVertex2i(x+450,y+300);
