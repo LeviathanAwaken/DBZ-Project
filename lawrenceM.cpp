@@ -38,7 +38,7 @@ void showLawrencePicture (int x, int y, GLuint textid)
   
 
 }
-void showLawrence(int x, int y,  GLuint textInt)
+void showLawrence(int x, int y,  GLuint textint)
 {
     showLawrencePicture(0,0,textint);
     showLawrenceText(x+525, y+100);
