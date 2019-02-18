@@ -5,7 +5,7 @@ all: walk
 
 
 walk: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp
-	g++ $(CFLAGS) walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -owalk
+	g++ $(CFLAGS) walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -owalk
 
 clean:
 	rm -f walk
