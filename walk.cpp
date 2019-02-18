@@ -401,14 +401,14 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-    //---------------------------Lawrence Pic---------------------------------------
+    //---------------------------Lawrence's Pic---------------------------------------
     w = img[6].width;
     h = img[6].height;
     glGenTextures(1, &g.lawrenceTexture);
     glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    walkData = buildAlphaData(&img[4]);
+    walkData = buildAlphaData(&img[6]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
@@ -575,7 +575,7 @@ void render(void)
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
-
+        showLawrence(40, img[6].height,g.lawrenceTexture)
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
