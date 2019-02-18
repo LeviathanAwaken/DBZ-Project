@@ -415,7 +415,8 @@ void initOpengl(void)
 
 }
 
-void init() {
+void init() 
+{
     //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
     VecZero(goku.vel);
