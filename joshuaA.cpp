@@ -28,10 +28,10 @@ void showJoshuaPic(int x, int y, GLuint textInt)
 {
     glBindTexture(GL_TEXTURE_2D, textInt);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(x+525, y+250); //bottom left
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(x+525, y+500); //top left
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(x+675, y+500); //top right
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+675, y+250);  
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(x+525, y+250); //bottom left
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(x+525, y+500); //top left
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(x+675, y+500); //top right
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(x+675, y+250);  
     glEnd();
 }
 
