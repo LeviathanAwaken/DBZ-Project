@@ -91,7 +91,7 @@ class Image {
         }
 };
 
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/LawrencePic.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/lawrencePic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
