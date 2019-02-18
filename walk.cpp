@@ -91,7 +91,7 @@ class Image {
         }
 };
 
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/LawrencePic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -129,7 +129,7 @@ class Global {
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
-
+        GLuint lawrenceTexture;
 	    GLuint joshTexture;
         GLuint drakeTexture;
 	    GLuint juanTexture;
@@ -401,6 +401,18 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
+    //---------------------------Lawrence Pic---------------------------------------
+    w = img[6].width;
+    h = img[6].height;
+    glGenTextures(1, &g.lawrenceTexture);
+    glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[4]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
 }
 
 void init() {
@@ -554,6 +566,7 @@ extern void showSean(int, int, GLuint);
 extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
+extern void showLawrence(int,int,GLuint);
 
 void render(void)
 {
