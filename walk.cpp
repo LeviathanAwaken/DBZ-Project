@@ -26,6 +26,7 @@ typedef Flt	Matrix[4][4];
 #define rnd() (((double)rand())/(double)RAND_MAX)
 #define random(a) (rand()%a)
 #define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
+#define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
 #define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
 #define VecDot(a,b)	((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
 #define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
@@ -41,6 +42,7 @@ const float gravity = -0.2f;
 class Protag {
 public:
     Vec pos;
+    Vec vel;
 } goku;
 
 
@@ -88,7 +90,8 @@ class Image {
             unlink(ppmname);
         }
 };
-Image img[] = {"images/Goku.gif", "images/cloud.gif","images/lawrence.jpg";
+
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/LawrencePic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -121,21 +124,26 @@ class Global {
         int xres, yres;
         int walk;
         int walkFrame;
+        int creditFlag;
         double delay;
         GLuint walkTexture;
         GLuint cloudTexture;
-        GLuint lawrenceTexture;
-         GLuint drakeTexture;
-	    GLuint juanTexture;
         GLuint seanTexture;
+        GLuint lawrenceTexture;
+	    GLuint joshTexture;
+        GLuint drakeTexture;
+	    GLuint juanTexture;
+        
         Vec box[20];
         Global() {
             done=0;
             xres=800;
             yres=600;
-            walk=0;
+            //CHANGED - back scroll starts on launch now
+            walk=1;
             walkFrame=0;
-            delay = 0.1;
+            creditFlag = 0;
+            delay = 0.09;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;
                 box[i][1] = rnd() * (yres-220) + 220.0;
@@ -313,7 +321,6 @@ void initOpengl(void)
     //create opengl texture elements
     glGenTextures(1, &g.walkTexture);   //Goku
     glGenTextures(1, &g.cloudTexture);  //Cloud
-    glGenTextures(1, &g.lawrenceTexture); // lawrence's picture
 
     //--------------------------------Goku Texture--------------------------------
     //silhouette
@@ -347,23 +354,71 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-}
- //---------------------------Juan Pic---------------------------------------
+    //--------------------------Sean's Face-------------------------------------
+    w = img[2].width;
+    h = img[2].height;
+    glGenTextures(1, &g.seanTexture);
+    glBindTexture(GL_TEXTURE_2D, g.seanTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
+    //---------------------------Josh Pic---------------------------------------
+    w = img[3].width;
+    h = img[3].height;
+    glGenTextures(1, &g.joshTexture);
+    glBindTexture(GL_TEXTURE_2D, g.joshTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[3]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+     //---------------------------Drake's Pic---------------------------------------
+    w = img[5].width;
+    h = img[5].height;
+    glGenTextures(1, &g.drakeTexture);
+    glBindTexture(GL_TEXTURE_2D, g.drakeTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[5]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
+    //---------------------------Juan Pic---------------------------------------
+    w = img[4].width;
+    h = img[4].height;
+    glGenTextures(1, &g.juanTexture);
+    glBindTexture(GL_TEXTURE_2D, g.juanTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[4]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
+    //---------------------------Lawrence Pic---------------------------------------
     w = img[6].width;
     h = img[6].height;
     glGenTextures(1, &g.lawrenceTexture);
     glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    walkData = buildAlphaData(&img[6]);
+    walkData = buildAlphaData(&img[4]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
+
 }
 
 void init() {
-    //CHANGED
+    //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
+    VecZero(goku.vel);
 }
 
 void checkMouse(XEvent *e)
@@ -408,31 +463,30 @@ int checkKeys(XEvent *e)
         return 0;
     }
     (void)shift;
-    //CHANGED
+    //CHANGED - updates velocity with the listed keys
     switch (key) {
+        case XK_c:
+            g.creditFlag ^= 1;
+            break;
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
             break;
         case XK_a:
         case XK_Left:
-            if (goku.pos[0] > (-g.xres / 2 + 50))
-                goku.pos[0] -= 5;
+            goku.vel[0]--;
             break;
         case XK_d:
         case XK_Right:
-            if (goku.pos[0] < (g.xres / 2 - 50))
-                goku.pos[0] += 5;
+            goku.vel[0]++;
             break;
         case XK_w:
         case XK_Up:
-            if (goku.pos[1] < (g.yres / 2 - 50) )
-                goku.pos[1] += 5;
+            goku.vel[1]++;
             break;
         case XK_s:
         case XK_Down:
-            if (goku.pos[1] > (- g.yres / 2 + 50))
-                goku.pos[1] -= 5;
+            goku.vel[1]--;
             break;
         case XK_equal:
             g.delay -= 0.005;
@@ -445,8 +499,6 @@ int checkKeys(XEvent *e)
         case XK_Escape:
             return 1;
             break;
-        case XK_c:
-            showLawrencePicture();
     }
     return 0;
 }
@@ -479,8 +531,25 @@ void physics(void)
         double timeSpan = timers.timeDiff(&timers.walkTime, &timers.timeCurrent);
         if (timeSpan > g.delay) {
             //advance
-            //CHANGED
+            //CHANGED - shifts goku's pos by velocity, resets velocity
+            //          if character hits window edges
             //++g.walkFrame;
+            if ((goku.pos[0] > (- g.xres / 2 + 50) && goku.vel[0] < 0)
+                || (goku.pos[0] < (g.xres / 2 - 50) && goku.vel[0] > 0))
+                goku.pos[0] += goku.vel[0];
+            else
+                goku.vel[0] = 0;
+            if ((goku.pos[1] > (-g.yres / 2 + 50) && goku.vel[1] < 0)
+                || (goku.pos[1] < (g.yres / 2 - 50) && goku.vel[1] > 0))
+                goku.pos[1] += goku.vel[1];
+            else
+                goku.vel[1] = 0;
+            /*if ((goku.pos[0] <= -g.xres / 2 + 50)
+                || goku.pos[0] >= (g.xres / 2 - 50))
+                goku.vel[0] = 0;
+            if ((goku.pos[1] <= -g.xres / 2 + 50)
+                || goku.pos[1] >= (g.xres / 2 - 50))
+                goku.vel[1] = 0;*/
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);
@@ -493,126 +562,126 @@ void physics(void)
     }
 }
 
-extern void showLawrence (int, int, GLuint);
+extern void showSean(int, int, GLuint);
+extern void showJoshua(int, int, GLuint);
+extern void showDrake(int, int, GLuint);
+extern void showJuan(int, int, GLuint);
+extern void showLawrence(int,int,GLuint);
+
 void render(void)
 {
-
     if (g.creditFlag) {
         //Put picture functions here
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
-        showLawrence(30, img(5.height, g.lawrenceTexture);
+
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
 
-
-    Rect r;
-    //Clear the screen
-    glClearColor(0.1, 0.1, 0.1, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    float cx = g.xres/2.0;
-    float cy = g.yres/2.0;
-    //
-    //show ground
-    glBegin(GL_QUADS);
-    glColor3f(0.2, 0.2, 0.2);
-    glVertex2i(0,       220);
-    glVertex2i(g.xres, 220);
-    glColor3f(0.4, 0.4, 0.4);
-    glVertex2i(g.xres,   0);
-    glVertex2i(0,         0);
-    glEnd();
-    //
-    //fake shadow
-    //glColor3f(0.25, 0.25, 0.25);
-    //glBegin(GL_QUADS);
-    //	glVertex2i(cx-60, 150);
-    //	glVertex2i(cx+50, 150);
-    //	glVertex2i(cx+50, 130);
-    //	glVertex2i(cx-60, 130);
-    //glEnd();
-    //
-    //show boxes as background
-    for (int i=0; i<20; i++) {
-        glPushMatrix();
-        glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, g.cloudTexture);
-    //
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
-
-
-        float tx = 0, ty = 0;
-
-        // Render Clouds
+    } else {
+        Rect r;
+        //Clear the screen
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        float cx = g.xres/2.0;
+        float cy = g.yres/2.0;
+        //
+        //show ground
         glBegin(GL_QUADS);
-        glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
-        glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
-        glTexCoord2f(tx, ty);    glVertex2i(40, 30);
-        glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
+        glColor3f(0.2, 0.2, 0.2);
+        glVertex2i(0,       220);
+        glVertex2i(g.xres, 220);
+        glColor3f(0.4, 0.4, 0.4);
+        glVertex2i(g.xres,   0);
+        glVertex2i(0,         0);
         glEnd();
+        //
+        //fake shadow
+        //glColor3f(0.25, 0.25, 0.25);
+        //glBegin(GL_QUADS);
+        //	glVertex2i(cx-60, 150);
+        //	glVertex2i(cx+50, 150);
+        //	glVertex2i(cx+50, 130);
+        //	glVertex2i(cx-60, 130);
+        //glEnd();
+        //
+        //show boxes as background
+        for (int i=0; i<20; i++) {
+            glPushMatrix();
+            glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
+        glColor3f(1.0, 1.0, 1.0);
+        glBindTexture(GL_TEXTURE_2D, g.cloudTexture);
+        //
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.0f);
+        glColor4ub(255,255,255,255);
 
-        
 
-        
+            float tx = 0, ty = 0;
+
+            // Render Clouds
+            glBegin(GL_QUADS);
+            glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
+            glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
+            glTexCoord2f(tx, ty);    glVertex2i(40, 30);
+            glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
+            glEnd();
 
 
 
+            glPopMatrix();
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_ALPHA_TEST);
+        }
+
+        // CHANGED
+        // THIS IS THE CHARACTERS SIZE
+        float h = 50.0;
+        float w = h * 1;
+        glPushMatrix();
+        //CHANGED - Moves the Character
+        glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
+        glColor3f(1.0, 1.0, 1.0);
+        glBindTexture(GL_TEXTURE_2D, g.walkTexture);
+        //
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.0f);
+        glColor4ub(255,255,255,255);
+
+        // CHANGED
+        int ix = 0; //g.walkFrame % 8;
+        int iy = 0;
+        if (g.walkFrame >= 8)
+            iy = 1;
+
+        //CHANGED
+        float tx = (float)ix; // / 8.0;
+        float ty = (float)iy; // / 2.0;
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
+        glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
+        glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
+        glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
+        glEnd();
         glPopMatrix();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_ALPHA_TEST);
+        //
+        unsigned int c = 0x00ffff44;
+        r.bot = g.yres - 20;
+        r.left = 10;
+        r.center = 0;
+        ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
+        ggprint8b(&r, 16, c, "+   faster");
+        ggprint8b(&r, 16, c, "-   slower");
+        ggprint8b(&r, 16, c, "right arrow/d -> fly right");
+        ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
+        ggprint8b(&r, 16, c, "up arrow/w -> fly up");
+        ggprint8b(&r, 16, c, "down arrow/s -> fly down");
+        ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
     }
-
-    // CHANGED
-    // THIS IS THE CHARACTERS SIZE
-    float h = 50.0;
-    float w = h * 1;
-    glPushMatrix();
-    //CHANGED - Moves the Character
-    glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, g.walkTexture);
-    //
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
-
-    // CHANGED
-    int ix = 0; //g.walkFrame % 8;
-    int iy = 0;
-    if (g.walkFrame >= 8)
-        iy = 1;
-
-    //CHANGED
-    float tx = (float)ix; // / 8.0;
-    float ty = (float)iy; // / 2.0;
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-    glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-    glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-    glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
-    glEnd();
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
-    //
-    unsigned int c = 0x00ffff44;
-    r.bot = g.yres - 20;
-    r.left = 10;
-    r.center = 0;
-    ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
-    ggprint8b(&r, 16, c, "+   faster");
-    ggprint8b(&r, 16, c, "-   slower");
-    ggprint8b(&r, 16, c, "right arrow/d -> fly right");
-    ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
-    ggprint8b(&r, 16, c, "up arrow/w -> fly up");
-    ggprint8b(&r, 16, c, "down arrow/s -> fly down");
-    ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
-    ggprint8b(&r, 16, c, "c  to play credits")
 }
