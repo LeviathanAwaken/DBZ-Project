@@ -19,6 +19,7 @@ void showText(int x, int y)
 void showPic(int x, int y, GLuint textInt)
 {
     glBindTexture(GL_TEXTURE_2D, textInt);
+    glColor4f(1, 1, 1, 1);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 1.0f); glVertex2i(x+100, y+100);
         glTexCoord2f(0.0f, 0.0f); glVertex2i(x+100, y+250);
