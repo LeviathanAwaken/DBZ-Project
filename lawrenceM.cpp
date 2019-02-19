@@ -19,10 +19,10 @@ void showLawrencePicture (int x, int y, GLuint textid)
 {
     glBindTexture(GL_TEXTURE_2D, textid);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(x+525,y+250);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(x+525,y+500);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(x+675,y+500);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+675,y+500);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(x+500,y+50);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(x+500,y+200);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i(x+650,y+200);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+650,y+50);
     glEnd();
 }
 void showLawrence(int x, int y,  GLuint textint)
