@@ -133,7 +133,7 @@ class Global {
 	    GLuint joshTexture;
         GLuint drakeTexture;
 	    GLuint juanTexture;
-        
+
         Vec box[20];
         Global() {
             done=0;
@@ -415,7 +415,7 @@ void initOpengl(void)
 
 }
 
-void init() 
+void init()
 {
     //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
@@ -545,12 +545,6 @@ void physics(void)
                 goku.pos[1] += goku.vel[1];
             else
                 goku.vel[1] = 0;
-            /*if ((goku.pos[0] <= -g.xres / 2 + 50)
-                || goku.pos[0] >= (g.xres / 2 - 50))
-                goku.vel[0] = 0;
-            if ((goku.pos[1] <= -g.xres / 2 + 50)
-                || goku.pos[1] >= (g.xres / 2 - 50))
-                goku.vel[1] = 0;*/
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);

@@ -6,6 +6,11 @@
 #include <GL/glx.h>
 #include "fonts.h"
 
+class Global {
+    public:
+        uint timeStep = delta.get_ticks();
+} glob;
+
 void showText(int x, int y)
 {
     Rect r;
@@ -32,4 +37,11 @@ void showSean(int x, int y, GLuint textInt)
 {
     showPic(0, 0, textInt);
     showText(x+100, y+100);
+}
+
+int charMove(int vel)
+{
+    uint timeStep = delta.get_ticks();
+
+    delta.start();
 }
