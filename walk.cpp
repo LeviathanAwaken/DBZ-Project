@@ -39,6 +39,7 @@ const float gravity = -0.2f;
 
 //CHANGED
 //Tracks character's position
+
 class Protag {
 public:
     Vec pos;
@@ -126,6 +127,7 @@ class Global {
         int walkFrame;
         int creditFlag;
         double delay;
+        char keys[65536];
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
@@ -139,6 +141,7 @@ class Global {
             done=0;
             xres=800;
             yres=600;
+            memset(keys, 0, 65536);
             //CHANGED - back scroll starts on launch now
             walk=1;
             walkFrame=0;
@@ -451,10 +454,30 @@ int checkKeys(XEvent *e)
 {
     //keyboard input?
     static int shift=0;
-    if (e->type != KeyRelease && e->type != KeyPress)
+    int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
+    //Log("key: %i\n", key);
+    if (e->type == KeyRelease) {
+        g.keys[key]=0;
+        if (key == XK_Shift_L || key == XK_Shift_R)
+            shift=0;
         return 0;
+    }
+    if (e->type == KeyPress) {
+        //std::cout << "press" << std::endl;
+        g.keys[key]=1;
+        if (key == XK_Shift_L || key == XK_Shift_R) {
+            shift=1;
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+
+    /*if (e->type != KeyRelease && e->type != KeyPress)
+        return 0; 
     int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
     if (e->type == KeyRelease) {
+        g.keys[key] = 0;
         if (key == XK_Shift_L || key == XK_Shift_R)
             shift = 0;
         return 0;
@@ -463,8 +486,21 @@ int checkKeys(XEvent *e)
         shift=1;
         return 0;
     }
+
+    if ( e->type == KeyPress) {
+        g.keys[key] = 1;
+        if (key == XK_Shift_L || XK_Shift_R) {
+            shift = 1;
+            return 0;
+        } else {
+            return 0;
+        }
+    */
+    
     (void)shift;
     //CHANGED - updates velocity with the listed keys
+    //CHANGED - modified movement to get rid of delay on keypress
+    //CHANGED - moved goku's movement keypress handler statements into physics
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
@@ -473,22 +509,22 @@ int checkKeys(XEvent *e)
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
             break;
-        case XK_a:
-        case XK_Left:
-            goku.vel[0]--;
-            break;
-        case XK_d:
-        case XK_Right:
-            goku.vel[0]++;
-            break;
-        case XK_w:
-        case XK_Up:
-            goku.vel[1]++;
-            break;
-        case XK_s:
-        case XK_Down:
-            goku.vel[1]--;
-            break;
+        //case g.keys[XK_a]:
+        //case g.keys[XK_Left]:
+        //    goku.vel[0]--;
+        //    break;
+        //case g.keys[XK_d]:
+        //case g.keys[XK_Right]:
+        //    goku.vel[0]++;
+        //    break;
+        //case g.keys[XK_w]:
+        //case g.keys[XK_Up]:
+        //    goku.vel[1]++;
+        //    break;
+        //case g.keys[XK_s]:
+        //case g.keys[XK_Down]:
+        //    goku.vel[1]--;
+        //    break;
         case XK_equal:
             g.delay -= 0.005;
             if (g.delay < 0.005)
@@ -501,6 +537,7 @@ int checkKeys(XEvent *e)
             return 1;
             break;
     }
+
     return 0;
 }
 
@@ -553,6 +590,20 @@ void physics(void)
             g.box[i][0] -= 2.0 * (0.05 / g.delay);
             if (g.box[i][0] < -10.0)
                 g.box[i][0] += g.xres + 10.0;
+        }
+
+        //check for movement keys---------------------------------------------------------
+        if (g.keys[XK_a] || g.keys[XK_Left]) {
+            goku.vel[0]--;
+        }
+        if (g.keys[XK_d] || g.keys[XK_Right]) {
+            goku.vel[0]++;
+        }
+        if (g.keys[XK_w] || g.keys[XK_Up]) {
+            goku.vel[1]++;
+        }
+        if (g.keys[XK_s] || g.keys[XK_Down]) {
+            goku.vel[1]--;
         }
     }
 }

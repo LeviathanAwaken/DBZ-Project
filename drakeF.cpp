@@ -4,7 +4,7 @@
 //Date:     2/15/19
 
 
-
+#include <X11/Xlib.h>
 #include <GL/glx.h>
 #include "fonts.h"
 
@@ -25,7 +25,7 @@ void showdrakePic(int x, int y, GLuint textInt)
         glTexCoord2f(0.0f, 1.0f); glVertex2i(x+325, y+150); //bottom left
         glTexCoord2f(0.0f, 0.0f); glVertex2i(x+325, y+400); //top left
         glTexCoord2f(1.0f, 0.0f); glVertex2i(x+475, y+400); //top right
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+475, y+150);  
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+475, y+150);
     glEnd();
 }
 
