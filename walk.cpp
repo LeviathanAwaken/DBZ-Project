@@ -91,9 +91,7 @@ class Image {
         }
 };
 
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif"};
-
-
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/lawrencePic.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -134,7 +132,7 @@ class Global {
 	    GLuint joshTexture;
         GLuint drakeTexture;
         GLuint juanTexture;
-
+        GLuint lawrenceTexture;
         Vec box[20];
         Global() {
             done=0;
@@ -379,13 +377,13 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
      //---------------------------Drake's Pic---------------------------------------
-    w = img[4].width;
-    h = img[4].height;
+    w = img[5].width;
+    h = img[5].height;
     glGenTextures(1, &g.drakeTexture);
     glBindTexture(GL_TEXTURE_2D, g.drakeTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    walkData = buildAlphaData(&img[4]);
+    walkData = buildAlphaData(&img[5]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
@@ -402,9 +400,22 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
+    //---------------------------Lawrence's Pic---------------------------------------
+    w = img[6].width;
+    h = img[6].height;
+    glGenTextures(1, &g.lawrenceTexture);
+    glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[6]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
 }
 
-void init() {
+void init() 
+{
     //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
     VecZero(goku.vel);
@@ -555,6 +566,7 @@ extern void showSean(int, int, GLuint);
 extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
+extern void showLawrence(int,int,GLuint);
 
 void render(void)
 {
@@ -566,6 +578,7 @@ void render(void)
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[4].height, g.drakeTexture);
 	    showJuan(40, img[4].height, g.juanTexture);
+        showLawrence(40, img[6].height,g.lawrenceTexture);
 
     } else {
         Rect r;
