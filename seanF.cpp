@@ -8,7 +8,7 @@
 
 class Global {
     public:
-        uint timeStep = delta.get_ticks();
+        //uint timeStep = delta.get_ticks();
 } glob;
 
 void showText(int x, int y)
@@ -41,7 +41,7 @@ void showSean(int x, int y, GLuint textInt)
 
 int charMove(int vel)
 {
-    uint timeStep = delta.get_ticks();
+    //uint timeStep = delta.get_ticks();
 
-    delta.start();
+    //delta.start();
 }

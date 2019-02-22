@@ -474,7 +474,7 @@ int checkKeys(XEvent *e)
     }
 
     /*if (e->type != KeyRelease && e->type != KeyPress)
-        return 0; 
+        return 0;
     int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
     if (e->type == KeyRelease) {
         g.keys[key] = 0;
@@ -496,7 +496,7 @@ int checkKeys(XEvent *e)
             return 0;
         }
     */
-    
+
     (void)shift;
     //CHANGED - updates velocity with the listed keys
     //CHANGED - modified movement to get rid of delay on keypress
@@ -504,7 +504,6 @@ int checkKeys(XEvent *e)
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
-            break;
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
