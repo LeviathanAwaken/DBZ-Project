@@ -438,7 +438,7 @@ extern void sInit(GLuint, int, int);
 void init()
 {
     //CHANGED - initializes character's position and velocity
-    MakeVector(-150.0, 180.0, 0.0, goku.pos);
+    MakeVector(0.0, 100.0, 0.0, goku.pos);
     VecZero(goku.vel);
     sInit(g.kiTexture, g.xres, g.yres);
 }
@@ -532,7 +532,7 @@ int checkKeys(XEvent *e)
         case XK_k:
             launchKi(goku.pos[0] + 50, goku.pos[1]);
             break;
-        case XK_equal:
+/*        case XK_equal:
             g.delay -= 0.005;
             if (g.delay < 0.005)
                 g.delay = 0.005;
@@ -540,10 +540,12 @@ int checkKeys(XEvent *e)
         case XK_minus:
             g.delay += 0.005;
             break;
+*/
         case XK_Escape:
             return 1;
             break;
     }
+    g.delay = 0.005; 	// Sets speed to max at start of game
 
     return 0;
 }
