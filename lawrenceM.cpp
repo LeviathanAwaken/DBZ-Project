@@ -3,7 +3,9 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
-
+GLboolean CheckCollision() {
+    
+}
 
 void showText(int x, int y)
 {

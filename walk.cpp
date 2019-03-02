@@ -94,7 +94,7 @@ class Image {
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-    "images/lawrencePic.gif", "images/kiBlast.png"};
+    "images/lawrencePic.gif", "images/kiBlast.png", "images/enemy.png"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -138,6 +138,7 @@ class Global {
         GLuint drakeTexture;
 	    GLuint juanTexture;
         GLuint kiTexture;
+        GLuint enemyTexture;
 
         Vec box[20];
         Global() {
@@ -197,7 +198,7 @@ class X11_wrapper {
         void setTitle() {
             //Set the window title bar.
             XMapWindow(dpy, win);
-            XStoreName(dpy, win, "Walk Cycle");
+            XStoreName(dpy, win, "DBZ: The Final Form");
         }
         void setupScreenRes(const int w, const int h) {
             g.xres = w;
@@ -430,6 +431,19 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
+
+     //--------------------------KiBlast Texture---------------------------------
+    w = img[8].width;
+    h = img[8].height;
+    glGenTextures(1, &g.enemyTexture);
+    glBindTexture(GL_TEXTURE_2D, g.enemyTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[7]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
 
 }
 
