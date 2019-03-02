@@ -6,6 +6,13 @@
 #include <GL/glx.h>
 #include "fonts.h"
 
+void setBackgroundNamek(int x, int y, GLuint textint)
+{
+    glBindTexture(GL_TEXTURE_2D, textInt);
+    glColor4f(1, 1, 1, 1);
+    glBegin(GL_QUADS);
+}
+
 void showJoshuaText(int x, int y)
 {
     Rect r;
