@@ -123,9 +123,13 @@ class Global {
     public:
         int done;
         int xres, yres;
+	int score;
         int walk;
         int walkFrame;
         int creditFlag;
+        int startFlag;
+        int pauseFlag;
+	bool paused;
         double delay;
         char keys[65536];
         GLuint walkTexture;
@@ -141,11 +145,15 @@ class Global {
             done=0;
             xres=800;
             yres=600;
+	    score = 0;
             memset(keys, 0, 65536);
             //CHANGED - back scroll starts on launch now
             walk=1;
             walkFrame=0;
             creditFlag = 0;
+            startFlag = 0;
+            pauseFlag = 0;
+	    paused = true;
             delay = 0.09;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;
@@ -255,7 +263,8 @@ int main(void)
             checkMouse(&e);
             done = checkKeys(&e);
         }
-        physics();
+	if (g.paused == false || g.startFlag == 0)
+        	physics();
         render();
         x11.swapBuffers();
     }
@@ -536,6 +545,22 @@ int checkKeys(XEvent *e)
         case XK_Escape:
             return 1;
             break;
+	case XK_j:
+	    g.score++;
+	    break;
+        case XK_z:
+	    if (g.paused == true && g.startFlag == 0) {
+            g.startFlag ^= 1;
+	    g.paused = !g.paused;
+	    }
+            break;
+        case XK_p:
+	    if (g.startFlag == 1) {
+                g.pauseFlag ^= 1;
+	        g.paused = !g.paused;
+	    }
+            break;
+
     }
 
     return 0;
@@ -599,7 +624,8 @@ void physics(void)
         }
 
         //check for movement keys---------------------------------------------------------
-        if (g.keys[XK_a] || g.keys[XK_Left]) {
+        if (g.startFlag == 1) {
+	if (g.keys[XK_a] || g.keys[XK_Left]) {
             goku.vel[0]--;
         }
         if (g.keys[XK_d] || g.keys[XK_Right]) {
@@ -611,6 +637,7 @@ void physics(void)
         if (g.keys[XK_s] || g.keys[XK_Down]) {
             goku.vel[1]--;
         }
+	}
     }
 }
 
@@ -632,6 +659,9 @@ void render(void)
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
 
+    } else if (g.pauseFlag == 1) {
+	extern void showPause(int, int);
+	showPause(350, 100);
     } else {
         Rect r;
         //Clear the screen
@@ -734,6 +764,14 @@ void render(void)
         ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
         ggprint8b(&r, 16, c, "up arrow/w -> fly up");
         ggprint8b(&r, 16, c, "down arrow/s -> fly down");
+        ggprint8b(&r, 16, c, "j -> test temp score update");
+        ggprint8b(&r, 16, c, "p -> test pause screen");
         ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+	extern void showScore(int, int, int);
+	showScore(5, 22, g.score);
+	if (g.startFlag == 0) {
+	    extern void showStart(int, int);
+	    showStart(330, 100);
+	}
     }
 }

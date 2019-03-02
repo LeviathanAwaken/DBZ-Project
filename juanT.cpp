@@ -27,8 +27,38 @@ void showJuanText(int x, int y)
     ggprint8b(&r, 22, c, "Juan Trigueros");
 }
 
+void showScore(int x, int y, int z)
+{
+    Rect r;
+    unsigned int c = 0x00ffff44;
+    r.bot = y-20;
+    r.left = x;
+    r.center = 0;
+    ggprint16(&r, 22, c,"Score: %d", z);
+}
+
 void showJuan(int x, int y, GLuint textInt)
 {
-	showJuanPic(x-400,y-950,textInt);
-	showJuanText(x+125,y-800);
+    showJuanPic(x-400,y-950,textInt);
+    showJuanText(x+125,y-800);
+}
+
+void showStart(int x, int y)
+{
+    Rect r;
+    unsigned int c = 0x00ffff44;
+    r.bot = y-20;
+    r.left = x;
+    r.center = 0;
+    ggprint16(&r, 16, c,"press z to start");
+}
+
+void showPause(int x, int y)
+{
+    Rect r;
+    unsigned int c = 0x00ffff44;
+    r.bot = y-20;
+    r.left = x;
+    r.center = 0;
+    ggprint16(&r, 22, c,"paused");
 }
