@@ -39,6 +39,7 @@ const float gravity = -0.2f;
 
 //CHANGED
 //Tracks character's position
+
 class Protag {
 public:
     Vec pos;
@@ -91,7 +92,13 @@ class Image {
         }
 };
 
+<<<<<<< HEAD
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/LawrencePic.gif"};
+=======
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
+    "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
+    "images/lawrencePic.gif", "images/kiBlast.png"};
+>>>>>>> origin/master
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -126,6 +133,7 @@ class Global {
         int walkFrame;
         int creditFlag;
         double delay;
+        char keys[65536];
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
@@ -133,12 +141,21 @@ class Global {
 	    GLuint joshTexture;
         GLuint drakeTexture;
 	    GLuint juanTexture;
+<<<<<<< HEAD
         
+=======
+        GLuint kiTexture;
+
+>>>>>>> origin/master
         Vec box[20];
         Global() {
             done=0;
             xres=800;
             yres=600;
+<<<<<<< HEAD
+=======
+            memset(keys, 0, 65536);
+>>>>>>> origin/master
             //CHANGED - back scroll starts on launch now
             walk=1;
             walkFrame=0;
@@ -401,24 +418,55 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
+<<<<<<< HEAD
     //---------------------------Lawrence Pic---------------------------------------
+=======
+    //---------------------------Lawrence's Pic---------------------------------------
+>>>>>>> origin/master
     w = img[6].width;
     h = img[6].height;
     glGenTextures(1, &g.lawrenceTexture);
     glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+<<<<<<< HEAD
     walkData = buildAlphaData(&img[4]);
+=======
+    walkData = buildAlphaData(&img[6]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
+    //--------------------------KiBlast Texture---------------------------------
+    w = img[7].width;
+    h = img[7].height;
+    glGenTextures(1, &g.kiTexture);
+    glBindTexture(GL_TEXTURE_2D, g.kiTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[7]);
+>>>>>>> origin/master
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
 }
 
+<<<<<<< HEAD
 void init() {
     //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
     VecZero(goku.vel);
+=======
+extern void sInit(GLuint, int, int);
+
+void init()
+{
+    //CHANGED - initializes character's position and velocity
+    MakeVector(0.0, 100.0, 0.0, goku.pos);
+    VecZero(goku.vel);
+    sInit(g.kiTexture, g.xres, g.yres);
+>>>>>>> origin/master
 }
 
 void checkMouse(XEvent *e)
@@ -446,14 +494,36 @@ void checkMouse(XEvent *e)
     }
 }
 
+extern void launchKi(int, int);
+
 int checkKeys(XEvent *e)
 {
     //keyboard input?
     static int shift=0;
-    if (e->type != KeyRelease && e->type != KeyPress)
+    int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
+    //Log("key: %i\n", key);
+    if (e->type == KeyRelease) {
+        g.keys[key]=0;
+        if (key == XK_Shift_L || key == XK_Shift_R)
+            shift=0;
+        return 0;
+    }
+    if (e->type == KeyPress) {
+        //std::cout << "press" << std::endl;
+        g.keys[key]=1;
+        if (key == XK_Shift_L || key == XK_Shift_R) {
+            shift=1;
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+
+    /*if (e->type != KeyRelease && e->type != KeyPress)
         return 0;
     int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
     if (e->type == KeyRelease) {
+        g.keys[key] = 0;
         if (key == XK_Shift_L || key == XK_Shift_R)
             shift = 0;
         return 0;
@@ -462,16 +532,37 @@ int checkKeys(XEvent *e)
         shift=1;
         return 0;
     }
+
+    if ( e->type == KeyPress) {
+        g.keys[key] = 1;
+        if (key == XK_Shift_L || XK_Shift_R) {
+            shift = 1;
+            return 0;
+        } else {
+            return 0;
+        }
+    */
+
     (void)shift;
     //CHANGED - updates velocity with the listed keys
+<<<<<<< HEAD
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
             break;
+=======
+    //CHANGED - modified movement to get rid of delay on keypress
+    //CHANGED - moved goku's movement keypress handler statements into physics
+    switch (key) {
+        case XK_c:
+            g.creditFlag ^= 1;
+            [[fallthrough]];
+>>>>>>> origin/master
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
             break;
+<<<<<<< HEAD
         case XK_a:
         case XK_Left:
             goku.vel[0]--;
@@ -489,6 +580,12 @@ int checkKeys(XEvent *e)
             goku.vel[1]--;
             break;
         case XK_equal:
+=======
+        case XK_k:
+            launchKi(goku.pos[0] + 50, goku.pos[1]);
+            break;
+/*        case XK_equal:
+>>>>>>> origin/master
             g.delay -= 0.005;
             if (g.delay < 0.005)
                 g.delay = 0.005;
@@ -496,10 +593,13 @@ int checkKeys(XEvent *e)
         case XK_minus:
             g.delay += 0.005;
             break;
+*/
         case XK_Escape:
             return 1;
             break;
     }
+    g.delay = 0.005; 	// Sets speed to max at start of game
+
     return 0;
 }
 
@@ -521,6 +621,8 @@ Flt VecNormalize(Vec vec)
     vec[2] = zlen * tlen;
     return(len);
 }
+
+extern void kiHandler(int);
 
 void physics(void)
 {
@@ -544,20 +646,38 @@ void physics(void)
                 goku.pos[1] += goku.vel[1];
             else
                 goku.vel[1] = 0;
+<<<<<<< HEAD
             /*if ((goku.pos[0] <= -g.xres / 2 + 50)
                 || goku.pos[0] >= (g.xres / 2 - 50))
                 goku.vel[0] = 0;
             if ((goku.pos[1] <= -g.xres / 2 + 50)
                 || goku.pos[1] >= (g.xres / 2 - 50))
                 goku.vel[1] = 0;*/
+=======
+>>>>>>> origin/master
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);
+            kiHandler(0);
         }
         for (int i=0; i<20; i++) {
             g.box[i][0] -= 2.0 * (0.05 / g.delay);
             if (g.box[i][0] < -10.0)
                 g.box[i][0] += g.xres + 10.0;
+        }
+
+        //check for movement keys---------------------------------------------------------
+        if (g.keys[XK_a] || g.keys[XK_Left]) {
+            goku.vel[0]--;
+        }
+        if (g.keys[XK_d] || g.keys[XK_Right]) {
+            goku.vel[0]++;
+        }
+        if (g.keys[XK_w] || g.keys[XK_Up]) {
+            goku.vel[1]++;
+        }
+        if (g.keys[XK_s] || g.keys[XK_Down]) {
+            goku.vel[1]--;
         }
     }
 }
@@ -575,7 +695,11 @@ void render(void)
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
+<<<<<<< HEAD
 
+=======
+        showLawrence(40, img[6].height,g.lawrenceTexture);
+>>>>>>> origin/master
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
@@ -670,6 +794,10 @@ void render(void)
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
+<<<<<<< HEAD
+=======
+        kiHandler(1);
+>>>>>>> origin/master
         //
         unsigned int c = 0x00ffff44;
         r.bot = g.yres - 20;
@@ -684,4 +812,8 @@ void render(void)
         ggprint8b(&r, 16, c, "down arrow/s -> fly down");
         ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master
