@@ -92,13 +92,9 @@ class Image {
         }
 };
 
-<<<<<<< HEAD
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/LawrencePic.gif"};
-=======
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
     "images/lawrencePic.gif", "images/kiBlast.png"};
->>>>>>> origin/master
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -141,21 +137,14 @@ class Global {
 	    GLuint joshTexture;
         GLuint drakeTexture;
 	    GLuint juanTexture;
-<<<<<<< HEAD
-        
-=======
         GLuint kiTexture;
 
->>>>>>> origin/master
         Vec box[20];
         Global() {
             done=0;
             xres=800;
             yres=600;
-<<<<<<< HEAD
-=======
             memset(keys, 0, 65536);
->>>>>>> origin/master
             //CHANGED - back scroll starts on launch now
             walk=1;
             walkFrame=0;
@@ -418,20 +407,13 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-<<<<<<< HEAD
-    //---------------------------Lawrence Pic---------------------------------------
-=======
     //---------------------------Lawrence's Pic---------------------------------------
->>>>>>> origin/master
     w = img[6].width;
     h = img[6].height;
     glGenTextures(1, &g.lawrenceTexture);
     glBindTexture(GL_TEXTURE_2D, g.lawrenceTexture);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-<<<<<<< HEAD
-    walkData = buildAlphaData(&img[4]);
-=======
     walkData = buildAlphaData(&img[6]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
@@ -445,19 +427,12 @@ void initOpengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     walkData = buildAlphaData(&img[7]);
->>>>>>> origin/master
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
 }
 
-<<<<<<< HEAD
-void init() {
-    //CHANGED - initializes character's position and velocity
-    MakeVector(-150.0, 180.0, 0.0, goku.pos);
-    VecZero(goku.vel);
-=======
 extern void sInit(GLuint, int, int);
 
 void init()
@@ -466,7 +441,6 @@ void init()
     MakeVector(0.0, 100.0, 0.0, goku.pos);
     VecZero(goku.vel);
     sInit(g.kiTexture, g.xres, g.yres);
->>>>>>> origin/master
 }
 
 void checkMouse(XEvent *e)
@@ -545,47 +519,20 @@ int checkKeys(XEvent *e)
 
     (void)shift;
     //CHANGED - updates velocity with the listed keys
-<<<<<<< HEAD
-    switch (key) {
-        case XK_c:
-            g.creditFlag ^= 1;
-            break;
-=======
     //CHANGED - modified movement to get rid of delay on keypress
     //CHANGED - moved goku's movement keypress handler statements into physics
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
             [[fallthrough]];
->>>>>>> origin/master
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
             break;
-<<<<<<< HEAD
-        case XK_a:
-        case XK_Left:
-            goku.vel[0]--;
-            break;
-        case XK_d:
-        case XK_Right:
-            goku.vel[0]++;
-            break;
-        case XK_w:
-        case XK_Up:
-            goku.vel[1]++;
-            break;
-        case XK_s:
-        case XK_Down:
-            goku.vel[1]--;
-            break;
-        case XK_equal:
-=======
         case XK_k:
             launchKi(goku.pos[0] + 50, goku.pos[1]);
             break;
 /*        case XK_equal:
->>>>>>> origin/master
             g.delay -= 0.005;
             if (g.delay < 0.005)
                 g.delay = 0.005;
@@ -646,15 +593,6 @@ void physics(void)
                 goku.pos[1] += goku.vel[1];
             else
                 goku.vel[1] = 0;
-<<<<<<< HEAD
-            /*if ((goku.pos[0] <= -g.xres / 2 + 50)
-                || goku.pos[0] >= (g.xres / 2 - 50))
-                goku.vel[0] = 0;
-            if ((goku.pos[1] <= -g.xres / 2 + 50)
-                || goku.pos[1] >= (g.xres / 2 - 50))
-                goku.vel[1] = 0;*/
-=======
->>>>>>> origin/master
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);
@@ -695,11 +633,7 @@ void render(void)
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
-<<<<<<< HEAD
-
-=======
         showLawrence(40, img[6].height,g.lawrenceTexture);
->>>>>>> origin/master
 	    showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
@@ -794,10 +728,7 @@ void render(void)
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
-<<<<<<< HEAD
-=======
         kiHandler(1);
->>>>>>> origin/master
         //
         unsigned int c = 0x00ffff44;
         r.bot = g.yres - 20;
@@ -812,8 +743,4 @@ void render(void)
         ggprint8b(&r, 16, c, "down arrow/s -> fly down");
         ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/master
