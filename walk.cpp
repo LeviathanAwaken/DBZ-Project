@@ -94,11 +94,7 @@ class Image {
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-<<<<<<< HEAD
-    "images/lawrencePic.gif", "images/kiBlast.png", "images/enemy.png"};
-=======
-    "images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif"};
->>>>>>> master
+    "images/lawrencePic.gif", "images/kiBlast.png", "images/enemy.gif","images/kiBlast.png", "images/namek.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -146,11 +142,8 @@ class Global {
         GLuint drakeTexture;
         GLuint juanTexture;
         GLuint kiTexture;
-<<<<<<< HEAD
         GLuint enemyTexture;
-=======
         GLuint namekTexture;
->>>>>>> master
 
         Vec box[20];
         Global() {
@@ -450,21 +443,6 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-<<<<<<< HEAD
-     //--------------------------Enemy Texture---------------------------------
-    w = img[8].width;
-    h = img[8].height;
-    glGenTextures(1, &g.enemyTexture);
-    glBindTexture(GL_TEXTURE_2D, g.enemyTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    walkData = buildAlphaData(&img[7]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-    //--------------------------------------------------------------------------
-
-
-=======
     //------------------------Namek Background----------------------------------
     w = img[8].width;
     h = img[8].height;
@@ -476,7 +454,18 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
->>>>>>> master
+
+    //--------------------------Enemy Texture---------------------------------
+    w = img[9].width;
+    h = img[9].height;
+    glGenTextures(1, &g.enemyTexture);
+    glBindTexture(GL_TEXTURE_2D, g.enemyTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[7]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, int, int);
@@ -570,7 +559,7 @@ int checkKeys(XEvent *e)
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
-            [[fallthrough]];
+        // [[fallthrough]];
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
