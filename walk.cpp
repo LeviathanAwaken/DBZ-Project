@@ -20,7 +20,7 @@
 //defined types
 typedef double Flt;
 typedef double Vec[3];
-typedef Flt	Matrix[4][4];
+typedef Flt Matrix[4][4];
 
 //macros
 #define rnd() (((double)rand())/(double)RAND_MAX)
@@ -28,7 +28,7 @@ typedef Flt	Matrix[4][4];
 #define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
 #define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
 #define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
-#define VecDot(a,b)	((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
+#define VecDot(a,b) ((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
 #define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
                              (c)[1]=(a)[1]-(b)[1]; \
 (c)[2]=(a)[2]-(b)[2]
@@ -125,22 +125,22 @@ class Global {
     public:
         int done;
         int xres, yres;
-	int score;
+    int score;
         int walk;
         int walkFrame;
         int creditFlag;
         int startFlag;
         int pauseFlag;
-	bool paused;
+    bool paused;
         double delay;
         char keys[65536];
         GLuint walkTexture;
         GLuint cloudTexture;
         GLuint seanTexture;
         GLuint lawrenceTexture;
-	    GLuint joshTexture;
+        GLuint joshTexture;
         GLuint drakeTexture;
-	    GLuint juanTexture;
+        GLuint juanTexture;
         GLuint kiTexture;
 
         Vec box[20];
@@ -148,7 +148,7 @@ class Global {
             done=0;
             xres=800;
             yres=600;
-	    score = 0;
+        score = 0;
             memset(keys, 0, 65536);
             //CHANGED - back scroll starts on launch now
             walk=1;
@@ -156,7 +156,7 @@ class Global {
             creditFlag = 0;
             startFlag = 0;
             pauseFlag = 0;
-	    paused = true;
+        paused = true;
             delay = 0.09;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;
@@ -172,7 +172,8 @@ class X11_wrapper {
         Window win;
     public:
         X11_wrapper() {
-            GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+            GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, 
+                    None };
             //GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
             XSetWindowAttributes swa;
             setupScreenRes(g.xres, g.yres);
@@ -266,8 +267,8 @@ int main(void)
             checkMouse(&e);
             done = checkKeys(&e);
         }
-	if (g.paused == false || g.startFlag == 0)
-        	physics();
+    if (g.paused == false || g.startFlag == 0)
+            physics();
         render();
         x11.swapBuffers();
     }
@@ -337,7 +338,7 @@ void initOpengl(void)
     glGenTextures(1, &g.walkTexture);   //Goku
     glGenTextures(1, &g.cloudTexture);  //Cloud
 
-    //--------------------------------Goku Texture--------------------------------
+    //------------------------------Goku Texture--------------------------------
     //silhouette
     //this is similar to a sprite graphic
     //
@@ -352,9 +353,9 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //free(walkData);
     //unlink("./images/walk.ppm");
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    //----------------------------Cloud Texture--------------------------------------
+    //-----------------------Cloud Texture--------------------------------------
     w = img[1].width;
     h = img[1].height;
 
@@ -392,7 +393,7 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
-     //---------------------------Drake's Pic---------------------------------------
+    //------------------------Drake's Pic---------------------------------------
     w = img[5].width;
     h = img[5].height;
     glGenTextures(1, &g.drakeTexture);
@@ -416,7 +417,7 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-    //---------------------------Lawrence's Pic---------------------------------------
+    //---------------------Lawrence's Pic---------------------------------------
     w = img[6].width;
     h = img[6].height;
     glGenTextures(1, &g.lawrenceTexture);
@@ -439,7 +440,6 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
-
 }
 
 extern void sInit(GLuint, int, int);
@@ -553,24 +553,24 @@ int checkKeys(XEvent *e)
         case XK_Escape:
             return 1;
             break;
-	case XK_j:
-	    g.score++;
-	    break;
+    case XK_j:
+        g.score++;
+        break;
         case XK_z:
-	    if (g.paused == true && g.startFlag == 0) {
+        if (g.paused == true && g.startFlag == 0) {
             g.startFlag ^= 1;
-	    g.paused = !g.paused;
-	    }
+        g.paused = !g.paused;
+        }
             break;
         case XK_p:
-	    if (g.startFlag == 1) {
+        if (g.startFlag == 1) {
                 g.pauseFlag ^= 1;
-	        g.paused = !g.paused;
-	    }
+            g.paused = !g.paused;
+        }
             break;
 
     }
-    g.delay = 0.005; 	// Sets speed to max at start of game
+    g.delay = 0.005;    // Sets speed to max at start of game
 
     return 0;
 }
@@ -602,7 +602,8 @@ void physics(void)
         //man is walking...
         //when time is up, advance the frame.
         timers.recordTime(&timers.timeCurrent);
-        double timeSpan = timers.timeDiff(&timers.walkTime, &timers.timeCurrent);
+        double timeSpan = timers.timeDiff(&timers.walkTime, 
+                        &timers.timeCurrent);
         if (timeSpan > g.delay) {
             //advance
             //CHANGED - shifts goku's pos by velocity, resets velocity
@@ -629,21 +630,21 @@ void physics(void)
                 g.box[i][0] += g.xres + 10.0;
         }
 
-        //check for movement keys---------------------------------------------------------
+        //------------------check for movement keys-----------------------------
         if (g.startFlag == 1) {
-	if (g.keys[XK_a] || g.keys[XK_Left]) {
-            goku.vel[0]--;
-        }
-        if (g.keys[XK_d] || g.keys[XK_Right]) {
-            goku.vel[0]++;
-        }
-        if (g.keys[XK_w] || g.keys[XK_Up]) {
-            goku.vel[1]++;
-        }
-        if (g.keys[XK_s] || g.keys[XK_Down]) {
-            goku.vel[1]--;
-        }
-	}
+        if (g.keys[XK_a] || g.keys[XK_Left]) {
+                goku.vel[0]--;
+            }
+            if (g.keys[XK_d] || g.keys[XK_Right]) {
+                goku.vel[0]++;
+            }
+            if (g.keys[XK_w] || g.keys[XK_Up]) {
+                goku.vel[1]++;
+            }
+            if (g.keys[XK_s] || g.keys[XK_Down]) {
+                goku.vel[1]--;
+            }
+    }
     }
 }
 
@@ -661,13 +662,13 @@ void render(void)
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
         showLawrence(40, img[6].height,g.lawrenceTexture);
-	    showJoshua(40, img[3].height, g.joshTexture);
+        showJoshua(40, img[3].height, g.joshTexture);
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
 
     } else if (g.pauseFlag == 1) {
-	extern void showPause(int, int);
-	showPause(350, 100);
+        extern void showPause(int, int);
+        showPause(350, 100);
     } else {
         Rect r;
         //Clear the screen
@@ -689,10 +690,10 @@ void render(void)
         //fake shadow
         //glColor3f(0.25, 0.25, 0.25);
         //glBegin(GL_QUADS);
-        //	glVertex2i(cx-60, 150);
-        //	glVertex2i(cx+50, 150);
-        //	glVertex2i(cx+50, 130);
-        //	glVertex2i(cx-60, 130);
+        //  glVertex2i(cx-60, 150);
+        //  glVertex2i(cx+50, 150);
+        //  glVertex2i(cx+50, 130);
+        //  glVertex2i(cx-60, 130);
         //glEnd();
         //
         //show boxes as background
@@ -774,11 +775,11 @@ void render(void)
         ggprint8b(&r, 16, c, "j -> test temp score update");
         ggprint8b(&r, 16, c, "p -> test pause screen");
         ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
-	extern void showScore(int, int, int);
-	showScore(5, 22, g.score);
-	if (g.startFlag == 0) {
-	    extern void showStart(int, int);
-	    showStart(330, 100);
-	}
+        extern void showScore(int, int, int);
+        showScore(5, 22, g.score);
+        if (g.startFlag == 0) {
+            extern void showStart(int, int);
+            showStart(330, 100);
+        }
     }
 }
