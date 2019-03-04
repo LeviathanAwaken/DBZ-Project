@@ -432,7 +432,7 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
-     //--------------------------KiBlast Texture---------------------------------
+     //--------------------------Enemy Texture---------------------------------
     w = img[8].width;
     h = img[8].height;
     glGenTextures(1, &g.enemyTexture);
