@@ -3,11 +3,7 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
-GLboolean CheckCollision(Global gokuTexture, Global enemyTexture) 
-{
-    // Collision checking on the x-axis
-    bool collisionX = gokuTexture
-}
+
 
 void showText(int x, int y)
 {
