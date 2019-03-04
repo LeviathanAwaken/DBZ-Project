@@ -94,7 +94,7 @@ class Image {
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-    "images/lawrencePic.gif", "images/kiBlast.png"};
+    "images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -142,6 +142,7 @@ class Global {
         GLuint drakeTexture;
         GLuint juanTexture;
         GLuint kiTexture;
+        GLuint namekTexture;
 
         Vec box[20];
         Global() {
@@ -440,6 +441,18 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
+
+    //------------------------Namek Background----------------------------------
+    w = img[8].width;
+    h = img[8].height;
+    glGenTextures(1, &g.namekTexture);
+    glBindTexture(GL_TEXTURE_2D, g.namekTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[8]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, int, int);
@@ -653,6 +666,7 @@ extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
+extern void setBackgroundNamek(int, int, GLuint);
 
 void render(void)
 {
@@ -674,17 +688,12 @@ void render(void)
         //Clear the screen
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
+        
         float cx = g.xres/2.0;
         float cy = g.yres/2.0;
         //
         //show ground
-        glBegin(GL_QUADS);
-        glColor3f(0.2, 0.2, 0.2);
-        glVertex2i(0,       220);
-        glVertex2i(g.xres, 220);
-        glColor3f(0.4, 0.4, 0.4);
-        glVertex2i(g.xres,   0);
-        glVertex2i(0,         0);
+        setBackgroundNamek(0, img[7].height, g.namekTexture);
         glEnd();
         //
         //fake shadow
