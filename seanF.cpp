@@ -3,6 +3,16 @@
 //Author:   Sean Fontes
 //Date:     2-14-19
 
+/*
+ * Description:
+ * File currently holds the main logic for firing projectiles from the
+ * character's position using the 'k' key logic from the main file. All
+ * logic for graphics, positionally, and limitting-wise, is handled by
+ * functions called from this file. The file also features a handler
+ * function that calls the correct functions within the file depending
+ * on the value passed from the walk file.
+ */
+
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdio>
