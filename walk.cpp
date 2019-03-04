@@ -173,7 +173,7 @@ class X11_wrapper {
         Window win;
     public:
         X11_wrapper() {
-            GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, 
+            GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER,
                     None };
             //GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
             XSetWindowAttributes swa;
@@ -615,7 +615,7 @@ void physics(void)
         //man is walking...
         //when time is up, advance the frame.
         timers.recordTime(&timers.timeCurrent);
-        double timeSpan = timers.timeDiff(&timers.walkTime, 
+        double timeSpan = timers.timeDiff(&timers.walkTime,
                         &timers.timeCurrent);
         if (timeSpan > g.delay) {
             //advance
@@ -670,7 +670,7 @@ extern void setBackgroundNamek(int, int, GLuint);
 
 void render(void)
 {
-    if (g.creditFlag) {
+    if (g.creditFlag && !g.pauseFlag) {
         //Put picture functions here
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -680,7 +680,7 @@ void render(void)
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
 
-    } else if (g.pauseFlag == 1) {
+    } else if (g.pauseFlag) {
         extern void showPause(int, int);
         showPause(350, 100);
     } else {
@@ -688,7 +688,7 @@ void render(void)
         //Clear the screen
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        
+
         float cx = g.xres/2.0;
         float cy = g.yres/2.0;
         //
@@ -770,7 +770,7 @@ void render(void)
         glDisable(GL_ALPHA_TEST);
         kiHandler(1);
         //
-        unsigned int c = 0x00ffff44;
+        unsigned int c = 0x000000;
         r.bot = g.yres - 20;
         r.left = 10;
         r.center = 0;
