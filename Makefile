@@ -16,7 +16,11 @@ lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 	juanT.cpp \
 	drakeF.cpp \
 	-Wextra \
+<<<<<<< HEAD
 	libggfonts.a -Wall -owalk \
+=======
+	libggfontsMac.a -Wall -owalk \
+>>>>>>> master
 	-I/usr/X11R6/include \
 	-L/usr/X11R6/lib -lX11 \
 	-framework OpenGL \

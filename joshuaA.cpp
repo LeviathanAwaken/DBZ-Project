@@ -1,16 +1,27 @@
 //3350
 //Program:  joshuaA.cpp
 //Author:   Joshua Annis
-//Date:     2/15/19
+//Date Last Modified:     3/3/19
 
 #include <GL/glx.h>
 #include "fonts.h"
 
-void setBackgroundNamek(int x, int y, GLuint textint)
+/* 
+ * My file includes the background to the game and
+ * my own personal picture in the credits.
+ *
+ */
+
+void setBackgroundNamek(int x, int y, GLuint textInt)
 {
     glBindTexture(GL_TEXTURE_2D, textInt);
     glColor4f(1, 1, 1, 1);
-    glBegin(GL_QUADS);
+    glBegin(GL_QUADS); 
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(x+ 0, y+0); //bottom left
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(x+ 0, y+540); //top left
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(x+ 960, y+540); //top right
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(x+ 960, y+0);  
+    glEnd();
 }
 
 void showJoshuaText(int x, int y)

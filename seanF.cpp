@@ -3,6 +3,16 @@
 //Author:   Sean Fontes
 //Date:     2-14-19
 
+/*
+ * Description:
+ * File currently holds the main logic for firing projectiles from the
+ * character's position using the 'k' key logic from the main file. All
+ * logic for graphics, positionally, and limitting-wise, is handled by
+ * functions called from this file. The file also features a handler
+ * function that calls the correct functions within the file depending
+ * on the value passed from the walk file.
+ */
+
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdio>
@@ -15,15 +25,24 @@ class Global {
 class kiBlast {
     public:
         GLuint image;
-        int kiTracker[4][2] = {{0, 0}, {0, 0}, {0, 0}, {0, 0}};
+        int kiTracker[10][2];
         const int kiVel = .005;
 } ki;
+
+void kiInit()
+{
+    for (int i = 0; i < 10; i++) {
+        ki.kiTracker[i][0] = 0;
+        ki.kiTracker[i][1] = 0;
+    }
+}
 
 void sInit(GLuint image, int xres, int yres)
 {
     ki.image= image;
     glob.xres = xres;
     glob.yres = yres;
+    kiInit();
 }
 
 void showText(int x, int y)
@@ -91,8 +110,8 @@ void kiRender(int kiID)
 {
     float cx = glob.xres/2.0;
     float cy = glob.yres/2.0;
-    float h = 10.0;
-    float w = h*1;
+    float h = 20.0;
+    float w = h*2;
     glPushMatrix();
 
     glTranslatef(ki.kiTracker[kiID][0], ki.kiTracker[kiID][1], 0);
