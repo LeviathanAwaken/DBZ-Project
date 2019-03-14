@@ -48,7 +48,7 @@ void showJuan(int x, int y, GLuint textInt)
 void showStart(int x, int y)
 {
     Rect r;
-    unsigned int c = 0x00ffff44;
+    unsigned int c = 0x7c0095;
     r.bot = y-20;
     r.left = x;
     r.center = 0;

@@ -268,7 +268,7 @@ int main(void)
             checkMouse(&e);
             done = checkKeys(&e);
         }
-    if (g.paused == false || g.startFlag == 0)
+    if (g.paused == false || g.startFlag == 1)
             physics();
         render();
         x11.swapBuffers();
