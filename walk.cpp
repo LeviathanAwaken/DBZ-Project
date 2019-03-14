@@ -16,11 +16,16 @@
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "fonts.h"
+#include "Explosion.h"
 
 //defined types
 typedef double Flt;
 typedef double Vec[3];
 typedef Flt Matrix[4][4];
+/* trying to figure out how to add power ups as well as explosions
+std::vector<PowerUp> powerUps;
+std::vector<Explosion> explosions;
+*/
 
 //macros
 #define rnd() (((double)rand())/(double)RAND_MAX)
@@ -125,13 +130,14 @@ class Global {
     public:
         int done;
         int xres, yres;
-    int score;
+        int score;
         int walk;
         int walkFrame;
         int creditFlag;
         int startFlag;
         int pauseFlag;
-    bool paused;
+        int spriteSheetIndex;
+        bool paused;
         double delay;
         char keys[65536];
         GLuint walkTexture;
@@ -587,6 +593,7 @@ int checkKeys(XEvent *e)
             g.startFlag ^= 1;
         g.paused = !g.paused;
         }
+            //
             break;
         case XK_p:
         if (g.startFlag == 1) {
@@ -701,6 +708,7 @@ void render(void)
         //Clear the screen
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
+        
 
         float cx = g.xres/2.0;
         float cy = g.yres/2.0;
@@ -708,6 +716,11 @@ void render(void)
         //show ground
         setBackgroundNamek(0, img[7].height, g.namekTexture);
         glEnd();
+        //using to draw powerups but not implemented yet at all
+        // cleanPowerUps();
+        // for(unsigned int i = 0; i < powerUps.size(); i++){
+        //     powerUps[i].draw();
+        // }
         //
         //fake shadow
         //glColor3f(0.25, 0.25, 0.25);
