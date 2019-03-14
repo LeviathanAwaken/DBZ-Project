@@ -92,7 +92,9 @@ class Image {
         }
 };
 
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif", "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif", "images/lawrencePic.gif"};
+Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
+    "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
+    "images/lawrencePic.gif", "images/kiBlast.png", "images/Saibaman.jpg"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -135,7 +137,9 @@ class Global {
 	    GLuint joshTexture;
         GLuint drakeTexture;
 	    GLuint juanTexture;
-        
+        GLuint kiTexture;
+        GLuint saibaTexture;
+
         Vec box[20];
         Global() {
             done=0;
@@ -416,13 +420,38 @@ void initOpengl(void)
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
 
+    //--------------------------KiBlast Texture---------------------------------
+    w = img[7].width;
+    h = img[7].height;
+    glGenTextures(1, &g.kiTexture);
+    glBindTexture(GL_TEXTURE_2D, g.kiTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[7]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
+
+    //--------------------------saibaman Texture---------------------------------
+    w = img[8].width;
+    h = img[8].height;
+    glGenTextures(1, &g.saibaTexture);
+    glBindTexture(GL_TEXTURE_2D, g.saibaTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    walkData = buildAlphaData(&img[8]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    //--------------------------------------------------------------------------
 }
 
-void init() 
+extern void sInit(GLuint, int, int);
+void init()
 {
     //CHANGED - initializes character's position and velocity
     MakeVector(-150.0, 180.0, 0.0, goku.pos);
     VecZero(goku.vel);
+    sInit(g.kiTexture, g.xres, g.yres);
 }
 
 void checkMouse(XEvent *e)
@@ -450,6 +479,8 @@ void checkMouse(XEvent *e)
     }
 }
 
+extern void launchKi(int, int);
+
 int checkKeys(XEvent *e)
 {
     //keyboard input?
@@ -474,7 +505,7 @@ int checkKeys(XEvent *e)
     }
 
     /*if (e->type != KeyRelease && e->type != KeyPress)
-        return 0; 
+        return 0;
     int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
     if (e->type == KeyRelease) {
         g.keys[key] = 0;
@@ -496,7 +527,7 @@ int checkKeys(XEvent *e)
             return 0;
         }
     */
-    
+
     (void)shift;
     //CHANGED - updates velocity with the listed keys
     //CHANGED - modified movement to get rid of delay on keypress
@@ -504,27 +535,14 @@ int checkKeys(XEvent *e)
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
-            break;
+            [[fallthrough]];
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
             break;
-        //case g.keys[XK_a]:
-        //case g.keys[XK_Left]:
-        //    goku.vel[0]--;
-        //    break;
-        //case g.keys[XK_d]:
-        //case g.keys[XK_Right]:
-        //    goku.vel[0]++;
-        //    break;
-        //case g.keys[XK_w]:
-        //case g.keys[XK_Up]:
-        //    goku.vel[1]++;
-        //    break;
-        //case g.keys[XK_s]:
-        //case g.keys[XK_Down]:
-        //    goku.vel[1]--;
-        //    break;
+        case XK_k:
+            launchKi(goku.pos[0] + 50, goku.pos[1]);
+            break;
         case XK_equal:
             g.delay -= 0.005;
             if (g.delay < 0.005)
@@ -560,6 +578,8 @@ Flt VecNormalize(Vec vec)
     return(len);
 }
 
+extern void kiHandler(int);
+extern void saibaPhysics();
 void physics(void)
 {
     if (g.walk) {
@@ -582,21 +602,18 @@ void physics(void)
                 goku.pos[1] += goku.vel[1];
             else
                 goku.vel[1] = 0;
-            /*if ((goku.pos[0] <= -g.xres / 2 + 50)
-                || goku.pos[0] >= (g.xres / 2 - 50))
-                goku.vel[0] = 0;
-            if ((goku.pos[1] <= -g.xres / 2 + 50)
-                || goku.pos[1] >= (g.xres / 2 - 50))
-                goku.vel[1] = 0;*/
             if (g.walkFrame >= 16)
                 g.walkFrame -= 16;
             timers.recordTime(&timers.walkTime);
+            kiHandler(0);
         }
         for (int i=0; i<20; i++) {
             g.box[i][0] -= 2.0 * (0.05 / g.delay);
             if (g.box[i][0] < -10.0)
                 g.box[i][0] += g.xres + 10.0;
         }
+    saibaPhysics();
+        
 
         //check for movement keys---------------------------------------------------------
         if (g.keys[XK_a] || g.keys[XK_Left]) {
@@ -619,7 +636,8 @@ extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
-
+//extern void saibaRender(GLuint);
+extern void enemyHandler(GLuint);
 void render(void)
 {
     if (g.creditFlag) {
@@ -688,7 +706,8 @@ void render(void)
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
         }
-
+        enemyHandler(g.saibaTexture);
+        //saibaRender(g.saibaTexture);
         // CHANGED
         // THIS IS THE CHARACTERS SIZE
         float h = 50.0;
@@ -722,6 +741,8 @@ void render(void)
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
+        kiHandler(1);
+        
         //
         unsigned int c = 0x00ffff44;
         r.bot = g.yres - 20;
