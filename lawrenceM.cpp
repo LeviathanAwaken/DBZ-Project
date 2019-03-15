@@ -43,6 +43,30 @@ void showLawrence(int x, int y,  GLuint textint)
     showLawrencePicture(0,0,textint);
     showLawrenceText(x+500, y-400);
 }
+
+// int acceptGameState(int selectedOption)
+// {
+//     //update game state to selected option in main menu
+//     switch (selectedOption) {
+//         case 0:
+//             newGame();
+//             gameState = INGAME;
+//             break;
+//         case 1:
+//             //make leaderboard function           
+//             break;
+//         case 2:
+//             done=1;
+//             return 1;
+//         case 3:
+//             gameState = INGAME;
+//             break;
+//         default:
+//             printf("FATAL ERROR IN GAME STATE\n\n");
+//             exit(1);
+//     }
+//     return 0;
+// }
 /* this is what i'm working on for lab 8. trying to get a pause screen working by adding font to update the 
 class gameFont 
 {
