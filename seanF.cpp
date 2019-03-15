@@ -77,7 +77,7 @@ void showSean(int x, int y, GLuint textInt)
 
 int kiLimitCheck()
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 10; i++) {
 		if (ki.kiTracker[i][0] == 0 && ki.kiTracker[i][1] == 0)
 			return i;
 	}
@@ -139,7 +139,7 @@ void kiRender(int kiID)
 
 void kiHandler(int type)
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 10; i++) {
 		if (ki.kiTracker[i][0] != 0) {
 			if (!type)
 				kiMove(i);
@@ -147,78 +147,4 @@ void kiHandler(int type)
 				kiRender(i);
 		}
 	}
-}
-
-int kiLimitCheck()
-{
-    for (int i = 0; i < 4; i++) {
-        if (ki.kiTracker[i][0] == 0)
-            return i;
-    }
-    return -1;
-}
-
-void launchKi(int x, int y)
-{
-    int kiNum = kiLimitCheck();
-    if (kiNum != -1) {
-        ki.kiTracker[kiNum][0] = x;
-        ki.kiTracker[kiNum][1] = y;
-    }
-}
-
-void kiFree(int kiID)
-{
-    ki.kiTracker[kiID][0] = 0;
-    ki.kiTracker[kiID][1] = 0;
-}
-
-void kiMove(int kiID)
-{
-    if (ki.kiTracker[kiID][0] > glob.xres/2) {
-        kiFree(kiID);
-    } else {
-        ki.kiTracker[kiID][0] += 10;
-    }
-}
-
-void kiRender(int kiID)
-{
-    float cx = glob.xres/2.0;
-    float cy = glob.yres/2.0;
-    float h = 10.0;
-    float w = h*1;
-    glPushMatrix();
-
-    glTranslatef(ki.kiTracker[kiID][0], ki.kiTracker[kiID][1], 0);
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, ki.image);
-
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
-
-    float tx = 0.0;
-    float ty = 0.0;
-    glBegin(GL_QUADS);
-    glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-    glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-    glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-    glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
-    glEnd();
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
-}
-
-void kiHandler(int type)
-{
-    for (int i = 0; i < 4; i++) {
-        if (ki.kiTracker[i][0] != 0) {
-            if (!type)
-                kiMove(i);
-            else if (type == 1)
-                kiRender(i);
-        }
-    }
 }
