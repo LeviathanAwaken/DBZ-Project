@@ -455,7 +455,8 @@ void initOpengl(void)
     walkData = buildAlphaData(&img[9]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-
+    //--------------------------------------------------------------------------
+    
     //------------------------Namek Background----------------------------------
     w = img[8].width;
     h = img[8].height;
@@ -755,8 +756,8 @@ void render(void)
         }
         enemyHandler(g.saibaTexture);
         //saibaRender(g.saibaTexture);
-        // CHANGED
-        // THIS IS THE CHARACTERS SIZE
+        
+	// THIS IS THE CHARACTERS SIZE
         float h = 50.0;
         float w = h * 1;
         glPushMatrix();
