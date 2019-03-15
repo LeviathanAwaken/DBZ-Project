@@ -17,6 +17,7 @@
 #include <GL/glx.h>
 #include "fonts.h"
 #include "Explosion.h"
+#include "Global.h"
 
 //defined types
 typedef double Flt;
