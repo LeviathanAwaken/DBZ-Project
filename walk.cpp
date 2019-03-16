@@ -256,8 +256,12 @@ void physics(void);
 void render(void);
 
 
+struct timespec tstart, tend;
 int main(void)
 {
+    #ifdef PROFILE
+        timers.recordTime(&tstart);
+    #endif
     initOpengl();
     init();
     int done = 0;
@@ -268,10 +272,14 @@ int main(void)
             checkMouse(&e);
             done = checkKeys(&e);
         }
-    if (g.paused == false || g.startFlag == 1)
+    if (g.paused == false || g.startFlag == 1) {
             physics();
+    }
         render();
         x11.swapBuffers();
+    #ifdef PROFILE
+    	timers.recordTime(&tend);
+    #endif
     }
     cleanup_fonts();
     return 0;
@@ -644,7 +652,7 @@ void physics(void)
         }
 
         //------------------check for movement keys-----------------------------
-        if (g.startFlag == 1) {
+        if (g.startFlag == 1 && g.pauseFlag == 0) {
         if (g.keys[XK_a] || g.keys[XK_Left]) {
                 goku.vel[0]--;
             }
@@ -672,6 +680,7 @@ void render(void)
 {
     if (g.creditFlag && !g.pauseFlag) {
         //Put picture functions here
+        //Clear the screen
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         showSean(20, img[2].height, g.seanTexture);
@@ -680,9 +689,9 @@ void render(void)
         showDrake(70, img[5].height, g.drakeTexture);
         showJuan(40, img[4].height, g.juanTexture);
 
-    } else if (g.pauseFlag) {
-        extern void showPause(int, int);
-        showPause(350, 100);
+   // } else if (g.pauseFlag) {
+     //   extern void showPause(int, int);
+     //   showPause(350, 100);
     } else {
         Rect r;
         //Clear the screen
@@ -790,5 +799,11 @@ void render(void)
             extern void showStart(int, int);
             showStart(330, 100);
         }
-    }
+   	if (g.pauseFlag) {
+        	extern void showPause(int, int);
+        	showPause(350, 100);
+    	}
+        extern void showTimes(int, int, double);
+    	showTimes(15, 10, timers.timeDiff(&tstart, &tend));
+}
 }
