@@ -131,6 +131,6 @@ void showTimes(int x, int y, double runtime) {
     r.bot = y+20;
     r.left = x+20;
     r.center = 0;
-    ggprint16(&r, 16, c,"Run time: %d", (int)runtime);
+    ggprint16(&r, 16, c,"Run time: %d seconds", (int)runtime);
 }
 #endif

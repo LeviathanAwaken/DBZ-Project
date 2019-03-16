@@ -44,6 +44,7 @@ void sInit(GLuint image, int xres, int yres)
 	glob.xres = xres;
 	glob.yres = yres;
 	kiInit();
+
 }
 
 void showText(int x, int y)
@@ -76,7 +77,7 @@ void showSean(int x, int y, GLuint textInt)
 
 int kiLimitCheck()
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 10; i++) {
 		if (ki.kiTracker[i][0] == 0 && ki.kiTracker[i][1] == 0)
 			return i;
 	}
@@ -138,7 +139,7 @@ void kiRender(int kiID)
 
 void kiHandler(int type)
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 10; i++) {
 		if (ki.kiTracker[i][0] != 0) {
 			if (!type)
 				kiMove(i);
