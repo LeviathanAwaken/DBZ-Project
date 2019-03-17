@@ -82,8 +82,8 @@ void showScore(int x, int y, int z)
 
 void showJuan(int x, int y, GLuint textInt)
 {
-    showJuanPic(x-400,y-950,textInt);
-    showJuanText(x+125,y-800);
+    showJuanPic(x-450,y-170,textInt);
+    showJuanText(x+70,y+160);
 }
 
 void showStart(int x, int y)
