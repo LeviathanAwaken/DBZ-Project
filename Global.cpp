@@ -8,12 +8,12 @@
             score = 0;
             memset(keys, 0, 50000);
             //CHANGED - back scroll starts on launch now
-            walk=1;
-            walkFrame=0;
+            walk=0;
+            walkFrame=1;
             creditFlag = 0;
-            startFlag = 0;
+            startFlag = 1;
             pauseFlag = 0;
-            paused = true;
+            paused = false;
             delay = 0.09;
             for (int i=0; i<20; i++) {
                 box[i][0] = rnd() * xres;

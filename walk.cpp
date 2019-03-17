@@ -645,7 +645,7 @@ void physics(void)
 
         //------------------check for movement keys-----------------------------
         if (g.startFlag == 1) {
-        if (g.keys[XK_a] || g.keys[XK_Left]) {
+            if (g.keys[XK_a] || g.keys[XK_Left]) {
                 goku.vel[0]--;
             }
             if (g.keys[XK_d] || g.keys[XK_Right]) {
