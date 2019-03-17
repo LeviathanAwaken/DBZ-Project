@@ -15,6 +15,7 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
+#include "Global.h"
 #include "fonts.h"
 
 //defined types
@@ -37,6 +38,7 @@ const float timeslice = 1.0f;
 const float gravity = -0.2f;
 #define ALPHA 1
 
+Global g; // global class
 //CHANGED
 //Tracks character's position
 
@@ -121,51 +123,51 @@ class Timers {
 } timers;
 //-----------------------------------------------------------------------------
 
-class Global {
-    public:
-        int done;
-        int xres, yres;
-    int score;
-        int walk;
-        int walkFrame;
-        int creditFlag;
-        int startFlag;
-        int pauseFlag;
-    bool paused;
-        double delay;
-        char keys[65536];
-        GLuint walkTexture;
-        GLuint cloudTexture;
-        GLuint seanTexture;
-        GLuint lawrenceTexture;
-        GLuint joshTexture;
-        GLuint drakeTexture;
-        GLuint juanTexture;
-        GLuint kiTexture;
-        GLuint namekTexture;
+// class Global {
+//     public:
+//         int done;
+//         int xres, yres;
+//     int score;
+//         int walk;
+//         int walkFrame;
+//         int creditFlag;
+//         int startFlag;
+//         int pauseFlag;
+//     bool paused;
+//         double delay;
+//         char keys[65536];
+//         GLuint walkTexture;
+//         GLuint cloudTexture;
+//         GLuint seanTexture;
+//         GLuint lawrenceTexture;
+//         GLuint joshTexture;
+//         GLuint drakeTexture;
+//         GLuint juanTexture;
+//         GLuint kiTexture;
+//         GLuint namekTexture;
 
-        Vec box[20];
-        Global() {
-            done=0;
-            xres=800;
-            yres=600;
-        score = 0;
-            memset(keys, 0, 65536);
-            //CHANGED - back scroll starts on launch now
-            walk=1;
-            walkFrame=0;
-            creditFlag = 0;
-            startFlag = 0;
-            pauseFlag = 0;
-        paused = true;
-            delay = 0.09;
-            for (int i=0; i<20; i++) {
-                box[i][0] = rnd() * xres;
-                box[i][1] = rnd() * (yres-220) + 220.0;
-                box[i][2] = 0.0;
-            }
-        }
-} g;
+//         Vec box[20];
+//         Global() {
+//             done=0;
+//             xres=800;
+//             yres=600;
+//         score = 0;
+//             memset(keys, 0, 65536);
+//             //CHANGED - back scroll starts on launch now
+//             walk=1;
+//             walkFrame=0;
+//             creditFlag = 0;
+//             startFlag = 0;
+//             pauseFlag = 0;
+//         paused = true;
+//             delay = 0.09;
+//             for (int i=0; i<20; i++) {
+//                 box[i][0] = rnd() * xres;
+//                 box[i][1] = rnd() * (yres-220) + 220.0;
+//                 box[i][2] = 0.0;
+//             }
+//         }
+// } g;
 
 class X11_wrapper {
     private:
