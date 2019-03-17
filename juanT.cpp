@@ -5,6 +5,7 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
+#include "Global.h"
 
 void showJuanPic(int x, int y, GLuint textid)
 {

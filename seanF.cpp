@@ -16,6 +16,7 @@
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdio>
+#include "Global.h"
 
 class Global {
     public:

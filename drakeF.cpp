@@ -7,6 +7,7 @@
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 #include "fonts.h"
+#include "Global.h"
 
 void showdrakeText(int x, int y)
 {

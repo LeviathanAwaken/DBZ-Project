@@ -5,6 +5,7 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
+#include "Global.h"
 
 /* 
  * My file includes the background to the game and
