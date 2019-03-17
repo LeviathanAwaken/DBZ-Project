@@ -26,18 +26,11 @@ void timeGet(struct timespec *t)
 double timeDiff(struct timespec *start, struct timespec *end)
 {
     //return the difference in two times.
-    double ret =
-        (double)(end->tv_sec - start->tv_sec ) +
+    double ret = (double)(end->tv_sec - start->tv_sec ) +
         (double)(end->tv_nsec - start->tv_nsec) * oobillion;
     return ret;
 }
-//void timeCopy(struct timespec *dest, struct timespec *source)
-//{
-    //copy one time structure to another.
-  //  memcpy(dest, source, sizeof(struct timespec));
-//}
 #endif
-
 
 void showJuanPic(int x, int y, GLuint textid)
 {
