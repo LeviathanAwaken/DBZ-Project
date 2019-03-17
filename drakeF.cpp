@@ -9,6 +9,8 @@
 #include "fonts.h"
 #include "Global.h"
 
+ extern Global g;// global declaration
+
 void showdrakeText(int x, int y)
 {
     Rect r;

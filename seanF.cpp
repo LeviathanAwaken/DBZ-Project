@@ -18,6 +18,8 @@
 #include <cstdio>
 #include "Global.h"
 
+extern Global g; // global declaration
+
 // class Global {
 //     public:
 //         int xres, yres;
@@ -109,8 +111,8 @@ void kiMove(int kiID)
 
 void kiRender(int kiID)
 {
-    float cx = glob.xres/2.0;
-    float cy = glob.yres/2.0;
+    float cx = g.xres/2.0;
+    float cy = g.yres/2.0;
     float h = 20.0;
     float w = h*2;
     glPushMatrix();

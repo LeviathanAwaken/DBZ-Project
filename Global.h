@@ -86,6 +86,6 @@ class Global {
                 box[i][2] = 0.0;
             }
         }
-} 
+};
 
 #endif

@@ -7,6 +7,8 @@
 #include "fonts.h"
 #include "Global.h"
 
+extern Global g; //global declaration
+
 void showJuanPic(int x, int y, GLuint textid)
 {
     glBindTexture(GL_TEXTURE_2D, textid);

@@ -7,6 +7,8 @@
 #include "fonts.h"
 #include "Global.h"
 
+extern Global g; // global declaration
+
 /* 
  * My file includes the background to the game and
  * my own personal picture in the credits.

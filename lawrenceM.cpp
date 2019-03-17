@@ -9,7 +9,9 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
-#include <Global.h>
+#include "Global.h"
+
+extern Global g; // global declaration
 
 // #include <openssl/crypto.h>
 // #include <openssl/x509.h>
