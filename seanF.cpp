@@ -18,10 +18,10 @@
 #include <cstdio>
 #include "Global.h"
 
-class Global {
-    public:
-        int xres, yres;
-} glob;
+// class Global {
+//     public:
+//         int xres, yres;
+// } glob;
 
 class kiBlast {
     public:
@@ -41,8 +41,8 @@ void kiInit()
 void sInit(GLuint image, int xres, int yres)
 {
     ki.image= image;
-    glob.xres = xres;
-    glob.yres = yres;
+    g.xres = xres;
+    g.yres = yres;
     kiInit();
 }
 
@@ -100,7 +100,7 @@ void kiFree(int kiID)
 
 void kiMove(int kiID)
 {
-    if (ki.kiTracker[kiID][0] > glob.xres/2) {
+    if (ki.kiTracker[kiID][0] > g.xres/2) {
         kiFree(kiID);
     } else {
         ki.kiTracker[kiID][0] += 10;

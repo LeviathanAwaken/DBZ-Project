@@ -31,6 +31,7 @@ const float gravity = -0.2f;
 #define ALPHA 1
 
 //CHANGED
+Global g;
 //Tracks character's position
 
 class Protag {
