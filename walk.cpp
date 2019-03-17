@@ -16,22 +16,28 @@
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "fonts.h"
-#include "Explosion.h"
-#include "Global.h"
 
+//defined types
+typedef double Flt;
+typedef double Vec[3];
+typedef Flt Matrix[4][4];
 
-/* trying to figure out how to add power ups as well as explosions
-std::vector<PowerUp> powerUps;
-std::vector<Explosion> explosions;
-*/
-
+//macros
+#define rnd() (((double)rand())/(double)RAND_MAX)
+#define random(a) (rand()%a)
+#define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
+#define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
+#define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
+#define VecDot(a,b) ((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
+#define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
+                             (c)[1]=(a)[1]-(b)[1]; \
+(c)[2]=(a)[2]-(b)[2]
 //constants
 const float timeslice = 1.0f;
 const float gravity = -0.2f;
 #define ALPHA 1
 
 //CHANGED
-Global g;
 //Tracks character's position
 
 class Protag {
@@ -88,7 +94,7 @@ class Image {
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-    "images/lawrencePic.gif", "images/kiBlast.png","images/kiBlast.png", "images/namek.gif"};
+    "images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -115,7 +121,51 @@ class Timers {
 } timers;
 //-----------------------------------------------------------------------------
 
+class Global {
+    public:
+        int done;
+        int xres, yres;
+    int score;
+        int walk;
+        int walkFrame;
+        int creditFlag;
+        int startFlag;
+        int pauseFlag;
+    bool paused;
+        double delay;
+        char keys[65536];
+        GLuint walkTexture;
+        GLuint cloudTexture;
+        GLuint seanTexture;
+        GLuint lawrenceTexture;
+        GLuint joshTexture;
+        GLuint drakeTexture;
+        GLuint juanTexture;
+        GLuint kiTexture;
+        GLuint namekTexture;
 
+        Vec box[20];
+        Global() {
+            done=0;
+            xres=800;
+            yres=600;
+        score = 0;
+            memset(keys, 0, 65536);
+            //CHANGED - back scroll starts on launch now
+            walk=1;
+            walkFrame=0;
+            creditFlag = 0;
+            startFlag = 0;
+            pauseFlag = 0;
+        paused = true;
+            delay = 0.09;
+            for (int i=0; i<20; i++) {
+                box[i][0] = rnd() * xres;
+                box[i][1] = rnd() * (yres-220) + 220.0;
+                box[i][2] = 0.0;
+            }
+        }
+} g;
 
 class X11_wrapper {
     private:
@@ -157,7 +207,7 @@ class X11_wrapper {
         void setTitle() {
             //Set the window title bar.
             XMapWindow(dpy, win);
-            XStoreName(dpy, win, "DBZ: The Final Form");
+            XStoreName(dpy, win, "Walk Cycle");
         }
         void setupScreenRes(const int w, const int h) {
             g.xres = w;
@@ -403,30 +453,6 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //--------------------------------------------------------------------------
-
-    //--------------------------Enemy Texture---------------------------------
-    w = img[9].width;
-    h = img[9].height;
-    glGenTextures(1, &g.enemyTexture);
-    glBindTexture(GL_TEXTURE_2D, g.enemyTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    walkData = buildAlphaData(&img[9]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-    //--------------------------------------------------------------------------
-
-    //--------------------------Title Screen Texture---------------------------------
-    w = img[10].width;
-    h = img[10].height;
-    glGenTextures(1, &g.titleTexture);
-    glBindTexture(GL_TEXTURE_2D, g.titleTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    walkData = buildAlphaData(&img[10]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-    //--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, int, int);
@@ -520,7 +546,7 @@ int checkKeys(XEvent *e)
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
-        // [[fallthrough]];
+            // [[fallthrough]];
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
@@ -540,7 +566,7 @@ int checkKeys(XEvent *e)
         case XK_Escape:
             return 1;
             break;
-    case XK_j:
+        case XK_j:
         g.score++;
         break;
         case XK_z:
@@ -548,7 +574,6 @@ int checkKeys(XEvent *e)
             g.startFlag ^= 1;
         g.paused = !g.paused;
         }
-            //
             break;
         case XK_p:
         if (g.startFlag == 1) {
@@ -663,7 +688,6 @@ void render(void)
         //Clear the screen
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        
 
         float cx = g.xres/2.0;
         float cy = g.yres/2.0;
@@ -671,11 +695,6 @@ void render(void)
         //show ground
         setBackgroundNamek(0, img[7].height, g.namekTexture);
         glEnd();
-        //using to draw powerups but not implemented yet at all
-        // cleanPowerUps();
-        // for(unsigned int i = 0; i < powerUps.size(); i++){
-        //     powerUps[i].draw();
-        // }
         //
         //fake shadow
         //glColor3f(0.25, 0.25, 0.25);

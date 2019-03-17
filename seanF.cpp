@@ -29,7 +29,7 @@ class kiBlast {
     public:
         GLuint image;
         int kiTracker[10][2];
-        const int kiVel = .005;
+        const double kiVel = .005;
 } ki;
 
 void kiInit()
