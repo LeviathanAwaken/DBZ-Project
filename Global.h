@@ -63,6 +63,7 @@ class Global {
         GLuint kiTexture;
         GLuint enemyTexture;
         GLuint namekTexture;
+        GLuint titleTexture;
 
         Vec box[20];
         Global() {

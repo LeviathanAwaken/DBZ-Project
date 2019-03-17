@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
+#include <Global.h>
 
 // #include <openssl/crypto.h>
 // #include <openssl/x509.h>
@@ -67,7 +68,12 @@ void showLawrence(int x, int y,  GLuint textint)
 //     }
 //     return 0;
 // }
+
+void checkMenuKeys() {
+
+}
 /* this is what i'm working on for lab 8. trying to get a pause screen working by adding font to update the 
+font i want to use but i probably won't even use this at all. 
 class gameFont 
 {
 public:
