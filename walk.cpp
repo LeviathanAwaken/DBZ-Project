@@ -88,7 +88,7 @@ class Image {
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-    "images/lawrencePic.gif", "images/kiBlast.png", "images/enemy.gif","images/kiBlast.png", "images/namek.gif"};
+    "images/lawrencePic.gif", "images/kiBlast.png","images/kiBlast.png", "images/namek.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
