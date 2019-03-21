@@ -17,22 +17,23 @@
 #include <GL/glx.h>
 #include "Global.h"
 #include "fonts.h"
+#include "SpriteSheet.h"
 
 //defined types
-typedef double Flt;
-typedef double Vec[3];
-typedef Flt Matrix[4][4];
+// typedef double Flt;
+// typedef double Vec[3];
+// typedef Flt Matrix[4][4];
 
-//macros
-#define rnd() (((double)rand())/(double)RAND_MAX)
-#define random(a) (rand()%a)
-#define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
-#define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
-#define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
-#define VecDot(a,b) ((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
-#define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
-                             (c)[1]=(a)[1]-(b)[1]; \
-(c)[2]=(a)[2]-(b)[2]
+// //macros
+// #define rnd() (((double)rand())/(double)RAND_MAX)
+// #define random(a) (rand()%a)
+// #define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
+// #define VecZero(v) (v)[0]=0.0,(v)[1]=0.0,(v)[2]=0.0
+// #define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
+// #define VecDot(a,b) ((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
+// #define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
+//                              (c)[1]=(a)[1]-(b)[1]; \
+// (c)[2]=(a)[2]-(b)[2]
 //constants
 const float timeslice = 1.0f;
 const float gravity = -0.2f;
@@ -49,54 +50,64 @@ public:
 } goku;
 
 
-class Image {
-    public:
-        int width, height;
-        unsigned char *data;
-        ~Image() { delete [] data; }
-        Image(const char *fname) {
-            if (fname[0] == '\0')
-                return;
-            //printf("fname **%s**\n", fname);
-            char name[40];
-            strcpy(name, fname);
-            int slen = strlen(name);
-            name[slen-4] = '\0';
-            //printf("name **%s**\n", name);
-            char ppmname[80];
-            sprintf(ppmname,"%s.ppm", name);
-            //printf("ppmname **%s**\n", ppmname);
-            char ts[100];
-            //system("convert eball.jpg eball.ppm");
-            sprintf(ts, "convert %s %s", fname, ppmname);
-            system(ts);
-            //sprintf(ts, "%s", name);
-            FILE *fpi = fopen(ppmname, "r");
-            if (fpi) {
-                char line[200];
-                fgets(line, 200, fpi);
-                fgets(line, 200, fpi);
-                while (line[0] == '#')
-                    fgets(line, 200, fpi);
-                sscanf(line, "%i %i", &width, &height);
-                fgets(line, 200, fpi);
-                //get pixel data
-                int n = width * height * 3;
-                data = new unsigned char[n];
-                for (int i=0; i<n; i++)
-                    data[i] = fgetc(fpi);
-                fclose(fpi);
-            } else {
-                printf("ERROR opening image: %s\n",ppmname);
-                exit(0);
-            }
-            unlink(ppmname);
-        }
-};
+// class Image {
+//     public:
+//         int width, height;
+//         unsigned char *data;
+//         ~Image() { delete [] data; }
+//         Image(const char *fname) {
+//             if (fname[0] == '\0')
+//                 return;
+//             //printf("fname **%s**\n", fname);
+//             char name[40];
+//             strcpy(name, fname);
+//             int slen = strlen(name);
+//             name[slen-4] = '\0';
+//             //printf("name **%s**\n", name);
+//             char ppmname[80];
+//             sprintf(ppmname,"%s.ppm", name);
+//             //printf("ppmname **%s**\n", ppmname);
+//             char ts[100];
+//             //system("convert eball.jpg eball.ppm");
+//             sprintf(ts, "convert %s %s", fname, ppmname);
+//             system(ts);
+//             //sprintf(ts, "%s", name);
+//             FILE *fpi = fopen(ppmname, "r");
+//             if (fpi) {
+//                 char line[200];
+//                 fgets(line, 200, fpi);
+//                 fgets(line, 200, fpi);
+//                 while (line[0] == '#')
+//                     fgets(line, 200, fpi);
+//                 sscanf(line, "%i %i", &width, &height);
+//                 fgets(line, 200, fpi);
+//                 //get pixel data
+//                 int n = width * height * 3;
+//                 data = new unsigned char[n];
+//                 for (int i=0; i<n; i++)
+//                     data[i] = fgetc(fpi);
+//                 fclose(fpi);
+//             } else {
+//                 printf("ERROR opening image: %s\n",ppmname);
+//                 exit(0);
+//             }
+//             unlink(ppmname);
+//         }
+// };
 
-Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
-    "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-    "images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif"};
+SpriteSheet img[] = 
+{   
+    SpriteSheet("images/Goku.gif", 1, 1), 
+    SpriteSheet("images/cloud.gif", 1, 2), 
+    SpriteSheet("images/seanPic.gif",2, 1),
+    SpriteSheet("images/joshPic.gif",2, 2), 
+    SpriteSheet("images/juanPic.gif", 2, 3),
+    SpriteSheet("images/Drakepic.gif", 2, 4),
+    SpriteSheet("images/lawrencePic.gif",2,5), 
+    SpriteSheet("images/kiBlast.png", 3, 1), 
+    SpriteSheet("images/namek.gif", 4,1)
+};
+    
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -279,7 +290,7 @@ int main(void)
     return 0;
 }
 
-unsigned char *buildAlphaData(Image *img)
+unsigned char *buildAlphaData(SpriteSheet *img)
 {
     //add 4th component to RGB stream...
     int i;

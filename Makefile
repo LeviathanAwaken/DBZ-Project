@@ -10,7 +10,9 @@ walk: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp Global.c
 	g++ $(CFLAGS) walk.cpp Global.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -owalk
 
 lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp Global.cpp
-	g++ walk.cpp lawrenceM.cpp \
+	g++ walk.cpp \
+	SpriteSheet.cpp \
+	lawrenceM.cpp \
 	joshuaA.cpp \
 	seanF.cpp \
 	juanT.cpp \
