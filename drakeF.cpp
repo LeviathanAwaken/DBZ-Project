@@ -134,9 +134,9 @@ void saibaRender (GLuint image)
 //handler for amount of enemies on screen
 
 void enemyHandler (GLuint image) {
-    for (int i = 0; i < 3; i++) {
+    //for (int i = 0; i < 3; i++) {
         saibaRender(image);
-    }
+   // }
 }
 
 
