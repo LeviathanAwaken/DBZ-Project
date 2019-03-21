@@ -11,6 +11,7 @@ walk: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp Global.c
 
 lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp Global.cpp
 	g++ walk.cpp \
+	Timers.cpp \
 	SpriteSheet.cpp \
 	lawrenceM.cpp \
 	joshuaA.cpp \
