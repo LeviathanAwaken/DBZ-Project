@@ -2,10 +2,8 @@
 //Program:  joshuaA.cpp
 //Author:   Joshua Annis
 //Date Last Modified:     3/3/19
-
 #include <GL/glx.h>
 #include "fonts.h"
-
 /* 
  * My file includes the background to the game and
  * my own personal picture in the credits.
@@ -52,3 +50,5 @@ void showJoshua(int x, int y, GLuint textInt)
     showJoshuaText(x+525, y+100);
 
 }
+
+//class 

@@ -16,7 +16,8 @@
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "fonts.h"
-
+#include "Global.h"
+#include "Image.h"
 //defined types
 typedef double Flt;
 typedef double Vec[3];
@@ -45,51 +46,6 @@ class Protag {
     Vec pos;
     Vec vel;
 } goku;
-
-class Image {
-    public:
-        int width, height;
-        unsigned char *data;
-        ~Image() { delete [] data; }
-        Image(const char *fname) {
-            if (fname[0] == '\0')
-                return;
-            //printf("fname **%s**\n", fname);
-            char name[40];
-            strcpy(name, fname);
-            int slen = strlen(name);
-            name[slen-4] = '\0';
-            //printf("name **%s**\n", name);
-            char ppmname[80];
-            sprintf(ppmname,"%s.ppm", name);
-            //printf("ppmname **%s**\n", ppmname);
-            char ts[100];
-            //system("convert eball.jpg eball.ppm");
-            sprintf(ts, "convert %s %s", fname, ppmname);
-            system(ts);
-            //sprintf(ts, "%s", name);
-            FILE *fpi = fopen(ppmname, "r");
-            if (fpi) {
-                char line[200];
-                fgets(line, 200, fpi);
-                fgets(line, 200, fpi);
-                while (line[0] == '#')
-                    fgets(line, 200, fpi);
-                sscanf(line, "%i %i", &width, &height);
-                fgets(line, 200, fpi);
-                //get pixel data
-                int n = width * height * 3;
-                data = new unsigned char[n];
-                for (int i=0; i<n; i++)
-                    data[i] = fgetc(fpi);
-                fclose(fpi);
-            } else {
-                printf("ERROR opening image: %s\n",ppmname);
-                exit(0);
-            }
-            unlink(ppmname);
-        }
-};
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
@@ -120,54 +76,7 @@ class Timers {
         }
 } timers;
 //-----------------------------------------------------------------------------
-
-class Global {
-    public:
-        int done;
-        int xres, yres;
-        int score;
-        int walk;
-        int walkFrame;
-        int creditFlag;
-        int startFlag;
-        int pauseFlag;
-        bool paused;
-        double delay;
-        char keys[65536];
-        GLuint walkTexture;
-        GLuint cloudTexture;
-        GLuint seanTexture;
-        GLuint lawrenceTexture;
-        GLuint joshTexture;
-        GLuint drakeTexture;
-        GLuint juanTexture;
-        GLuint kiTexture;
-        GLuint namekTexture;
-        GLuint saibaTexture;
-
-        Vec box[20];
-        Global() {
-            done=0;
-            xres=800;
-            yres=600;
-            score = 0;
-            memset(keys, 0, 65536);
-            //CHANGED - back scroll starts on launch now
-            walk=1;
-            walkFrame=0;
-            creditFlag = 0;
-            startFlag = 0;
-            pauseFlag = 0;
-            paused = true;
-            delay = 0.09;
-            for (int i=0; i<20; i++) {
-            box[i][0] = rnd() * xres;
-            box[i][1] = rnd() * (yres-220) + 220.0;
-            box[i][2] = 0.0;
-            }
-        }
-} g;
-
+Global g;
 class X11_wrapper {
     private:
         Display *dpy;
