@@ -575,7 +575,6 @@ void physics(void)
             if (g.box[i][0] < -10.0)
                 g.box[i][0] += g.xres + 10.0;
         }
-
         saibaPhysics();
 
 

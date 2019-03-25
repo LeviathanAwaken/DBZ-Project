@@ -109,7 +109,6 @@ void saibaRender (GLuint image)
 
 void enemyHandler (GLuint image) {
 
-   
         saibaRender(image);
 }
 
@@ -147,7 +146,6 @@ void pattern_3 ()
         saibaPhysics();
     }
     
-
 }
 
 
