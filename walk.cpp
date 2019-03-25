@@ -77,6 +77,7 @@ class Timers {
 } timers;
 //-----------------------------------------------------------------------------
 Global g;
+
 class X11_wrapper {
     private:
         Display *dpy;
@@ -570,7 +571,7 @@ void physics(void)
             kiHandler(0);
         }
         for (int i=0; i<20; i++) {
-            g.box[i][0] -= 2.0 * (0.05 / g.delay);
+            g.box[i][0] -= 0.3 * (0.05 / g.delay);
             if (g.box[i][0] < -10.0)
                 g.box[i][0] += g.xres + 10.0;
         }
