@@ -1,7 +1,7 @@
 //3350
 //Program:  drakeF.cpp
 //Author:   Drake Floyd
-//Date:     2/15/19
+//Date:     3/25/19
 
 
 #include <X11/Xlib.h>
@@ -12,30 +12,15 @@
 #include <cstring>
 #include <cmath>
 #include "Global.h"
-extern Global g;
+#include "Enemy.h"
 
+extern Global g;
+Enemy Enemy;
 int nticks = 0;
 
 void pattern_1();
 void pattern_2();
 void pattern_3();
-
-//-------------------Enemy class---------------------------------
-class Enemy {
-public:
-    
-    float pos[3];
-
-    
-    Enemy () {
-     
-     srand(time(0));
-
-     pos[0] = g.xres;
-     pos[1] = (rand() % g.yres + 1);
-     pos[2] = 0.0;
-    }
-}Enemy;
 
 
 
@@ -56,9 +41,7 @@ void showdrakePic(int x, int y, GLuint textInt)
         glTexCoord2f(0.0f, 1.0f); glVertex2i(x+325, y+150); //bottom left
         glTexCoord2f(0.0f, 0.0f); glVertex2i(x+325, y+400); //top left
         glTexCoord2f(1.0f, 0.0f); glVertex2i(x+475, y+400); //top right
-
-        
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+475, y+150);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+475, y+150); //bottom right
     glEnd();
 }
 
@@ -73,7 +56,7 @@ void showDrake(int x, int y, GLuint textInt)
 void saibaPhysics () 
 {
     srand(time(0));
-    int choice = (rand() % 3 + 1);
+    /*int choice = (rand() % 3 + 1);
     switch (choice) {
         case 1:
             pattern_1();
@@ -84,7 +67,8 @@ void saibaPhysics ()
         case 3:
             pattern_3();
             break; 
-   }
+    }*/
+    pattern_1();
   
 }
 
@@ -130,19 +114,21 @@ void enemyHandler (GLuint image) {
 
 void pattern_1 ()
 {
-    Enemy.pos[0] -= 2;
+    Enemy.pos[0] -= 1;
     if (Enemy.pos[0] < -50){
         Enemy.pos[0] = g.xres;
-        Enemy.pos[1] = (rand() % g.yres + 1);
+        Enemy.pos[1] = (rand() % (g.yres-100) + 1);
         saibaPhysics();
     }
 }
 
 void pattern_2 ()
 {
+    srand(time(0));
+    int start = (rand() % g.yres + 1);
     nticks++;
     Enemy.pos[0] -= 2;
-    Enemy.pos[1] = (50 * sin(nticks/50)) + (500);
+    Enemy.pos[1] = (50 * sin(nticks/50) + (start));
     if (Enemy.pos[0] < -50){
         Enemy.pos[0] = g.xres;
         Enemy.pos[1] = (rand() % g.yres + 1);
