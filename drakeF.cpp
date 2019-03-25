@@ -9,42 +9,34 @@
 #include "fonts.h"
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
 #include <cmath>
-//extern Global g;
+#include "Global.h"
+extern Global g;
 
-typedef double Vec[3];
+int nticks = 0;
 
-/*class global {
-public:
-    int xres, yres;
-    GLuint image;
+void pattern_1();
+void pattern_2();
+void pattern_3();
 
-} glb;*/
-
+//-------------------Enemy class---------------------------------
 class Enemy {
 public:
     
-    float pos[3] = {0.0, 0.0, 0.0};
+    float pos[3];
 
-    //Vec saiba[3];
+    
     Enemy () {
      
      srand(time(0));
-     /*for (int i = 0; i < 1; i++) {
-        saiba[i][0] = 800;
-        saiba[i][1] = (rand() % 500 + 1);
-        saiba[i][2] = 0.0;
-     }*/
-     pos[0] = 800;
-     pos[1] = (rand() % 500 + 1);
+
+     pos[0] = g.xres;
+     pos[1] = (rand() % g.yres + 1);
      pos[2] = 0.0;
     }
 }Enemy;
 
-
-
-
-//Enemy saiba[3];
 
 
 void showdrakeText(int x, int y)
@@ -64,7 +56,9 @@ void showdrakePic(int x, int y, GLuint textInt)
         glTexCoord2f(0.0f, 1.0f); glVertex2i(x+325, y+150); //bottom left
         glTexCoord2f(0.0f, 0.0f); glVertex2i(x+325, y+400); //top left
         glTexCoord2f(1.0f, 0.0f); glVertex2i(x+475, y+400); //top right
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+475, y+150); //bottom right
+
+        
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+475, y+150);
     glEnd();
 }
 
@@ -75,25 +69,23 @@ void showDrake(int x, int y, GLuint textInt)
 
 }
 
-//movement for enemy work in progress
+//-----------------------------movement for enemy work in progress-----------------------------
 void saibaPhysics () 
 {
-    //float move = 3.14;
-    
-    
-    Enemy.pos[0] -= 2;
-    /*for (int i = 0; i < 5; i++){
-        Enemy.pos[1] += sin(i * move/2) * 300;
-    }*/
-        
-    if (Enemy.pos[0] < -50){
-        Enemy.pos[0] = 820;
-        Enemy.pos[1] = (rand() % 500 +1);
-    }
-        
-    
-    
-
+    srand(time(0));
+    int choice = (rand() % 3 + 1);
+    switch (choice) {
+        case 1:
+            pattern_1();
+            break;
+        case 2:
+            pattern_2();
+            break;
+        case 3:
+            pattern_3();
+            break; 
+   }
+  
 }
 
 void saibaRender (GLuint image) 
@@ -129,12 +121,45 @@ void saibaRender (GLuint image)
 
 }
 
-//handler for amount of enemies on screen
+//------------------------Draw the enemies-----------------------------------------
 
 void enemyHandler (GLuint image) {
-    for (int i = 0; i < 3; i++) {
+   
         saibaRender(image);
+}
+
+void pattern_1 ()
+{
+    Enemy.pos[0] -= 2;
+    if (Enemy.pos[0] < -50){
+        Enemy.pos[0] = g.xres;
+        Enemy.pos[1] = (rand() % g.yres + 1);
+        saibaPhysics();
     }
+}
+
+void pattern_2 ()
+{
+    nticks++;
+    Enemy.pos[0] -= 2;
+    Enemy.pos[1] = (50 * sin(nticks/50)) + (500);
+    if (Enemy.pos[0] < -50){
+        Enemy.pos[0] = g.xres;
+        Enemy.pos[1] = (rand() % g.yres + 1);
+        saibaPhysics();
+    }
+}
+
+void pattern_3 ()
+{
+    Enemy.pos[0] -= 2;
+    Enemy.pos[1] += 1;
+    if (Enemy.pos[0] < -50){
+        Enemy.pos[0] = g.xres;
+        Enemy.pos[1] = (rand() % g.yres + 1);
+        saibaPhysics();
+    }
+    
 }
 
 

@@ -31,4 +31,3 @@ void showLawrence(int x, int y,  GLuint textint)
     showLawrencePicture(0,0,textint);
     showLawrenceText(x+500, y-400);
 }
-
