@@ -575,7 +575,9 @@ void physics(void)
             if (g.box[i][0] < -10.0)
                 g.box[i][0] += g.xres + 10.0;
         }
+
         saibaPhysics();
+
 
         //------------------check for movement keys-----------------------------
         if (g.startFlag == 1 && g.pauseFlag == 0) {
@@ -669,6 +671,7 @@ void render(void)
                 glDisable(GL_ALPHA_TEST);
             }
             enemyHandler(g.saibaTexture);
+
 
             // THIS IS THE CHARACTERS SIZE
             float h = 50.0;

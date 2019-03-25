@@ -9,6 +9,7 @@ mac: lab1mac
 walk: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 	g++ $(CFLAGS) walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp libggfonts.a -Wall -Wextra -std=c++11  $(LFLAGS) -owalk -DPROFILE
 
+
 lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 	g++ walk.cpp lawrenceM.cpp \
 	joshuaA.cpp \
