@@ -387,12 +387,14 @@ void initOpengl(void)
 }
 
 extern void sInit(GLuint, int, int);
+extern void Enemy_init();
 void init()
 {
     //CHANGED - initializes character's position and velocity
     MakeVector(0.0, 100.0, 0.0, goku.pos);
     VecZero(goku.vel);
     sInit(g.kiTexture, g.xres, g.yres);
+    Enemy_init();
 }
 
 void checkMouse(XEvent *e)
@@ -476,7 +478,7 @@ int checkKeys(XEvent *e)
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
-            [[fallthrough]];
+            //[[fallthrough]];
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
@@ -577,7 +579,6 @@ void physics(void)
         }
         saibaPhysics();
 
-
         //------------------check for movement keys-----------------------------
         if (g.startFlag == 1 && g.pauseFlag == 0) {
             if (g.keys[XK_a] || g.keys[XK_Left]) {
@@ -670,7 +671,6 @@ void render(void)
                 glDisable(GL_ALPHA_TEST);
             }
             enemyHandler(g.saibaTexture);
-
 
             // THIS IS THE CHARACTERS SIZE
             float h = 50.0;
