@@ -2,6 +2,8 @@
 #define ENEMY_H_
 
 #include "Global.h"
+#include <stdlib.h>
+#include <time.h>
 extern Global g;
 
 
@@ -10,14 +12,17 @@ class Enemy {
 public:
     
     float pos[3];
+    int pattern;
+    float wavepos;
 
     
     Enemy () {
      
-     srand(time(0));
-
-     pos[0] = g.xres;
-     pos[1] = (rand() % (g.yres-100) + 1);
+     srand(time(NULL));
+     pattern = 1;
+     wavepos = 0.0;
+     pos[0] = 0.0;	
+     pos[1] = 0.0;	
      pos[2] = 0.0;
     }
 };

@@ -11,16 +11,18 @@
 #include <ctime>
 #include <cstring>
 #include <cmath>
+#include <vector>
 #include "Global.h"
 #include "Enemy.h"
 
 extern Global g;
-Enemy Enemy;
-int nticks = 0;
-
-void pattern_1();
-void pattern_2();
-void pattern_3();
+Enemy enemy[3];
+float nticks = 0.0;
+void Enemy_init();
+void pattern_1(Enemy&);
+void pattern_2(Enemy&);
+void pattern_3(Enemy&);
+void pattern_4(Enemy&);
 
 
 
@@ -53,30 +55,40 @@ void showDrake(int x, int y, GLuint textInt)
 }
 
 //-----------------------------movement for enemy work in progress-----------------------------
+void Enemy_init ()
+{   
+    srand(time(NULL));
+    for (int i = 0; i < 3; i++) {
+        enemy[i].wavepos = (rand() % g.yres);
+        int choice = (rand() % 4 + 1);
+        enemy[i].pattern = choice;
+        enemy[i].pos[0] = g.xres + (rand() % 100);
+        enemy[i].pos[1] = (rand() % g.yres);
+    }
+}
+
 void saibaPhysics () 
 {
-    srand(time(0));
-    /*int choice = (rand() % 3 + 1);
-    switch (choice) {
-        case 1:
-            pattern_1();
-            break;
-        case 2:
-            pattern_2();
-            break;
-        case 3:
-            pattern_3();
-            break; 
-    }*/
-    pattern_1();
+    
+
+    for (int i = 0; i < 3; i++) {
+        if(enemy[i].pattern == 1)
+            pattern_1(enemy[i]);
+        if(enemy[i].pattern == 2)
+            pattern_2(enemy[i]);
+        if(enemy[i].pattern == 3)
+            pattern_3(enemy[i]);
+        /*if(enemy[i].pattern == 4)
+            pattern_4(enemy[i]);*/
+    }
   
 }
 
 void saibaRender (GLuint image) 
 {
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 3; i++) {
         glPushMatrix();
-        glTranslated(Enemy.pos[0], Enemy.pos[1], Enemy.pos[2]);
+        glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
         glColor3f(1.0, 1.0, 1.0);
         glBindTexture(GL_TEXTURE_2D, image);
         //
@@ -108,44 +120,58 @@ void saibaRender (GLuint image)
 //------------------------Draw the enemies-----------------------------------------
 
 void enemyHandler (GLuint image) {
-
+   
         saibaRender(image);
 }
 
-void pattern_1 ()
+//--------------------enemy attack patterns----------------------------------------
+
+void pattern_1 (Enemy &e)
 {
-    Enemy.pos[0] -= 1;
-    if (Enemy.pos[0] < -50){
-        Enemy.pos[0] = g.xres;
-        Enemy.pos[1] = (rand() % (g.yres-100) + 1);
-        saibaPhysics();
-    }
+        e.pos[0] -= 1;
+        if (e.pos[0] < -50){
+            e.pos[0] = g.xres;
+            e.pos[1] = (rand() % (g.yres-100) + 1);
+        }
 }
 
-void pattern_2 ()
+void pattern_2 (Enemy &e)
 {
-    srand(time(0));
-    int start = (rand() % g.yres + 1);
-    nticks++;
-    Enemy.pos[0] -= 2;
-    Enemy.pos[1] = (50 * sin(nticks/50) + (start));
-    if (Enemy.pos[0] < -50){
-        Enemy.pos[0] = g.xres;
-        Enemy.pos[1] = (rand() % g.yres + 1);
-        saibaPhysics();
-    }
-}
-
-void pattern_3 ()
-{
-    Enemy.pos[0] -= 2;
-    Enemy.pos[1] += 1;
-    if (Enemy.pos[0] < -50){
-        Enemy.pos[0] = g.xres;
-        Enemy.pos[1] = (rand() % g.yres + 1);
-        saibaPhysics();
-    }
     
+        srand(time(NULL));
+        //int start = (rand() % g.yres + 1);
+        nticks+= 0.3;
+        e.pos[0] -= 1;
+        e.pos[1] = (50 * sin(nticks/50) + (e.wavepos));
+
+        if (e.pos[0] < -50){
+            e.pos[0] = g.xres;
+            e.wavepos = (rand() % g.yres + 1);
+            
+        }
+    
+}
+
+void pattern_3 (Enemy &e)
+{
+        e.pos[0] -= 1;
+        e.pos[1] += 1;
+        if (e.pos[0] < -50){
+            e.pos[0] = g.xres;
+            e.pos[1] = (rand() % g.yres + 1);
+            
+        }
+}
+
+void pattern_4 (Enemy &e) 
+{
+    e.pos[0] -= 1;
+    e.pos[1] = (e.pos[0] * e.pos[0]);
+    if (e.pos[0] < -50){
+            e.pos[0] = g.xres;
+            e.pos[1] = (rand() % g.yres + 1);
+            
+        }
 }
 
 
