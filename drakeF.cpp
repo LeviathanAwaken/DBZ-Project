@@ -78,8 +78,8 @@ void saibaPhysics ()
             pattern_2(enemy[i]);
         if(enemy[i].pattern == 3)
             pattern_3(enemy[i]);
-        if(enemy[i].pattern == 4)
-            pattern_4(enemy[i]);
+        /*if(enemy[i].pattern == 4)
+            pattern_4(enemy[i]);*/
     }
   
 }
