@@ -478,7 +478,7 @@ int checkKeys(XEvent *e)
     switch (key) {
         case XK_c:
             g.creditFlag ^= 1;
-            //[[fallthrough]];
+            [[fallthrough]];
         case XK_space:
             timers.recordTime(&timers.walkTime);
             g.walk ^= 1;
@@ -729,7 +729,7 @@ void render(void)
                 showStart(330, 100);
             }
             extern void showTimes(int, int, double);
-            showTimes(15, 10, timers.timeDiff(&tstart, &tend));
+            showTimes(150, -15, timers.timeDiff(&tstart, &tend));
         }
     }
 }
