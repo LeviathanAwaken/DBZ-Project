@@ -17,6 +17,7 @@
 
 extern Global g;
 Enemy enemy[3];
+extern void enemyReference(Enemy&);
 float nticks = 0.0;
 void Enemy_init();
 void pattern_1(Enemy&);
@@ -64,6 +65,7 @@ void Enemy_init ()
         enemy[i].pattern = choice;
         enemy[i].pos[0] = g.xres + (rand() % 100);
         enemy[i].pos[1] = (rand() % g.yres);
+        enemyReference(enemy[i]);
     }
 }
 
