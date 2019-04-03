@@ -24,8 +24,11 @@
 
 const int MAX_KI = 10;
 const int UNASSIGN = -5000;
+const int COLLISION = 2;
+int enemyWidth = 0, enemyHeight = 0;
 Enemy *enemyRef[3];
 int limiter = 0;
+void kiCollision(int);
 
 //File tracks x and y resolutions to prevent repassing them in functions.
 class Glob {
@@ -41,17 +44,23 @@ class kiBlast {
         int kiVel;
 } ki;
 
-void enemyReference(Enemy &enem)
+void captureSize(int w, int h)
+{
+    enemyWidth = w;
+    enemyHeight = h;
+}
+
+void enemyReference(Enemy* enem)
 {
     switch (limiter) {
         case 0:
-            enemyRef[0] = &enem;
+            enemyRef[0] = enem;
             break;
         case 1:
-            enemyRef[1] = &enem;
+            enemyRef[1] = enem;
             break;
         case 2:
-            enemyRef[2] = &enem;
+            enemyRef[2] = enem;
             break;
     }
     limiter++;
@@ -140,6 +149,7 @@ void kiMove(int kiID)
     } else {
         ki.kiTracker[kiID][0] += ki.kiVel;
     }
+    kiCollision(kiID);
 }
 
 //Handles graphics for the kiBlasts.
@@ -147,7 +157,7 @@ void kiRender(int kiID)
 {
     float cx = glob.xres/2.0;
     float cy = glob.yres/2.0;
-    float h = 20.0;
+    float h = 15.0;
     float w = h*2;
     glPushMatrix();
 
@@ -179,19 +189,26 @@ void kiRender(int kiID)
  * against that.
  * Enemy& enem
 */
-/*int kiCollision(Enemy& enem)
+void kiCollision(int kiRef)
 {
-    for (int i = 0; i < MAX_KI; i++) {
-
+    for (Enemy* hitCheck : enemyRef) {
+        bool xColl = hitCheck->pos[0] + enemyWidth >= ki.kiTracker[kiRef][0]
+            && ki.kiTracker[kiRef][0] + 15 >= hitCheck->pos[0];
+        bool yColl = hitCheck->pos[1] + enemyHeight >= ki.kiTracker[kiRef][1]
+            && ki.kiTracker[kiRef][1] + 30 >= hitCheck->pos[1];
+        if (xColl && yColl) {
+            kiFree(kiRef);
+            break;
+        }
     }
-    return 1;
-}*/
+}
 
 //Handler function to prevent repetitive code of parsing through the kiBlasts.
 void kiHandler(int type)
 {
     for (int i = 0; i < MAX_KI; i++) {
-        if (ki.kiTracker[i][0] != UNASSIGN && ki.kiTracker[i][1] != UNASSIGN) {
+        if (ki.kiTracker[i][0] != UNASSIGN &&
+            ki.kiTracker[i][1] != UNASSIGN) {
             if (type == 0) {
                 kiMove(i);
             } else if (type == 1) {

@@ -49,7 +49,7 @@ class Protag {
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
     "images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-    "images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif", 
+    "images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
     "images/Saibaman.gif"};
 
 //-----------------------------------------------------------------------------
@@ -371,6 +371,8 @@ void initOpengl(void)
     walkData = buildAlphaData(&img[9]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
         GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+    extern void captureSize(int, int);
+    captureSize(w, h);
     //--------------------------------------------------------------------------
 
     //------------------------Namek Background----------------------------------
@@ -543,7 +545,7 @@ extern void saibaPhysics();
 void physics(void)
 {
     if (g.pauseFlag) {
-    	return;
+        return;
     }
 
     if (g.walk) {
@@ -611,7 +613,7 @@ void render(void)
         //Put picture functions here
         glClearColor(0.1, 0.1, 0.1, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        
+
         showSean(20, img[2].height, g.seanTexture);
         showLawrence(40, img[6].height,g.lawrenceTexture);
         showJoshua(40, img[3].height, g.joshTexture);
@@ -622,7 +624,7 @@ void render(void)
             extern void showPause(int, int);
             showPause(350, 100);
         }
-	    else {
+        else {
             Rect r;
             //Clear the screen
             glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -659,10 +661,10 @@ void render(void)
 
                 // Render Clouds
                 glBegin(GL_QUADS);
-            	    glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
-            	    glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
-            	    glTexCoord2f(tx, ty);    glVertex2i(40, 30);
-            	    glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
+                    glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
+                    glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
+                    glTexCoord2f(tx, ty);    glVertex2i(40, 30);
+                    glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
                 glEnd();
 
                 glPopMatrix();
@@ -696,10 +698,10 @@ void render(void)
             float ty = (float)iy; // / 2.0;
 
             glBegin(GL_QUADS);
-        	    glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-        	    glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-        	    glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-        	    glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
+                glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
+                glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
+                glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
+                glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
             glEnd();
             glPopMatrix();
             glBindTexture(GL_TEXTURE_2D, 0);
@@ -711,7 +713,7 @@ void render(void)
             r.bot = g.yres - 20;
             r.left = 10;
             r.center = 0;
-        
+
             ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
             ggprint8b(&r, 16, c, "+   faster");
             ggprint8b(&r, 16, c, "-   slower");

@@ -17,7 +17,7 @@
 
 extern Global g;
 Enemy enemy[3];
-extern void enemyReference(Enemy&);
+extern void enemyReference(Enemy*);
 float nticks = 0.0;
 void Enemy_init();
 void pattern_1(Enemy&);
@@ -57,7 +57,7 @@ void showDrake(int x, int y, GLuint textInt)
 
 //-----------------------------movement for enemy work in progress-----------------------------
 void Enemy_init ()
-{   
+{
     srand(time(NULL));
     for (int i = 0; i < 3; i++) {
         enemy[i].wavepos = (rand() % g.yres);
@@ -65,13 +65,13 @@ void Enemy_init ()
         enemy[i].pattern = choice;
         enemy[i].pos[0] = g.xres + (rand() % 100);
         enemy[i].pos[1] = (rand() % g.yres);
-        enemyReference(enemy[i]);
+        enemyReference(&enemy[i]);
     }
 }
 
-void saibaPhysics () 
+void saibaPhysics ()
 {
-    
+
 
     for (int i = 0; i < 3; i++) {
         if(enemy[i].pattern == 1)
@@ -83,10 +83,10 @@ void saibaPhysics ()
         /*if(enemy[i].pattern == 4)
             pattern_4(enemy[i]);*/
     }
-  
+
 }
 
-void saibaRender (GLuint image) 
+void saibaRender (GLuint image)
 {
     for (int i = 0; i < 3; i++) {
         glPushMatrix();
@@ -122,7 +122,7 @@ void saibaRender (GLuint image)
 //------------------------Draw the enemies-----------------------------------------
 
 void enemyHandler (GLuint image) {
-   
+
         saibaRender(image);
 }
 
@@ -139,7 +139,7 @@ void pattern_1 (Enemy &e)
 
 void pattern_2 (Enemy &e)
 {
-    
+
         srand(time(NULL));
         //int start = (rand() % g.yres + 1);
         nticks+= 0.3;
@@ -149,9 +149,9 @@ void pattern_2 (Enemy &e)
         if (e.pos[0] < -50){
             e.pos[0] = g.xres;
             e.wavepos = (rand() % g.yres + 1);
-            
+
         }
-    
+
 }
 
 void pattern_3 (Enemy &e)
@@ -161,19 +161,17 @@ void pattern_3 (Enemy &e)
         if (e.pos[0] < -50){
             e.pos[0] = g.xres;
             e.pos[1] = (rand() % g.yres + 1);
-            
+
         }
 }
 
-void pattern_4 (Enemy &e) 
+void pattern_4 (Enemy &e)
 {
     e.pos[0] -= 1;
     e.pos[1] = (e.pos[0] * e.pos[0]);
     if (e.pos[0] < -50){
             e.pos[0] = g.xres;
             e.pos[1] = (rand() % g.yres + 1);
-            
+
         }
 }
-
-
