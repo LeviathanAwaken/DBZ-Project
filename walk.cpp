@@ -632,7 +632,7 @@ void render(void)
             float cy = g.yres/2.0;
             //
             //show ground
-            setBackgroundNamek(0, img[7].height, g.namekTexture);
+            setBackgroundNamek(g.xres, g.yres/*img[7].height*/, g.namekTexture);
             glEnd();
             //
             //fake shadow
@@ -726,10 +726,10 @@ void render(void)
             showScore(5, 22, g.score);
             if (g.startFlag == 0) {
                 extern void showStart(int, int);
-                showStart(330, 100);
+                showStart(g.xres/3, g.yres/7);
             }
             extern void showTimes(int, int, double);
-            showTimes(150, -15, timers.timeDiff(&tstart, &tend));
+            showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
         }
     }
 }

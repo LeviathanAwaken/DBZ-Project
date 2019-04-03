@@ -15,10 +15,10 @@ void setBackgroundNamek(int x, int y, GLuint textInt)
     glBindTexture(GL_TEXTURE_2D, textInt);
     glColor4f(1, 1, 1, 1);
     glBegin(GL_QUADS); 
-    glTexCoord2f(0.0f, 1.0f); glVertex2i(x+ 0, y+0); //bottom left
-    glTexCoord2f(0.0f, 0.0f); glVertex2i(x+ 0, y+540); //top left
-    glTexCoord2f(1.0f, 0.0f); glVertex2i(x+ 960, y+540); //top right
-    glTexCoord2f(1.0f, 1.0f); glVertex2i(x+ 960, y+0);  
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(0, 35); //bottom left
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(0, y); //top left
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(x, y); //top right
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(x, 35);  
     glEnd();
 }
 
