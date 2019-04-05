@@ -55,9 +55,9 @@ class Global {
             paused = true;
             delay = 0.09;
             for (int i=0; i<20; i++) {
-            // box[i][0] = rand() * xres;
-            // box[i][1] = rand() * (yres-220) + 220.0;
-            // box[i][2] = 0.0;
+            box[i][0] = rnd() * xres;
+            box[i][1] = rnd() * (yres-220) + 220.0;
+            box[i][2] = 0.0;
             }
         }
 };
