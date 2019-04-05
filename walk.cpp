@@ -38,6 +38,12 @@ const float timeslice = 1.0f;
 const float gravity = -0.2f;
 #define ALPHA 1
 
+//global declarations
+int selectedOption = NEWGAME;
+int gameState = MAINMENU;
+int done = 0;
+int keys[65536];
+
 //CHANGED
 //Tracks character's position
 
@@ -60,6 +66,7 @@ class Timers {
         double oobillion;
         struct timespec timeStart, timeEnd, timeCurrent;
         struct timespec walkTime;
+        struct timespec menuSelectionDelay, menuSelectionTime;
         Timers() {
             physicsRate = 1.0 / 30.0;
             oobillion = 1.0 / 1e9;
@@ -388,6 +395,7 @@ void initOpengl(void)
 
 extern void sInit(GLuint, int, int);
 extern void Enemy_init();
+extern void Powerups_init();
 void init()
 {
     //CHANGED - initializes character's position and velocity
@@ -395,6 +403,7 @@ void init()
     VecZero(goku.vel);
     sInit(g.kiTexture, g.xres, g.yres);
     Enemy_init();
+    Powerups_init();
 }
 
 void checkMouse(XEvent *e)
@@ -539,6 +548,7 @@ Flt VecNormalize(Vec vec)
 
 extern void kiHandler(int);
 extern void saibaPhysics();
+extern void powerupsPhysics();
 
 void physics(void)
 {
@@ -578,6 +588,7 @@ void physics(void)
                 g.box[i][0] += g.xres + 10.0;
         }
         saibaPhysics();
+        powerupsPhysics();
 
         //------------------check for movement keys-----------------------------
         if (g.startFlag == 1 && g.pauseFlag == 0) {
@@ -604,6 +615,7 @@ extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
+extern void powerupsRender();
 
 void render(void)
 {
@@ -632,7 +644,7 @@ void render(void)
             float cy = g.yres/2.0;
             //
             //show ground
-            setBackgroundNamek(0, img[7].height, g.namekTexture);
+            setBackgroundNamek(g.xres, g.yres/*img[7].height*/, g.namekTexture);
             glEnd();
             //
             //fake shadow
@@ -671,6 +683,7 @@ void render(void)
                 glDisable(GL_ALPHA_TEST);
             }
             enemyHandler(g.saibaTexture);
+            powerupsRender();
 
             // THIS IS THE CHARACTERS SIZE
             float h = 50.0;
@@ -726,10 +739,10 @@ void render(void)
             showScore(5, 22, g.score);
             if (g.startFlag == 0) {
                 extern void showStart(int, int);
-                showStart(330, 100);
+                showStart(g.xres/3, g.yres/7);
             }
             extern void showTimes(int, int, double);
-            showTimes(150, -15, timers.timeDiff(&tstart, &tend));
+            showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
         }
     }
 }
