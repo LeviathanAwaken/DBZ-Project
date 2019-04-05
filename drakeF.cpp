@@ -16,9 +16,10 @@
 #include "Enemy.h"
 
 extern Global g;
-Enemy enemy[3];
+Enemy enemy[10];
 extern void enemyReference(Enemy&);
 float nticks = 0.0;
+int count = 1;
 void Enemy_init();
 void pattern_1(Enemy&);
 void pattern_2(Enemy&);
@@ -59,7 +60,7 @@ void showDrake(int x, int y, GLuint textInt)
 void Enemy_init ()
 {   
     srand(time(NULL));
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1; i++) {
         enemy[i].wavepos = (rand() % g.yres);
         int choice = (rand() % 4 + 1);
         enemy[i].pattern = choice;
@@ -73,7 +74,7 @@ void saibaPhysics ()
 {
     
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1; i++) {
         if(enemy[i].pattern == 1)
             pattern_1(enemy[i]);
         if(enemy[i].pattern == 2)
@@ -88,7 +89,7 @@ void saibaPhysics ()
 
 void saibaRender (GLuint image) 
 {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1; i++) {
         glPushMatrix();
         glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
         glColor3f(1.0, 1.0, 1.0);
@@ -115,6 +116,8 @@ void saibaRender (GLuint image)
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_ALPHA_TEST);
+        
+       
     }
 
 }
@@ -157,10 +160,12 @@ void pattern_2 (Enemy &e)
 void pattern_3 (Enemy &e)
 {
         e.pos[0] -= 1;
-        e.pos[1] += 1;
+        while (e.pos[1] < (g.yres) + 10) {
+            e.pos[1] += 1;
+        }
         if (e.pos[0] < -50){
             e.pos[0] = g.xres;
-            e.pos[1] = (rand() % g.yres + 1);
+            e.pos[1] = (rand() % g.yres + 1);    
             
         }
 }
