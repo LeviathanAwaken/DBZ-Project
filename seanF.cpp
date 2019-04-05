@@ -29,7 +29,6 @@
 const int MAX_KI = 10;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
-int enemyWidth = 0, enemyHeight = 0;
 Enemy *enemyRef[3];
 int limiter = 0;
 void kiCollision(int);
@@ -47,12 +46,6 @@ class kiBlast {
 		int kiTracker[MAX_KI][2];
 		int kiVel;
 } ki;
-
-void captureSize(int w, int h)
-{
-	enemyWidth = w;
-	enemyHeight = h;
-}
 
 void enemyReference(Enemy* enem)
 {
@@ -195,11 +188,12 @@ void kiRender(int kiID)
 */
 void kiCollision(int kiRef)
 {
-	for (Enemy* hitCheck : enemyRef) {
-		bool xColl = hitCheck->pos[0] + enemyWidth >= ki.kiTracker[kiRef][0]
-			&& ki.kiTracker[kiRef][0] + 15 >= hitCheck->pos[0];
-		bool yColl = hitCheck->pos[1] + enemyHeight >= ki.kiTracker[kiRef][1]
-			&& ki.kiTracker[kiRef][1] + 30 >= hitCheck->pos[1];
+	for (int i = 0; i < 3; i++) {
+		printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], glob.xres);
+		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
+			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
+		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]
+			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
 			break;
