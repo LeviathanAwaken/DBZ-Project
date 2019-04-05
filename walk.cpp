@@ -66,6 +66,7 @@ class Timers {
         double oobillion;
         struct timespec timeStart, timeEnd, timeCurrent;
         struct timespec walkTime;
+        struct timespec menuSelectionDelay, menuSelectionTime;
         Timers() {
             physicsRate = 1.0 / 30.0;
             oobillion = 1.0 / 1e9;

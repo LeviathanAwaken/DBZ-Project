@@ -13,7 +13,7 @@
 #include "Timers.h"
 
 extern Global g; // global declaration
-extern Timers timers; //timer class
+// extern Timers timers; //timer class
 extern int keys[];
 extern int gameState;
 extern int done;
@@ -69,7 +69,7 @@ int acceptGameState(int selectedOption)
             break;
         default:
             printf("FATAL ERROR IN GAME STATE\n\n");
-            exit(1);
+            _exit(1);
     }
     return 0;
 }
@@ -99,61 +99,61 @@ int acceptGameState(int selectedOption)
 //   cursorPosition[1] = savey;
 // }
 
-void checkKeysMainMenu() 
-{
-  if(keys[XK_Up]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if (timeSpan > menuSelectionDelay) {
-      selectedOption = (((selectedOption - 1) + 3) % 3);
-      timers.recordTime(&timers.menuSelectionTime);
-    }
-  }
-  if(keys[XK_Down]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if(timeSpan > menuSelectionDelay) {
-      selectedOption = (((selectedOption + 1) +3) % 3);
-      timers.recordTime(&timers.menuSelectionTime);
-    }
-  }
-  if(keys[XK_Return]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if (timeSpan > menuSelectionDelay) {
-          acceptGameState(selectedOption);
-          timers.recordTime(&timers.menuSelectionTime);
-    }
-  }
-}
+// void checkKeysMainMenu() 
+// {
+//   if(keys[XK_Up]) {
+//     timers.recordTime(&timers.timeCurrent);
+//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+//     if (timeSpan > menuSelectionDelay) {
+//       selectedOption = (((selectedOption - 1) + 3) % 3);
+//       timers.recordTime(&timers.menuSelectionTime);
+//     }
+//   }
+//   if(keys[XK_Down]) {
+//     timers.recordTime(&timers.timeCurrent);
+//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+//     if(timeSpan > menuSelectionDelay) {
+//       selectedOption = (((selectedOption + 1) +3) % 3);
+//       timers.recordTime(&timers.menuSelectionTime);
+//     }
+//   }
+//   if(keys[XK_Return]) {
+//     timers.recordTime(&timers.timeCurrent);
+//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+//     if (timeSpan > menuSelectionDelay) {
+//           acceptGameState(selectedOption);
+//           timers.recordTime(&timers.menuSelectionTime);
+//     }
+//   }
+// }
 
-void checkKeysPauseMenu()
-{
-  if(keys[XK_Up]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if (timeSpan > menuSelectionDelay) {
-      selectedOption = (((selectedOption - 1) + 4) % 4);
-      timers.recordTime(&timers.menuSelectionTime);
-    }
-  }
-  if(keys[XK_Down]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if(timeSpan > menuSelectionDelay) {
-      selectedOption = (((selectedOption + 1) +4) % 4);
-      timers.recordTime(&timers.menuSelectionTime);
-    }
-  }
-  if(keys[XK_Return]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if (timeSpan > menuSelectionDelay) {
-          acceptGameState(selectedOption);
-          timers.recordTime(&timers.menuSelectionTime);
-    }
-  }
-}
+// void checkKeysPauseMenu()
+// {
+//   if(keys[XK_Up]) {
+//     timers.recordTime(&timers.timeCurrent);
+//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+//     if (timeSpan > menuSelectionDelay) {
+//       selectedOption = (((selectedOption - 1) + 4) % 4);
+//       timers.recordTime(&timers.menuSelectionTime);
+//     }
+//   }
+//   if(keys[XK_Down]) {
+//     timers.recordTime(&timers.timeCurrent);
+//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+//     if(timeSpan > menuSelectionDelay) {
+//       selectedOption = (((selectedOption + 1) +4) % 4);
+//       timers.recordTime(&timers.menuSelectionTime);
+//     }
+//   }
+//   if(keys[XK_Return]) {
+//     timers.recordTime(&timers.timeCurrent);
+//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+//     if (timeSpan > menuSelectionDelay) {
+//           acceptGameState(selectedOption);
+//           timers.recordTime(&timers.menuSelectionTime);
+//     }
+//   }
+// }
 
 void renderMainMenu() 
 {

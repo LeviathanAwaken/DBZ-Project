@@ -3,6 +3,18 @@
 #define rnd() (((double)rand())/(double)RAND_MAX)
 typedef double Vec[3];
 
+//game states
+#define MAINMENU 0
+#define INGAME 1
+#define PAUSEMENU 2
+#define DEATH 3
+
+//menu options
+#define NEWGAME 0
+#define LEADERBOARD 1
+#define EXIT 2
+#define RESUMEGAME 3
+
 class Global {
     public:
         int done;
@@ -43,9 +55,9 @@ class Global {
             paused = true;
             delay = 0.09;
             for (int i=0; i<20; i++) {
-            box[i][0] = rnd() * xres;
-            box[i][1] = rnd() * (yres-220) + 220.0;
-            box[i][2] = 0.0;
+            // box[i][0] = rand() * xres;
+            // box[i][1] = rand() * (yres-220) + 220.0;
+            // box[i][2] = 0.0;
             }
         }
 };
