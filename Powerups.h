@@ -8,16 +8,13 @@ extern Global g;
 
 class Powerups {
     public:
-	float pos[1];
-	int pattern;
-	float wavepos;
+	float pos[2];
 
 	Powerups () {
 
 	    srand(time(NULL));
-	    pattern = 1;
-	    wavepos = 0.0;
 	    pos[0] = 0.0;
+	    pos[1] = 0.0;
 	}
 };
 

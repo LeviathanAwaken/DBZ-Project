@@ -61,12 +61,12 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 //-----------------------------------------------------------------------------
 //Setup timers
 class Timers {
-<<<<<<< HEAD
 	public:
 		double physicsRate;
 		double oobillion;
 		struct timespec timeStart, timeEnd, timeCurrent;
 		struct timespec walkTime;
+		struct timespec menuSelectionDelay, menuSelectionTime;
 		Timers() {
 			physicsRate = 1.0 / 30.0;
 			oobillion = 1.0 / 1e9;
@@ -81,28 +81,6 @@ class Timers {
 		void recordTime(struct timespec *t) {
 			clock_gettime(CLOCK_REALTIME, t);
 		}
-=======
-    public:
-        double physicsRate;
-        double oobillion;
-        struct timespec timeStart, timeEnd, timeCurrent;
-        struct timespec walkTime;
-        struct timespec menuSelectionDelay, menuSelectionTime;
-        Timers() {
-            physicsRate = 1.0 / 30.0;
-            oobillion = 1.0 / 1e9;
-        }
-        double timeDiff(struct timespec *start, struct timespec *end) {
-            return (double)(end->tv_sec - start->tv_sec ) +
-            (double)(end->tv_nsec - start->tv_nsec) * oobillion;
-        }
-        void timeCopy(struct timespec *dest, struct timespec *source) {
-            memcpy(dest, source, sizeof(struct timespec));
-        }
-        void recordTime(struct timespec *t) {
-            clock_gettime(CLOCK_REALTIME, t);
-        }
->>>>>>> master
 } timers;
 //-----------------------------------------------------------------------------
 Global g;
@@ -417,6 +395,7 @@ void initOpengl(void)
 
 extern void sInit(GLuint, int, int);
 extern void Enemy_init();
+extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
@@ -424,6 +403,7 @@ void init()
 	VecZero(goku.vel);
 	sInit(g.kiTexture, g.xres, g.yres);
 	Enemy_init();
+	Powerups_init();
 }
 
 void checkMouse(XEvent *e)
@@ -568,6 +548,7 @@ Flt VecNormalize(Vec vec)
 
 extern void kiHandler(int);
 extern void saibaPhysics();
+extern void powerupsPhysics();
 
 void physics(void)
 {
@@ -607,6 +588,7 @@ void physics(void)
 				g.box[i][0] += g.xres + 10.0;
 		}
 		saibaPhysics();
+		powerupsPhysics();
 
 		//------------------check for movement keys-----------------------------
 		if (g.startFlag == 1 && g.pauseFlag == 0) {
@@ -633,10 +615,10 @@ extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
+extern void powerupsRender();
 
 void render(void)
 {
-<<<<<<< HEAD
 	if (g.creditFlag && !g.pauseFlag) {
 		//Put picture functions here
 		glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -662,7 +644,7 @@ void render(void)
 			float cy = g.yres/2.0;
 			//
 			//show ground
-			setBackgroundNamek(0, img[7].height, g.namekTexture);
+			setBackgroundNamek(g.xres, g.yres/*img[7].height*/, g.namekTexture);
 			glEnd();
 			//
 			//fake shadow
@@ -701,6 +683,7 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 			enemyHandler(g.saibaTexture);
+			powerupsRender();
 
 			// THIS IS THE CHARACTERS SIZE
 			float h = 50.0;
@@ -756,137 +739,10 @@ void render(void)
 			showScore(5, 22, g.score);
 			if (g.startFlag == 0) {
 				extern void showStart(int, int);
-				showStart(330, 100);
+				showStart(g.xres/3, g.yres/7);
 			}
 			extern void showTimes(int, int, double);
-			showTimes(150, -15, timers.timeDiff(&tstart, &tend));
+			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 		}
 	}
-=======
-    if (g.creditFlag && !g.pauseFlag) {
-        //Put picture functions here
-        glClearColor(0.1, 0.1, 0.1, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        
-        showSean(20, img[2].height, g.seanTexture);
-        showLawrence(40, img[6].height,g.lawrenceTexture);
-        showJoshua(40, img[3].height, g.joshTexture);
-        showDrake(70, img[5].height, g.drakeTexture);
-        showJuan(40, img[4].height, g.juanTexture);
-    } else {
-        if (g.pauseFlag) {
-            extern void showPause(int, int);
-            showPause(350, 100);
-        }
-	    else {
-            Rect r;
-            //Clear the screen
-            glClearColor(0.1, 0.1, 0.1, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            float cx = g.xres/2.0;
-            float cy = g.yres/2.0;
-            //
-            //show ground
-            setBackgroundNamek(g.xres, g.yres/*img[7].height*/, g.namekTexture);
-            glEnd();
-            //
-            //fake shadow
-            //glColor3f(0.25, 0.25, 0.25);
-            //glBegin(GL_QUADS);
-            //  glVertex2i(cx-60, 150);
-            //  glVertex2i(cx+50, 150);
-            //  glVertex2i(cx+50, 130);
-            //  glVertex2i(cx-60, 130);
-            //glEnd();
-            //
-            //show boxes as background
-            for (int i=0; i<20; i++) {
-                glPushMatrix();
-                glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
-                glColor3f(1.0, 1.0, 1.0);
-                glBindTexture(GL_TEXTURE_2D, g.cloudTexture);
-                //
-                glEnable(GL_ALPHA_TEST);
-                glAlphaFunc(GL_GREATER, 0.0f);
-                glColor4ub(255,255,255,255);
-
-                float tx = 0, ty = 0;
-
-                // Render Clouds
-                glBegin(GL_QUADS);
-            	    glTexCoord2f(tx+1,      ty+1); glVertex2i(0, 0);
-            	    glTexCoord2f(tx+1,      ty);    glVertex2i(0, 30);
-            	    glTexCoord2f(tx, ty);    glVertex2i(40, 30);
-            	    glTexCoord2f(tx, ty+1); glVertex2i(40, 0);
-                glEnd();
-
-                glPopMatrix();
-
-                glBindTexture(GL_TEXTURE_2D, 0);
-                glDisable(GL_ALPHA_TEST);
-            }
-            enemyHandler(g.saibaTexture);
-
-            // THIS IS THE CHARACTERS SIZE
-            float h = 50.0;
-            float w = h * 1;
-            glPushMatrix();
-            //CHANGED - Moves the Character
-            glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
-            glColor3f(1.0, 1.0, 1.0);
-            glBindTexture(GL_TEXTURE_2D, g.walkTexture);
-            //
-            glEnable(GL_ALPHA_TEST);
-            glAlphaFunc(GL_GREATER, 0.0f);
-            glColor4ub(255,255,255,255);
-
-            // CHANGED
-            int ix = 0; //g.walkFrame % 8;
-            int iy = 0;
-            if (g.walkFrame >= 8)
-                iy = 1;
-
-            //CHANGED
-            float tx = (float)ix; // / 8.0;
-            float ty = (float)iy; // / 2.0;
-
-            glBegin(GL_QUADS);
-        	    glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-        	    glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-        	    glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-        	    glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
-            glEnd();
-            glPopMatrix();
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDisable(GL_ALPHA_TEST);
-            kiHandler(1);
-
-            //
-            unsigned int c = 0x000000;
-            r.bot = g.yres - 20;
-            r.left = 10;
-            r.center = 0;
-        
-            ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
-            ggprint8b(&r, 16, c, "+   faster");
-            ggprint8b(&r, 16, c, "-   slower");
-            ggprint8b(&r, 16, c, "right arrow/d -> fly right");
-            ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
-            ggprint8b(&r, 16, c, "up arrow/w -> fly up");
-            ggprint8b(&r, 16, c, "down arrow/s -> fly down");
-            ggprint8b(&r, 16, c, "j -> test temp score update");
-            ggprint8b(&r, 16, c, "p -> test pause screen");
-            ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
-            extern void showScore(int, int, int);
-            showScore(5, 22, g.score);
-            if (g.startFlag == 0) {
-                extern void showStart(int, int);
-                showStart(g.xres/3, g.yres/7);
-            }
-            extern void showTimes(int, int, double);
-            showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
-        }
-    }
->>>>>>> master
 }
