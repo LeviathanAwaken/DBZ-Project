@@ -216,6 +216,7 @@ void kiHandler(int type)
 	}
 }
 
+//Sound handler, not functioning yet.
 void soundHandle()
 {
 	#ifdef SOUND
