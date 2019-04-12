@@ -38,17 +38,11 @@ void kiCollision(int);
 void gokuRender();
 void kiHandler(int);
 
-//File tracks x and y resolutions to prevent repassing them in functions.
-class Glob {
-	public:
-		int xres, yres;
-} glob;
-
 class Protag {
 	public:
 		GLuint pic;
-		int pos[2];
-		int vel[2];
+		float pos[2];
+		float vel[2];
 		int height;
 		int width;
 } goku;
@@ -93,17 +87,15 @@ void gokuInit()
 	goku.vel[1] = 0;
 	goku.height = 70;
 	goku.width = 100;
-	goku.pos[0] = glob.xres / 2 - (goku.width / 2);
-	goku.pos[1] = glob.yres / 2 - (goku.height / 2);
+	goku.pos[0] = g.xres / 2 - (goku.width / 2);
+	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 }
 
 //Generalized initializer for the file, called in the main file.
-void sInit(GLuint gok, GLuint image, int xres, int yres)
+void sInit(GLuint gok, GLuint image)
 {
 	goku.pic = gok;
 	ki.image = image;
-	glob.xres = xres;
-	glob.yres = yres;
 	gokuInit();
 	kiInit();
 }
@@ -140,16 +132,16 @@ void velUpd(int key)
 {
 	switch (key) {
 		case 0:
-			goku.vel[0]--;
+			goku.vel[0] -= .5;
 			break;
 		case 1:
-			goku.vel[0]++;
+			goku.vel[0] += .5;
 			break;
 		case 2:
-			goku.vel[1]++;
+			goku.vel[1] += .5;
 			break;
 		case 3:
-			goku.vel[1]--;
+			goku.vel[1] -= .5;
 			break;
 	}
 }
@@ -236,7 +228,7 @@ void kiFree(int kiID)
 //Updates the position of the kiBlast.
 void kiMove(int kiID)
 {
-	if (ki.kiTracker[kiID][0] > glob.xres) {
+	if (ki.kiTracker[kiID][0] > g.xres) {
 		kiFree(kiID);
 	} else {
 		ki.kiTracker[kiID][0] += ki.kiVel;
@@ -282,7 +274,7 @@ void kiRender(int kiID)
 void kiCollision(int kiRef)
 {
 	for (int i = 0; i < 3; i++) {
-		//printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], glob.xres);
+		//printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], g.xres);
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
 			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
 		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]

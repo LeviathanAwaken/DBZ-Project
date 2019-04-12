@@ -387,13 +387,13 @@ void initOpengl(void)
 	//--------------------------------------------------------------------------
 }
 
-extern void sInit(GLuint, GLuint, int, int);
+extern void sInit(GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
-	sInit(g.walkTexture, g.kiTexture, g.xres, g.yres);
+	sInit(g.walkTexture, g.kiTexture);
 	Enemy_init();
 	Powerups_init();
 }
