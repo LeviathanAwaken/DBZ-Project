@@ -12,7 +12,6 @@
  * function that calls the correct functions within the file depending
  * on the value passed from the walk file.
  */
-
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdio>
@@ -99,7 +98,6 @@ void sInit(GLuint gok, GLuint image)
 	ki.image = image;
 	gokuInit();
 	kiInit();
-
 }
 
 void showText(int x, int y)
@@ -205,7 +203,6 @@ int kiLimitCheck()
 {
 	for (int i = 0; i < MAX_KI; i++) {
 		if (ki.kiTracker[i][0] == UNASSIGN && ki.kiTracker[i][1] == UNASSIGN)
-
 			return i;
 	}
 	return -1;
@@ -257,12 +254,10 @@ void kiRender(int kiID)
 	float tx = 0.0;
 	float ty = 0.0;
 	glBegin(GL_QUADS);
-
 	glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
 	glTexCoord2f(tx+1, ty);    	glVertex2i(0, h);
 	glTexCoord2f(tx, ty);    	glVertex2i(w, h);
 	glTexCoord2f(tx, ty+1); 	glVertex2i(w, 0);
-
 	glEnd();
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -346,3 +341,4 @@ void soundHandle()
 		alcDestroyContext(Context);
 		alcCloseDevice(Device);
 	#endif
+}

@@ -10,7 +10,6 @@
 #include <cmath>
 #include "Global.h"
 #include "Powerups.h"
-
 /* 
  * My file includes the background to the game and
  * my own personal picture in the credits.
@@ -19,13 +18,11 @@
 extern Global g;
 Powerups powerups;
 //------------------Background----------------------------------
-
 void setBackgroundNamek(int x, int y, GLuint textInt)
 {
     glBindTexture(GL_TEXTURE_2D, textInt);
     glColor4f(1, 1, 1, 1);
     glBegin(GL_QUADS); 
-
     glTexCoord2f(0.0f, 1.0f); glVertex2i(0, 35); //bottom left
     glTexCoord2f(0.0f, 0.0f); glVertex2i(0, y); //top left
     glTexCoord2f(1.0f, 0.0f); glVertex2i(x, y); //top right
@@ -33,7 +30,6 @@ void setBackgroundNamek(int x, int y, GLuint textInt)
     glEnd();
 }
 //--------------------------------------------------------------
-
 void showJoshuaText(int x, int y)
 {
     Rect r;
@@ -62,7 +58,6 @@ void showJoshua(int x, int y, GLuint textInt)
     showJoshuaText(x+525, y+100);
 
 }
-
 //----------------------Power-ups----------------------------
 void Powerups_init ()
 {

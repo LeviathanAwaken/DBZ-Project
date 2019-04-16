@@ -19,7 +19,6 @@ public:
     int xSpeed;
     
 
-
     
     Enemy () {
      

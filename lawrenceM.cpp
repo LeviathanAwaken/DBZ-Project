@@ -24,7 +24,6 @@ extern Global walkTexture;
 extern double menuSelectionDelay = 0.15;
 
 
-
 void showLawrenceText(int x, int y)
 {
     Rect r;
@@ -51,7 +50,6 @@ void showLawrence(int x, int y,  GLuint textint)
     showLawrencePicture(0,0,textint);
     showLawrenceText(x+500, y-400);
 }
-
 int acceptGameState(int selectedOption)
 {
     //update game state to selected option in main menu

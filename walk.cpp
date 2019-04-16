@@ -32,7 +32,6 @@ typedef Flt Matrix[4][4];
 #define VecDot(a,b) ((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
 #define VecSub(a,b,c) (c)[0]=(a)[0]-(b)[0]; \
 				 (c)[1]=(a)[1]-(b)[1]; \
-
 (c)[2]=(a)[2]-(b)[2]
 //constants
 const float timeslice = 1.0f;
@@ -53,11 +52,9 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
 	"images/Saibaman.gif"};
 
-
 //-----------------------------------------------------------------------------
 //Setup timers
 class Timers {
-
 	public:
 		double physicsRate;
 		double oobillion;
@@ -78,7 +75,6 @@ class Timers {
 		void recordTime(struct timespec *t) {
 			clock_gettime(CLOCK_REALTIME, t);
 		}
-
 } timers;
 //-----------------------------------------------------------------------------
 Global g;
@@ -160,7 +156,6 @@ class X11_wrapper {
 		void swapBuffers() {
 			glXSwapBuffers(dpy, win);
 		}
-
 } x11;
 
 //function prototypes
@@ -200,7 +195,6 @@ int main(void)
 	}
 	cleanup_fonts();
 	return 0;
-
 }
 
 unsigned char *buildAlphaData(Image *img)
@@ -402,7 +396,6 @@ void init()
 	sInit(g.walkTexture, g.kiTexture);
 	Enemy_init();
 	Powerups_init();
-
 }
 
 void checkMouse(XEvent *e)
@@ -524,7 +517,6 @@ int checkKeys(XEvent *e)
 	}
 	g.delay = 0.01;    // Sets speed to max at start of game
 	return 0;
-
 }
 
 Flt VecNormalize(Vec vec)
@@ -599,7 +591,6 @@ void physics(void)
 			}
 		}
 	}
-
 }
 
 extern void showSean(int, int, GLuint);
@@ -705,5 +696,4 @@ void render(void)
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 		}
 	}
-
 }
