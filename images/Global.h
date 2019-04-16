@@ -3,19 +3,6 @@
 #define rnd() (((double)rand())/(double)RAND_MAX)
 typedef double Vec[3];
 
-//game states
-#define MAINMENU 0
-#define INGAME 1
-#define PAUSEMENU 2
-#define DEATH 3
-
-//menu options
-#define NEWGAME 0
-#define LEADERBOARD 1
-#define EXIT 2
-#define RESUMEGAME 3
-
-
 class Global {
     public:
         int done;
