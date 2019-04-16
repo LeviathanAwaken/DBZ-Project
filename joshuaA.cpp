@@ -1,7 +1,7 @@
 //3350
 //Program:  joshuaA.cpp
 //Author:   Joshua Annis
-//Date Last Modified:     3/3/19
+//Date Last Modified: 4/16/19
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdlib>
@@ -59,7 +59,7 @@ void showJoshua(int x, int y, GLuint textInt)
 
 }
 //----------------------Power-ups----------------------------
-void Powerups_init ()
+void Powerups_init (GLuint)
 {
     srand(time(NULL));
 	powerups.pos[0] = g.xres + (rand() % 100);
@@ -72,12 +72,12 @@ void powerupsPhysics ()
    powerups.pos[0] += 2;
 }
 
-void powerupsRender ()
+void powerupsRender (GLuint image)
 {
 	glPushMatrix();
 	glTranslated(powerups.pos[0], powerups.pos[1], powerups.pos[2]);
 	glColor3f(1.0, 1.0, 1.0);
-	//BindTexture(GL_TEXTURE_2D, image);
+	glBindTexture(GL_TEXTURE_2D, image);
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);

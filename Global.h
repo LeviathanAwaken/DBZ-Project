@@ -38,6 +38,7 @@ class Global {
         GLuint kiTexture;
         GLuint namekTexture;
         GLuint saibaTexture;
+        GLuint powerupTexture;
 
         Vec box[20];
         Global() {
