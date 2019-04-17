@@ -398,7 +398,7 @@ void initOpengl(void)
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 //---------------------------------------------------------------------------
 
-//-------------------------Power-Up Texture---------------------------------
+//-------------------------Logo Texture---------------------------------
 	w = img[11].width;
 	h = img[11].height;
 	glGenTextures(1, &g.finalFormLogoTexture);
@@ -408,7 +408,7 @@ void initOpengl(void)
 	walkData = buildAlphaData(&img[11]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-    //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint);
