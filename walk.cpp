@@ -401,7 +401,7 @@ void initOpengl(void)
 //-------------------------Power-Up Texture---------------------------------
 	w = img[11].width;
 	h = img[11].height;
-	glGenTextures(1, &g.finalFormLogoTexture;
+	glGenTextures(1, &g.finalFormLogoTexture);
 	glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
