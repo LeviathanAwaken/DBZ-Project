@@ -47,12 +47,6 @@ int keys[65536];
 //CHANGED
 //Tracks character's position
 
-class Protag {
-	public:
-	Vec pos;
-	Vec vel;
-} goku;
-
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
@@ -393,15 +387,13 @@ void initOpengl(void)
 	//--------------------------------------------------------------------------
 }
 
-extern void sInit(GLuint, int, int);
+extern void sInit(GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
-	MakeVector(0.0, 100.0, 0.0, goku.pos);
-	VecZero(goku.vel);
-	sInit(g.kiTexture, g.xres, g.yres);
+	sInit(g.walkTexture, g.kiTexture);
 	Enemy_init();
 	Powerups_init();
 }
@@ -431,7 +423,7 @@ void checkMouse(XEvent *e)
 	}
 }
 
-extern void launchKi(int, int);
+extern void launchKi();
 
 int checkKeys(XEvent *e)
 {
@@ -493,7 +485,7 @@ int checkKeys(XEvent *e)
 			g.walk ^= 1;
 			break;
 		case XK_k:
-			launchKi(goku.pos[0] + 50, goku.pos[1]);
+			launchKi();
 			break;
 		/*        case XK_equal:
 			  g.delay -= 0.005;
@@ -549,6 +541,8 @@ Flt VecNormalize(Vec vec)
 extern void kiHandler(int);
 extern void saibaPhysics();
 extern void powerupsPhysics();
+extern void velUpd(int);
+extern void gokuMove();
 
 void physics(void)
 {
@@ -567,16 +561,7 @@ void physics(void)
 			//CHANGED - shifts goku's pos by velocity, resets velocity
 			//          if character hits window edges
 			//++g.walkFrame;
-			if ((goku.pos[0] > (- g.xres / 2 + 50) && goku.vel[0] < 0)
-			|| (goku.pos[0] < (g.xres / 2 - 50) && goku.vel[0] > 0))
-				goku.pos[0] += goku.vel[0];
-			else
-				goku.vel[0] = 0;
-			if ((goku.pos[1] > (-g.yres / 2 + 50) && goku.vel[1] < 0)
-			|| (goku.pos[1] < (g.yres / 2 - 50) && goku.vel[1] > 0))
-				goku.pos[1] += goku.vel[1];
-			else
-				goku.vel[1] = 0;
+			gokuMove();
 			if (g.walkFrame >= 16)
 				g.walkFrame -= 16;
 			timers.recordTime(&timers.walkTime);
@@ -593,16 +578,16 @@ void physics(void)
 		//------------------check for movement keys-----------------------------
 		if (g.startFlag == 1 && g.pauseFlag == 0) {
 			if (g.keys[XK_a] || g.keys[XK_Left]) {
-				goku.vel[0]--;
+				velUpd(0);
 			}
 			if (g.keys[XK_d] || g.keys[XK_Right]) {
-				goku.vel[0]++;
+				velUpd(1);
 			}
 			if (g.keys[XK_w] || g.keys[XK_Up]) {
-				goku.vel[1]++;
+				velUpd(2);
 			}
 			if (g.keys[XK_s] || g.keys[XK_Down]) {
-				goku.vel[1]--;
+				velUpd(3);
 			}
 		}
 	}
@@ -616,6 +601,7 @@ extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender();
+extern void sRender();
 
 void render(void)
 {
@@ -640,9 +626,6 @@ void render(void)
 			glClearColor(0.1, 0.1, 0.1, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			float cx = g.xres/2.0;
-			float cy = g.yres/2.0;
-			//
 			//show ground
 			setBackgroundNamek(g.xres, g.yres/*img[7].height*/, g.namekTexture);
 			glEnd();
@@ -685,39 +668,7 @@ void render(void)
 			enemyHandler(g.saibaTexture);
 			powerupsRender();
 
-			// THIS IS THE CHARACTERS SIZE
-			float h = 50.0;
-			float w = h * 1;
-			glPushMatrix();
-			//CHANGED - Moves the Character
-			glTranslatef(goku.pos[0], goku.pos[1], goku.pos[2]);
-			glColor3f(1.0, 1.0, 1.0);
-			glBindTexture(GL_TEXTURE_2D, g.walkTexture);
-			//
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GREATER, 0.0f);
-			glColor4ub(255,255,255,255);
-
-			// CHANGED
-			int ix = 0; //g.walkFrame % 8;
-			int iy = 0;
-			if (g.walkFrame >= 8)
-				iy = 1;
-
-			//CHANGED
-			float tx = (float)ix; // / 8.0;
-			float ty = (float)iy; // / 2.0;
-
-			glBegin(GL_QUADS);
-				glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-				glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-				glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-				glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
-			glEnd();
-			glPopMatrix();
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glDisable(GL_ALPHA_TEST);
-			kiHandler(1);
+			sRender();
 
 			//
 			unsigned int c = 0x000000;

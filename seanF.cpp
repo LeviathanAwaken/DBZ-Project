@@ -29,15 +29,24 @@
 const int MAX_KI = 10;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
-Enemy *enemyRef[3];
+const int MAX_ENEM = 10;
+
+Enemy *enemyRef[MAX_ENEM];
 int limiter = 0;
 void kiCollision(int);
 
-//File tracks x and y resolutions to prevent repassing them in functions.
-class Glob {
+void kiCollision(int);
+void gokuRender();
+void kiHandler(int);
+
+class Protag {
 	public:
-		int xres, yres;
-} glob;
+		GLuint pic;
+		float pos[2];
+		float vel[2];
+		int height;
+		int width;
+} goku;
 
 //Class to track x and y positions of the blasts being sent by the character.
 class kiBlast {
@@ -49,17 +58,7 @@ class kiBlast {
 
 void enemyReference(Enemy* enem)
 {
-	switch (limiter) {
-		case 0:
-			enemyRef[0] = enem;
-			break;
-		case 1:
-			enemyRef[1] = enem;
-			break;
-		case 2:
-			enemyRef[2] = enem;
-			break;
-	}
+	enemyRef[limiter] = enem;
 	limiter++;
 }
 
@@ -73,14 +72,23 @@ void kiInit()
 	}
 }
 
-//Generalized initializer for the file, called in the main file.
-void sInit(GLuint image, int xres, int yres)
+void gokuInit()
 {
-	ki.image= image;
-	glob.xres = xres;
-	glob.yres = yres;
-	kiInit();
+	goku.vel[0] = 0;
+	goku.vel[1] = 0;
+	goku.height = 70;
+	goku.width = 100;
+	goku.pos[0] = g.xres / 2 - (goku.width / 2);
+	goku.pos[1] = g.yres / 2 - (goku.height / 2);
+}
 
+//Generalized initializer for the file, called in the main file.
+void sInit(GLuint gok, GLuint image)
+{
+	goku.pic = gok;
+	ki.image = image;
+	gokuInit();
+	kiInit();
 }
 
 void showText(int x, int y)
@@ -111,6 +119,76 @@ void showSean(int x, int y, GLuint textInt)
 	showText(x+100, y+100);
 }
 
+void velUpd(int key)
+{
+	switch (key) {
+		case 0:
+			goku.vel[0] -= .5;
+			break;
+		case 1:
+			goku.vel[0] += .5;
+			break;
+		case 2:
+			goku.vel[1] += .5;
+			break;
+		case 3:
+			goku.vel[1] -= .5;
+			break;
+	}
+}
+
+void gokuMove()
+{
+	if ((goku.pos[0] > 0 && goku.vel[0] < 0)
+	|| (goku.pos[0] < (g.xres - goku.width) && goku.vel[0] > 0))
+		goku.pos[0] += goku.vel[0];
+	else
+		goku.vel[0] = 0;
+	if ((goku.pos[1] > 0 && goku.vel[1] < 0)
+	|| (goku.pos[1] < (g.yres - goku.height) && goku.vel[1] > 0))
+		goku.pos[1] += goku.vel[1];
+	else
+		goku.vel[1] = 0;
+}
+
+void sRender()
+{
+	gokuRender();
+	kiHandler(1);
+}
+
+void gokuRender()
+{
+	glPushMatrix();
+
+	glTranslatef(goku.pos[0], goku.pos[1], 0);
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, g.walkTexture);
+	//
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255,255,255,255);
+
+	// CHANGED
+	int ix = 0;
+	int iy = 0;
+	if (g.walkFrame >= 8)
+		iy = 1;
+
+	float tx = (float)ix;
+	float ty = (float)iy;
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
+		glTexCoord2f(tx+1, ty);    	glVertex2i(0, goku.height);
+		glTexCoord2f(tx, ty);    	glVertex2i(goku.width, goku.height);
+		glTexCoord2f(tx, ty+1); 	glVertex2i(goku.width, 0);
+	glEnd();
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
+}
+
 //Checks ki position against window bounds.
 int kiLimitCheck()
 {
@@ -122,12 +200,12 @@ int kiLimitCheck()
 }
 
 //Creates a kiBlast, if it's not at max.
-void launchKi(int x, int y)
+void launchKi()
 {
 	int kiNum = kiLimitCheck();
 	if (kiNum != -1) {
-		ki.kiTracker[kiNum][0] = x;
-		ki.kiTracker[kiNum][1] = y;
+		ki.kiTracker[kiNum][0] = goku.pos[0] + 50;
+		ki.kiTracker[kiNum][1] = goku.pos[1];
 	}
 }
 
@@ -141,7 +219,7 @@ void kiFree(int kiID)
 //Updates the position of the kiBlast.
 void kiMove(int kiID)
 {
-	if (ki.kiTracker[kiID][0] > glob.xres/2) {
+	if (ki.kiTracker[kiID][0] > g.xres) {
 		kiFree(kiID);
 	} else {
 		ki.kiTracker[kiID][0] += ki.kiVel;
@@ -152,9 +230,7 @@ void kiMove(int kiID)
 //Handles graphics for the kiBlasts.
 void kiRender(int kiID)
 {
-	float cx = glob.xres/2.0;
-	float cy = glob.yres/2.0;
-	float h = 15.0;
+	float h = 40.0;
 	float w = h*2;
 	glPushMatrix();
 
@@ -169,10 +245,10 @@ void kiRender(int kiID)
 	float tx = 0.0;
 	float ty = 0.0;
 	glBegin(GL_QUADS);
-	glTexCoord2f(tx+1,      ty+1); glVertex2i(cx-w, cy-h);
-	glTexCoord2f(tx+1,      ty);    glVertex2i(cx-w, cy+h);
-	glTexCoord2f(tx, ty);    glVertex2i(cx+w, cy+h);
-	glTexCoord2f(tx, ty+1); glVertex2i(cx+w, cy-h);
+	glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
+	glTexCoord2f(tx+1, ty);    	glVertex2i(0, h);
+	glTexCoord2f(tx, ty);    	glVertex2i(w, h);
+	glTexCoord2f(tx, ty+1); 	glVertex2i(w, 0);
 	glEnd();
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -189,7 +265,7 @@ void kiRender(int kiID)
 void kiCollision(int kiRef)
 {
 	for (int i = 0; i < 3; i++) {
-		printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], glob.xres);
+		//printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], g.xres);
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
 			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
 		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]
