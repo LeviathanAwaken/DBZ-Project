@@ -35,8 +35,9 @@ Enemy *enemyRef[MAX_ENEM];
 int limiter = 0;
 
 void kiCollision(int);
-void gokuRender();
 void kiHandler(int);
+void gokuRender();
+void gokuCollision();
 
 class Protag {
 	public:
@@ -150,6 +151,7 @@ void gokuMove()
 		goku.pos[1] += goku.vel[1];
 	else
 		goku.vel[1] = 0;
+	gokuCollision();
 }
 
 void sRender()
@@ -273,6 +275,23 @@ void kiCollision(int kiRef)
 			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
+			//INSERT ENEMY DELETION HERE
+			break;
+		}
+	}
+}
+
+//Collision checking for the main character and the enemies.
+void gokuCollision()
+{
+	for (int i = 0; i < MAX_ENEM; i++) {
+		bool xColl = enemyRef[i]->pos[0] + 70 >= goku.pos[0]
+			&& goku.pos[0] + goku.width >= enemyRef[i]->pos[0];
+		bool yColl = enemyRef[i]->pos[1] + 50 >= goku.pos[1]
+			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
+		if (xColl && yColl) {
+			goku.health--;
+			//UPDATE HERE, REGISTERS TOO MANY HITS RIGHT NOW
 			break;
 		}
 	}
