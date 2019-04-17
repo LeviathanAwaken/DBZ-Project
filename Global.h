@@ -11,9 +11,8 @@ typedef double Vec[3];
 
 //menu options
 #define NEWGAME 0
-#define LEADERBOARD 1
-#define EXIT 2
-#define RESUMEGAME 3
+#define EXIT 1
+#define RESUMEGAME 2
 
 class Global {
     public:
@@ -39,6 +38,7 @@ class Global {
         GLuint namekTexture;
         GLuint saibaTexture;
         GLuint powerupTexture;
+        GLuint finalFormLogoTexture;
 
         Vec box[20];
         Global() {

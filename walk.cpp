@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif"};
+	"images/Saibaman.gif", "images/powerup.gif",};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -491,7 +491,8 @@ int checkKeys(XEvent *e)
 	switch (key) {
 		case XK_c:
 			g.creditFlag ^= 1;
-			[[fallthrough]];
+			// [[fallthrough]];
+			
 		case XK_space:
 			timers.recordTime(&timers.walkTime);
 			g.walk ^= 1;
@@ -609,7 +610,7 @@ extern void showSean(int, int, GLuint);
 extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
-extern void showLawrence(int,int,GLuint);
+extern void showLawrence(int,int, GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);

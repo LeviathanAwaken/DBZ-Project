@@ -20,8 +20,9 @@ extern int done;
 extern int cursorPosition[];
 extern int selectedOption;
 extern Global walkTexture;
+extern Timers timers;
 // extern int SpriteSheet img[];
-extern double menuSelectionDelay = 0.15;
+double menuSelectionDelay = 0.15;
 
 
 void showLawrenceText(int x, int y)
@@ -127,147 +128,144 @@ int acceptGameState(int selectedOption)
 //   }
 // }
 
-// void checkKeysPauseMenu()
+// // void checkKeysPauseMenu()
+// // {
+// //   if(keys[XK_Up]) {
+// //     timers.recordTime(&timers.timeCurrent);
+// //     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+// //     if (timeSpan > menuSelectionDelay) {
+// //       selectedOption = (((selectedOption - 1) + 4) % 4);
+// //       timers.recordTime(&timers.menuSelectionTime);
+// //     }
+// //   }
+// //   if(keys[XK_Down]) {
+// //     timers.recordTime(&timers.timeCurrent);
+// //     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+// //     if(timeSpan > menuSelectionDelay) {
+// //       selectedOption = (((selectedOption + 1) +4) % 4);
+// //       timers.recordTime(&timers.menuSelectionTime);
+// //     }
+// //   }
+// //   if(keys[XK_Return]) {
+// //     timers.recordTime(&timers.timeCurrent);
+// //     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+// //     if (timeSpan > menuSelectionDelay) {
+// //           acceptGameState(selectedOption);
+// //           timers.recordTime(&timers.menuSelectionTime);
+// //     }
+// //   }
+// // }
+
+// void renderMainMenu() 
 // {
-//   if(keys[XK_Up]) {
-//     timers.recordTime(&timers.timeCurrent);
-//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-//     if (timeSpan > menuSelectionDelay) {
-//       selectedOption = (((selectedOption - 1) + 4) % 4);
-//       timers.recordTime(&timers.menuSelectionTime);
-//     }
-//   }
-//   if(keys[XK_Down]) {
-//     timers.recordTime(&timers.timeCurrent);
-//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-//     if(timeSpan > menuSelectionDelay) {
-//       selectedOption = (((selectedOption + 1) +4) % 4);
-//       timers.recordTime(&timers.menuSelectionTime);
-//     }
-//   }
-//   if(keys[XK_Return]) {
-//     timers.recordTime(&timers.timeCurrent);
-//     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-//     if (timeSpan > menuSelectionDelay) {
-//           acceptGameState(selectedOption);
-//           timers.recordTime(&timers.menuSelectionTime);
-//     }
-//   }
-// }
+//   //set background to game background
+//   glPushMatrix();
+//   glColor3f(1.0, 1.0, 1.0);
+//   glBindTexture(GL_TEXTURE_2D, g.namekTexture);
+//   glEnable(GL_ALPHA_TEST);
+//   glAlphaFunc(GL_GREATER, 0.0f);
+//   glColor4ub(255, 255, 255, 255);
 
-void renderMainMenu() 
-{
-  //set background to game background
-  glPushMatrix();
-  glColor3f(1.0, 1.0, 1.0);
-  glBindTexture(GL_TEXTURE_2D, g.namekTexture);
-  glEnable(GL_ALPHA_TEST);
-  glAlphaFunc(GL_GREATER, 0.0f);
-  glColor4ub(255, 255, 255, 255);
+//   //working on menu placement
+//   float ssWidth;
+//   float ssHeight;
 
-  //working on menu placement
-  float ssWidth;
-  float ssHeight;
+//   float textureX = 0;
+//   float textureY = 0;
 
-  float textureX = 0;
-  float textureY = 0;
+//   float centerX = g.xres/2;
+//   float centerY = g.yres*2/3;
 
-  float centerX = g.xres/2;
-  float centerY = g.yres*2/3;
+//   float width;
+//   float height;
 
-  float width;
-  float height;
+//   glBegin(GL_QUADS);
 
-  glBegin(GL_QUADS);
+//   glTexCoord2f(textureX, textureY + ssHeight);
+//   glVertex2i(centerX - width, centerY - height);
 
-  glTexCoord2f(textureX, textureY + ssHeight);
-  glVertex2i(centerX - width, centerY - height);
+//   glTexCoord2f(textureX, textureY);
+//   glVertex2i(centerX -width, centerY + height);
 
-  glTexCoord2f(textureX, textureY);
-  glVertex2i(centerX -width, centerY + height);
+//   glTexCoord2f(textureX + ssWidth, textureY + ssHeight);
+//   glVertex2i(centerX + width, centerY - height);
+//   glEnd();
 
-  glTexCoord2f(textureX + ssWidth, textureY + ssHeight);
-  glVertex2i(centerX + width, centerY - height);
-  glEnd();
+//   glPopMatrix();
+//   glBindTexture(GL_TEXTURE_2D, 0);
+//   glDisable(GL_ALPHA_TEST);
 
-  glPopMatrix();
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_ALPHA_TEST);
+//   // gonna work on a main logo possibly but might just print the name in big letters
 
-  // gonna work on a main logo possibly but might just print the name in big letters
-
-  // glPushMatrix();
-  // glColor3f(1.0, 1.0, 1.0);
-  // glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
-  // glEnable(GL_ALPHA_TEST);
-  // glAlphaFunc(GL_GREATER, 0.0f);
-  // glColor4ub(255, 255, 255, 255);
+//   glPushMatrix();
+//   glColor3f(1.0, 1.0, 1.0);
+//   glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
+//   glEnable(GL_ALPHA_TEST);
+//   glAlphaFunc(GL_GREATER, 0.0f);
+//   glColor4ub(255, 255, 255, 255);
 
   
-// display menu options
-Rect r;
-r.bot = g.yres/3;
-r.left = g.xres/2;
-r.center = 1;
+// // display menu options
+// Rect r;
+// r.bot = g.yres/3;
+// r.left = g.xres/2;
+// r.center = 1;
 
-switch (selectedOption) {
-  case 0:
-    ggprint8b(&r, 16, 0x123fff, "START A NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "LEADERBOARD");
-    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-    break;
-  case 1:
-    ggprint8b(&r, 16, 0xffffff, "START A NEW GAME");
-    ggprint8b(&r, 16, 0x123fff, "LEADERBOARD");
-    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-    break;
-  case 2:
-    ggprint8b(&r, 16, 0xffffff, "START A NEW GAME");
-    ggprint8b(&r, 16, 0x123fff, "LEADERBOARD");
-    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-    break;
-  default:
-    break;
-}
-  // glPushMatrix();
-  //   glColor3f(1.0, 1.0, 1.0);
-  //   glBindTexture(GL_TEXTURE_2D, g.cursorTexture);
-  //   glEnable(GL_ALPHA_TEST);
-  //   glAlphaFunc(GL_GREATER, 0.0f);
-  //   glColor4ub(255,255,255,255);
+// switch (selectedOption) {
+//   case 0:
+//     ggprint8b(&r, 16, 0x123fff, "START A NEW GAME");
+//     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+//     break;
+//   case 1:
+//     ggprint8b(&r, 16, 0xffffff, "START A NEW GAME");
+//     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+//     break;
+//   case 2:
+//     ggprint8b(&r, 16, 0xffffff, "START A NEW GAME");
+//     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+//     break;
+//   default:
+//     break;
+// }
+//   // glPushMatrix();
+//   //   glColor3f(1.0, 1.0, 1.0);
+//   //   glBindTexture(GL_TEXTURE_2D, g.cursorTexture);
+//   //   glEnable(GL_ALPHA_TEST);
+//   //   glAlphaFunc(GL_GREATER, 0.0f);
+//   //   glColor4ub(255,255,255,255);
 
-    // ssWidth = (float)1.0/img[7].columns;
-    // ssHeight = (float)1.0/img[7].rows;
+//     // ssWidth = (float)1.0/img[7].columns;
+//     // ssHeight = (float)1.0/img[7].rows;
 
-    // textureX = 0;
-    // textureY = 0;
+//     // textureX = 0;
+//     // textureY = 0;
 
-    // centerX = cursorPosition[0];
-    // centerY = g.yres - cursorPosition[1];
+//     // centerX = cursorPosition[0];
+//     // centerY = g.yres - cursorPosition[1];
 
-    // width = (img[7].width/img[7].columns)*0.5;
-    // height = (img[7].height/img[7].rows)*0.5;
+//     // width = (img[7].width/img[7].columns)*0.5;
+//     // height = (img[7].height/img[7].rows)*0.5;
 
-    // glBegin(GL_QUADS);
-    // glTexCoord2f(textureX, textureY+ssHeight);
-    // glVertex2i(centerX-width, centerY-height);
+//     // glBegin(GL_QUADS);
+//     // glTexCoord2f(textureX, textureY+ssHeight);
+//     // glVertex2i(centerX-width, centerY-height);
 
-    // glTexCoord2f(textureX, textureY);
-    // glVertex2i(centerX-width, centerY+height);
+//     // glTexCoord2f(textureX, textureY);
+//     // glVertex2i(centerX-width, centerY+height);
 
-    // glTexCoord2f(textureX+ssWidth, textureY);
-    // glVertex2i(centerX+width, centerY+height);
+//     // glTexCoord2f(textureX+ssWidth, textureY);
+//     // glVertex2i(centerX+width, centerY+height);
 
-    // glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
-    // glVertex2i(centerX+width, centerY-height);
-    // glEnd();
+//     // glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+//     // glVertex2i(centerX+width, centerY-height);
+//     // glEnd();
 
-    // glPopMatrix();
-    // glBindTexture(GL_TEXTURE_2D, 0);
-    // glDisable(GL_ALPHA_TEST);
+//     // glPopMatrix();
+//     // glBindTexture(GL_TEXTURE_2D, 0);
+//     // glDisable(GL_ALPHA_TEST);
 
-    ////////////////////////////////////////////
-}
+//     ////////////////////////////////////////////
+// }
 
 // void renderPauseMenu()
 // {
@@ -279,8 +277,8 @@ switch (selectedOption) {
 //     glAlphaFunc(GL_GREATER, 0.0f);
 //     glColor4ub(255,255,255,255);
 
-//     float ssWidth = (float)1.0/img[1].columns;
-//     float ssHeight = (float)1.0/img[1].rows;
+//     float ssWidth = 10;
+//     float ssHeight = 10;
 
 //     float textureX = 0;
 //     float textureY = 0;
@@ -288,8 +286,8 @@ switch (selectedOption) {
 //     float centerX = g.xres/2;
 //     float centerY = g.yres*2/3; 
 
-//     float width = floor(((float)g.xres/1280)*img[1].width);
-//     float height = floor(((float)g.yres/720)*img[1].height);
+//     float width = (((float)g.xres/1280)*200);
+//     float height = (((float)g.yres/720)*200);
 
 //     glBegin(GL_QUADS);
 //     glTexCoord2f(textureX, textureY+ssHeight);
@@ -323,7 +321,6 @@ switch (selectedOption) {
 //                 ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
 //             // }
 //             ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-//             ggprint8b(&r, 16, 0xffffff, "LEADERBOARD");
 //             ggprint8b(&r, 16, 0xffffff, "EXIT");
 //             break;
 //         case 1:
@@ -331,7 +328,6 @@ switch (selectedOption) {
 //                 ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
 //             // }
 //             ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-//             ggprint8b(&r, 16, 0x123fff, "LEADERBOARD");
 //             ggprint8b(&r, 16, 0xffffff, "EXIT");
 //             break;
 //         case 2:
@@ -339,7 +335,6 @@ switch (selectedOption) {
 //                 ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
 //             // }
 //             ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-//             ggprint8b(&r, 16, 0xffffff, "LEADERBOARD");
 //             ggprint8b(&r, 16, 0x123fff, "EXIT");
 //             break;
 //         case 3:
@@ -347,7 +342,6 @@ switch (selectedOption) {
 //                 ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
 //             // }
 //             ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-//             ggprint8b(&r, 16, 0xffffff, "LEADERBOARD");
 //             ggprint8b(&r, 16, 0xffffff, "EXIT");
 //             break;
 //         default:
