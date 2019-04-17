@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif"};
+	"images/Saibaman.gif", "images/powerup.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -385,6 +385,18 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+	//------------------------Powerup----------------------------------
+	w = img[10].width;
+	h = img[10].height;
+	glGenTextures(1, &g.powerupTexture);
+	glBindTexture(GL_TEXTURE_2D, g.powerupTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[10]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint);
@@ -600,7 +612,7 @@ extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
-extern void powerupsRender();
+extern void powerupsRender(GLuint);
 extern void sRender();
 
 void render(void)
@@ -666,7 +678,7 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 			enemyHandler(g.saibaTexture);
-			powerupsRender();
+			powerupsRender(g.powerupTexture);
 
 			sRender();
 
