@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif",};
+	"images/Saibaman.gif", "images/powerup.gif","images/finalFormTextureLogo"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -384,9 +384,9 @@ void initOpengl(void)
 	walkData = buildAlphaData(&img[8]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-	//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
     
-    //-------------------------Power-Up Texture---------------------------------
+//-------------------------Power-Up Texture---------------------------------
 	w = img[10].width;
 	h = img[10].height;
 	glGenTextures(1, &g.powerupTexture);
@@ -394,6 +394,18 @@ void initOpengl(void)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	walkData = buildAlphaData(&img[10]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+//---------------------------------------------------------------------------
+
+//-------------------------Power-Up Texture---------------------------------
+	w = img[11].width;
+	h = img[11].height;
+	glGenTextures(1, &g.finalFormLogoTexture;
+	glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[11]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
     //---------------------------------------------------------------------------
