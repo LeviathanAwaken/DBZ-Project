@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif","images/finalFormTextureLogo.gif"};
+	"images/Saibaman.gif", "images/powerup.gif", "images/finalFormLogoTexture.gif",};
 
 //-----------------------------------------------------------------------------
 //Setup timers
