@@ -11,7 +11,6 @@
 #include <ctime>
 #include <cstring>
 #include <cmath>
-#include <vector>
 #include "Global.h"
 #include "Enemy.h"
 
@@ -25,6 +24,9 @@ void pattern_1(Enemy&);
 void pattern_2(Enemy&);
 void pattern_3(Enemy&);
 void pattern_4(Enemy&);
+int speed_Randomizer(void);
+int freq_Randomizer(void);
+int amp_Randomizer(void);
 
 
 
@@ -60,12 +62,15 @@ void showDrake(int x, int y, GLuint textInt)
 void Enemy_init ()
 {
 	srand(time(NULL));
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 10; i++) {
 		enemy[i].wavepos = (rand() % g.yres);
-		int choice = (rand() % 4 + 1);
+		int choice = (rand() % 3 + 1);
+		enemy[i].xSpeed = speed_Randomizer();
+		enemy[i].wavefreq = freq_Randomizer();
+		enemy[i].waveamp = amp_Randomizer();
 		enemy[i].pattern = choice;
 		enemy[i].pos[0] = g.xres + (rand() % 100);
-		enemy[i].pos[1] = (rand() % g.yres);
+		enemy[i].pos[1] = (rand() % (g.yres));
 		enemyReference(&enemy[i]);
 	}
 }
@@ -74,7 +79,7 @@ void saibaPhysics ()
 {
 
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 10; i++) {
 		if(enemy[i].pattern == 1)
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
@@ -86,10 +91,10 @@ void saibaPhysics ()
 	}
 
 }
-
+//----------------------------Drawing the enemies-------------------------------------------------
 void saibaRender (GLuint image)
 {
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 5; i++) {
 		glPushMatrix();
 		glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -133,25 +138,29 @@ void enemyHandler (GLuint image) {
 
 void pattern_1 (Enemy &e)
 {
-		e.pos[0] -= 1;
+		e.pos[0] -= e.xSpeed;
 		if (e.pos[0] < -50){
 			e.pos[0] = g.xres;
-			e.pos[1] = (rand() % (g.yres-100) + 1);
+			e.pos[1] = (rand() % (g.yres - 100) + 1);
+			e.xSpeed = speed_Randomizer();
 		}
 }
 
 void pattern_2 (Enemy &e)
 {
-
+		
 		srand(time(NULL));
-		//int start = (rand() % g.yres + 1);
+		
 		nticks+= 0.3;
-		e.pos[0] -= 1;
-		e.pos[1] = (50 * sin(nticks/50) + (e.wavepos));
+		e.pos[0] -= e.xSpeed;
+		e.pos[1] = (e.waveamp * sin(nticks/e.wavefreq) + (e.wavepos));
 
 		if (e.pos[0] < -50){
 			e.pos[0] = g.xres;
-			e.wavepos = (rand() % g.yres + 1);
+			e.wavepos = (rand() % (g.yres) + 1);
+			e.xSpeed = speed_Randomizer();
+			e.wavefreq = freq_Randomizer();
+			e.waveamp = amp_Randomizer();
 
 		}
 
@@ -159,13 +168,14 @@ void pattern_2 (Enemy &e)
 
 void pattern_3 (Enemy &e)
 {
-		e.pos[0] -= 1;
+		e.pos[0] -= e.xSpeed;
 		while (e.pos[1] < (g.yres) + 10) {
 			e.pos[1] += 1;
 		}
 		if (e.pos[0] < -50){
 			e.pos[0] = g.xres;
 			e.pos[1] = (rand() % g.yres + 1);
+			e.xSpeed = speed_Randomizer();
 
 		}
 }
@@ -179,4 +189,28 @@ void pattern_4 (Enemy &e)
 			e.pos[1] = (rand() % g.yres + 1);
 
 		}
+}
+
+//------------------variable randomization------------------------------
+
+/* variables include horizontal translation speed, sine wave
+ * frequency, and sine wave amplitude
+ */
+
+int speed_Randomizer (void)
+{
+	int speed = (rand() % 3 + 2);
+	return speed;
+}
+
+int freq_Randomizer (void)
+{
+	int freq = ((rand() % 31 + 1) + 19);
+	return freq;
+}
+
+int amp_Randomizer (void)
+{
+	int amp = ((rand() % 3 + 5) * 10);
+	return amp;
 }

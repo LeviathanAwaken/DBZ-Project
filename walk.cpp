@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif"};
+	"images/Saibaman.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -385,29 +385,17 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
-    
-    //-------------------------Power-Up Texture---------------------------------
-	w = img[10].width;
-	h = img[10].height;
-	glGenTextures(1, &g.powerupTexture);
-	glBindTexture(GL_TEXTURE_2D, g.powerupTexture);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	walkData = buildAlphaData(&img[10]);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-    //---------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint);
 extern void Enemy_init();
-extern void Powerups_init(GLuint);
+extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
 	sInit(g.walkTexture, g.kiTexture);
 	Enemy_init();
-	Powerups_init(g.powerupTexture);
+	Powerups_init();
 }
 
 void checkMouse(XEvent *e)
@@ -612,7 +600,7 @@ extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
-extern void powerupsRender(GLuint);
+extern void powerupsRender();
 extern void sRender();
 
 void render(void)
@@ -652,7 +640,7 @@ void render(void)
 			//glEnd();
 			//
 			//show boxes as background
-			for (int i=0; i<30; i++) {
+			for (int i=0; i<20; i++) {
 				glPushMatrix();
 				glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
 				glColor3f(1.0, 1.0, 1.0);
@@ -678,7 +666,7 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 			enemyHandler(g.saibaTexture);
-			powerupsRender(g.powerupTexture);
+			powerupsRender();
 
 			sRender();
 
