@@ -413,13 +413,13 @@ void initOpengl(void)
 
 extern void sInit(GLuint, GLuint);
 extern void Enemy_init();
-extern void Powerups_init(GLuint);
+extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
 	sInit(g.walkTexture, g.kiTexture);
 	Enemy_init();
-	Powerups_init(g.powerupTexture);
+	Powerups_init();
 }
 
 void checkMouse(XEvent *e)
@@ -625,7 +625,7 @@ extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int, GLuint);
 extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
-extern void powerupsRender(GLuint);
+extern void powerupsRender();
 extern void sRender();
 
 void render(void)
@@ -665,7 +665,7 @@ void render(void)
 			//glEnd();
 			//
 			//show boxes as background
-			for (int i=0; i<30; i++) {
+			for (int i=0; i<20; i++) {
 				glPushMatrix();
 				glTranslated(g.box[i][0],g.box[i][1],g.box[i][2]);
 				glColor3f(1.0, 1.0, 1.0);
@@ -691,7 +691,7 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 			enemyHandler(g.saibaTexture);
-			powerupsRender(g.powerupTexture);
+			powerupsRender();
 
 			sRender();
 

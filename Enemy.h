@@ -14,7 +14,10 @@ public:
     float pos[3];
     int pattern;
     float wavepos;
-    bool isRendered;
+    int wavefreq;
+    int waveamp;
+    int xSpeed;
+    
 
     
     Enemy () {
@@ -22,7 +25,9 @@ public:
      srand(time(NULL));
      pattern = 1;
      wavepos = 0.0;
-     isRendered = false;
+     xSpeed = 0;
+     wavefreq = 0;
+     waveamp = 0;
      pos[0] = 0.0;	
      pos[1] = 0.0;	
      pos[2] = 0.0;

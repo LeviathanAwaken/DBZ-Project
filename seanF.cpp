@@ -29,7 +29,7 @@
 const int MAX_KI = 10;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
-const int MAX_ENEM = 3;
+const int MAX_ENEM = 10;
 
 Enemy *enemyRef[MAX_ENEM];
 int limiter = 0;
@@ -45,6 +45,7 @@ class Protag {
 		float vel[2];
 		int height;
 		int width;
+		int health;
 } goku;
 
 //Class to track x and y positions of the blasts being sent by the character.
@@ -57,17 +58,7 @@ class kiBlast {
 
 void enemyReference(Enemy* enem)
 {
-	switch (limiter) {
-		case 0:
-			enemyRef[0] = enem;
-			break;
-		case 1:
-			enemyRef[1] = enem;
-			break;
-		case 2:
-			enemyRef[2] = enem;
-			break;
-	}
+	enemyRef[limiter] = enem;
 	limiter++;
 }
 
@@ -89,6 +80,7 @@ void gokuInit()
 	goku.width = 100;
 	goku.pos[0] = g.xres / 2 - (goku.width / 2);
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
+	goku.health = 3;
 }
 
 //Generalized initializer for the file, called in the main file.
@@ -273,7 +265,7 @@ void kiRender(int kiID)
 */
 void kiCollision(int kiRef)
 {
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < MAX_ENEM; i++) {
 		//printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], g.xres);
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
 			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
