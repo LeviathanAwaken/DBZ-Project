@@ -29,7 +29,7 @@
 const int MAX_KI = 10;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
-const int MAX_ENEM = 3;
+const int MAX_ENEM = 10;
 
 Enemy *enemyRef[MAX_ENEM];
 int limiter = 0;
@@ -57,17 +57,7 @@ class kiBlast {
 
 void enemyReference(Enemy* enem)
 {
-	switch (limiter) {
-		case 0:
-			enemyRef[0] = enem;
-			break;
-		case 1:
-			enemyRef[1] = enem;
-			break;
-		case 2:
-			enemyRef[2] = enem;
-			break;
-	}
+	enemyRef[limiter] = enem;
 	limiter++;
 }
 
