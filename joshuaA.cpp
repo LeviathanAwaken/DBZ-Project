@@ -69,7 +69,7 @@ void Powerups_init (GLuint)
 
 void powerupsPhysics ()
 {
-   powerups.pos[0] += 2;
+   powerups.pos[0] -= 2;
 }
 
 void powerupsRender (GLuint image)
