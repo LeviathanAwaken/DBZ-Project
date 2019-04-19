@@ -69,16 +69,20 @@ void Powerups_init ()
 
 void powerupsPhysics ()
 {
-   powerups.pos[0] += 2;
+   powerups.pos[0] -= 2;
+   if (powerups.pos[0] < -50) {
+        powerups.pos[0] = g.xres;
+        powerups.pos[1] = (rand() % (g.yres - 100) + 1);
+   }
 }
 
-void powerupsRender ()
+void powerupsRender (GLuint image)
 {
 	glPushMatrix();
 	glTranslated(powerups.pos[0], powerups.pos[1], powerups.pos[2]);
 	glColor3f(1.0, 1.0, 1.0);
-	//BindTexture(GL_TEXTURE_2D, image);
 	
+	glBindTexture(GL_TEXTURE_2D, image);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);

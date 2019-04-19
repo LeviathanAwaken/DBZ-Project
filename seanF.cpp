@@ -34,9 +34,13 @@ const int MAX_ENEM = 10;
 Enemy *enemyRef[MAX_ENEM];
 int limiter = 0;
 
+//Prototypes and extern function calls
 void kiCollision(int);
-void gokuRender();
 void kiHandler(int);
+void gokuRender();
+void gokuCollision();
+void healthCheck();
+extern void detection(int);
 
 class Protag {
 	public:
@@ -150,6 +154,7 @@ void gokuMove()
 		goku.pos[1] += goku.vel[1];
 	else
 		goku.vel[1] = 0;
+	gokuCollision();
 }
 
 void sRender()
@@ -256,13 +261,7 @@ void kiRender(int kiID)
 	glDisable(GL_ALPHA_TEST);
 }
 
-/*
- * This function currently is using a placeholder for the input
- * It will eventually take in an enemy class from Drake's file, and then
- * construct a rectangle around the enemy and check for collisions
- * against that.
- * Enemy& enem
-*/
+//Collision checking between kiblast and enemies.
 void kiCollision(int kiRef)
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
@@ -273,8 +272,33 @@ void kiCollision(int kiRef)
 			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
+			detection(i);
 			break;
 		}
+	}
+}
+
+//Collision checking for the main character and the enemies.
+void gokuCollision()
+{
+	for (int i = 0; i < MAX_ENEM; i++) {
+		bool xColl = enemyRef[i]->pos[0] + 70 >= goku.pos[0]
+			&& goku.pos[0] + goku.width >= enemyRef[i]->pos[0];
+		bool yColl = enemyRef[i]->pos[1] + 50 >= goku.pos[1]
+			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
+		if (xColl && yColl) {
+			goku.health--;
+			detection(i);
+			healthCheck();
+			break;
+		}
+	}
+}
+
+void healthCheck()
+{
+	if (goku.health <= 0) {
+		//printf("You've ran out of health.\n");
 	}
 }
 

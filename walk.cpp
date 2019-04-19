@@ -667,31 +667,29 @@ Flt VecNormalize(Vec vec)
 		}
 }
 
-	extern void showSean(int, int, GLuint);
-	extern void showJoshua(int, int, GLuint);
-	extern void showDrake(int, int, GLuint);
-	extern void showJuan(int, int, GLuint);
-	extern void showLawrence(int, int, GLuint);
-	extern void enemyHandler(GLuint);
-	extern void setBackgroundNamek(int, int, GLuint);
-	extern void powerupsRender();
-	extern void sRender();
+extern void showSean(int, int, GLuint);
+extern void showJoshua(int, int, GLuint);
+extern void showDrake(int, int, GLuint);
+extern void showJuan(int, int, GLuint);
+extern void showLawrence(int,int,GLuint);
+extern void enemyHandler(GLuint);
+extern void setBackgroundNamek(int, int, GLuint);
+extern void powerupsRender(GLuint);
+extern void sRender();
 
+void render(void)
+{
+	if (g.creditFlag && !g.pauseFlag) {
+		//Put picture functions here
+		glClearColor(0.1, 0.1, 0.1, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-	void render(void)
-	{
-		if (g.creditFlag && !g.pauseFlag)
-		{
-			//Put picture functions here
-			glClearColor(0.1, 0.1, 0.1, 1.0);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			showSean(20, img[2].height, g.seanTexture);
-			showLawrence(40, img[6].height, g.lawrenceTexture);
-			showJoshua(40, img[3].height, g.joshTexture);
-			showDrake(70, img[5].height, g.drakeTexture);
-			showJuan(40, img[4].height, g.juanTexture);
-		} else {
+		showSean(20, img[2].height, g.seanTexture);
+		showLawrence(40, img[6].height,g.lawrenceTexture);
+		showJoshua(40, img[3].height, g.joshTexture);
+		showDrake(70, img[5].height, g.drakeTexture);
+		showJuan(40, img[4].height, g.juanTexture);
+	} else {
 		if (g.pauseFlag) {
 			extern void showPause(int, int);
 			showPause(350, 100);
@@ -742,7 +740,7 @@ Flt VecNormalize(Vec vec)
 				glDisable(GL_ALPHA_TEST);
 			}
 			enemyHandler(g.saibaTexture);
-			powerupsRender();
+			powerupsRender(g.powerupTexture);
 
 			sRender();
 

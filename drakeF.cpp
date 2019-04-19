@@ -18,7 +18,7 @@ extern Global g;
 Enemy enemy[10];
 extern void enemyReference(Enemy *);
 float nticks = 0.0;
-int count = 1;
+int count = 5;
 void Enemy_init();
 void pattern_1(Enemy&);
 void pattern_2(Enemy&);
@@ -27,6 +27,7 @@ void pattern_4(Enemy&);
 int speed_Randomizer(void);
 int freq_Randomizer(void);
 int amp_Randomizer(void);
+void detection();
 
 
 
@@ -214,3 +215,13 @@ int amp_Randomizer (void)
 	int amp = ((rand() % 3 + 5) * 10);
 	return amp;
 }
+
+void detection (int Eindices) {
+	enemy[Eindices].pos[0] = g.xres;
+	enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
+	enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
+	enemy[Eindices].xSpeed = speed_Randomizer();
+	enemy[Eindices].wavefreq = freq_Randomizer();
+	enemy[Eindices].waveamp = amp_Randomizer();
+
+} 
