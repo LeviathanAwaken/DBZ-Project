@@ -40,7 +40,7 @@ const float gravity = -0.2f;
 
 //global declarations
 int selectedOption = NEWGAME;
-int gameState = MAINMENU;
+int gameState = INGAME;
 int done = 0;
 int keys[65536];
 
@@ -451,25 +451,23 @@ extern void launchKi();
 
 int checkKeys(XEvent *e)
 {
+
 	//keyboard input?
-	static int shift=0;
+	// static int shift=0;
 	int key = (XLookupKeysym(&e->xkey, 0) & 0x0000ffff);
 	//Log("key: %i\n", key);
-	if (e->type == KeyRelease) {
-		g.keys[key]=0;
-		if (key == XK_Shift_L || key == XK_Shift_R)
-			shift=0;
-		return 0;
+	if (e->type == KeyRelease)
+	{
+		g.keys[key] = 0;
+		// if (key == XK_Shift_L || key == XK_Shift_R)
+		// 	shift=0;
 	}
-	if (e->type == KeyPress) {
+	if (e->type == KeyPress)
+	{
 		//std::cout << "press" << std::endl;
-		g.keys[key]=1;
-		if (key == XK_Shift_L || key == XK_Shift_R) {
-			shift=1;
-			return 0;
-		}
-	} else {
-		return 0;
+		g.keys[key] = 1;
+		// if (key == XK_Shift_L || key == XK_Shift_R) {
+		// 	shift=1;
 	}
 
 	/*if (e->type != KeyRelease && e->type != KeyPress)
@@ -496,15 +494,26 @@ int checkKeys(XEvent *e)
 	  }
 	  */
 
-	(void)shift;
+	// (void)shift;
 	//CHANGED - updates velocity with the listed keys
 	//CHANGED - modified movement to get rid of delay on keypress
 	//CHANGED - moved goku's movement keypress handler statements into physics
-	switch (key) {
+	switch (gameState)
+	{
+	case MAINMENU:
+		break;
+	case PAUSEMENU:
+		break;
+	case DEATH:
+		break;
+	case INGAME:
+		g.delay = 0.01;
+		switch (key)
+		{
 		case XK_c:
 			g.creditFlag ^= 1;
 			// [[fallthrough]];
-			
+
 		case XK_space:
 			timers.recordTime(&timers.walkTime);
 			g.walk ^= 1;
@@ -512,7 +521,7 @@ int checkKeys(XEvent *e)
 		case XK_k:
 			launchKi();
 			break;
-		/*        case XK_equal:
+			/*        case XK_equal:
 			  g.delay -= 0.005;
 			  if (g.delay < 0.005)
 			  g.delay = 0.005;
@@ -522,25 +531,39 @@ int checkKeys(XEvent *e)
 			  break;
 			  */
 		case XK_Escape:
-			return 1;
+			gameState = PAUSEMENU;
+			selectedOption = RESUMEGAME;
 			break;
 		case XK_j:
 			g.score++;
 			break;
 		case XK_z:
-			if (g.paused == true && g.startFlag == 0) {
+			if (g.paused == true && g.startFlag == 0)
+			{
 				g.startFlag ^= 1;
 				g.paused = !g.paused;
 			}
 			break;
 		case XK_p:
-			if (g.startFlag == 1) {
+			if (g.startFlag == 1)
+			{
 				g.pauseFlag ^= 1;
 				g.paused = !g.paused;
 			}
 			break;
+
+		default:
+			break;
+			// Sets speed to max at start of game
+		}
+		return 0;
+		break;
+	default:
+		printf("FATAL ERROR IN GAME STATE\n\n");
+    exit(1);
 	}
-	g.delay = 0.01;    // Sets speed to max at start of game
+			
+
 	return 0;
 }
 
@@ -550,9 +573,10 @@ Flt VecNormalize(Vec vec)
 	Flt xlen = vec[0];
 	Flt ylen = vec[1];
 	Flt zlen = vec[2];
-	len = xlen*xlen + ylen*ylen + zlen*zlen;
-	if (len == 0.0) {
-		MakeVector(0.0,0.0,1.0,vec);
+	len = xlen * xlen + ylen * ylen + zlen * zlen;
+	if (len == 0.0)
+	{
+		MakeVector(0.0, 0.0, 1.0, vec);
 		return 1.0;
 	}
 	len = sqrt(len);
@@ -560,87 +584,114 @@ Flt VecNormalize(Vec vec)
 	vec[0] = xlen * tlen;
 	vec[1] = ylen * tlen;
 	vec[2] = zlen * tlen;
-	return(len);
-}
-
-extern void kiHandler(int);
-extern void saibaPhysics();
-extern void powerupsPhysics();
-extern void velUpd(int);
-extern void gokuMove();
-
-void physics(void)
-{
-	if (g.pauseFlag) {
-		return;
+	return (len);
 	}
 
-	if (g.walk) {
-		//man is walking...
-		//when time is up, advance the frame.
-		timers.recordTime(&timers.timeCurrent);
-		double timeSpan = timers.timeDiff(&timers.walkTime,
-						&timers.timeCurrent);
-		if (timeSpan > g.delay) {
-			//advance
-			//CHANGED - shifts goku's pos by velocity, resets velocity
-			//          if character hits window edges
-			//++g.walkFrame;
-			gokuMove();
-			if (g.walkFrame >= 16)
-				g.walkFrame -= 16;
-			timers.recordTime(&timers.walkTime);
-			kiHandler(0);
-		}
-		for (int i=0; i<20; i++) {
-			g.box[i][0] -= 0.3 * (0.05 / g.delay);
-			if (g.box[i][0] < -10.0)
-				g.box[i][0] += g.xres + 10.0;
-		}
-		saibaPhysics();
-		powerupsPhysics();
+	extern void kiHandler(int);
+	extern void saibaPhysics();
+	extern void powerupsPhysics();
+	extern void velUpd(int);
+	extern void gokuMove();
+	extern void checkKeysMainMenu();
+	extern void checkKeysPauseMenu();
+	// extern void checkKeysLost();
 
-		//------------------check for movement keys-----------------------------
-		if (g.startFlag == 1 && g.pauseFlag == 0) {
-			if (g.keys[XK_a] || g.keys[XK_Left]) {
-				velUpd(0);
+	void physics(void)
+	{
+		switch (gameState)
+		{
+		case MAINMENU:
+			checkKeysMainMenu();
+			break;
+		case PAUSEMENU:
+			checkKeysPauseMenu();
+			break;
+		case DEATH:
+			// checkKeysLost();
+			break;
+		case INGAME:
+			if (g.pauseFlag)
+			{
+				return;
 			}
-			if (g.keys[XK_d] || g.keys[XK_Right]) {
-				velUpd(1);
-			}
-			if (g.keys[XK_w] || g.keys[XK_Up]) {
-				velUpd(2);
-			}
-			if (g.keys[XK_s] || g.keys[XK_Down]) {
-				velUpd(3);
+
+			if (g.walk)
+			{
+				//man is walking...
+				//when time is up, advance the frame.
+				timers.recordTime(&timers.timeCurrent);
+				double timeSpan = timers.timeDiff(&timers.walkTime,
+																					&timers.timeCurrent);
+				if (timeSpan > g.delay)
+				{
+					//advance
+					//CHANGED - shifts goku's pos by velocity, resets velocity
+					//          if character hits window edges
+					//++g.walkFrame;
+					gokuMove();
+					if (g.walkFrame >= 16)
+						g.walkFrame -= 16;
+					timers.recordTime(&timers.walkTime);
+					kiHandler(0);
+				}
+				for (int i = 0; i < 20; i++)
+				{
+					g.box[i][0] -= 0.3 * (0.05 / g.delay);
+					if (g.box[i][0] < -10.0)
+						g.box[i][0] += g.xres + 10.0;
+				}
+				saibaPhysics();
+				powerupsPhysics();
+
+				//------------------check for movement keys-----------------------------
+				if (g.startFlag == 1 && g.pauseFlag == 0)
+				{
+					if (g.keys[XK_a] || g.keys[XK_Left])
+					{
+						velUpd(0);
+					}
+					if (g.keys[XK_d] || g.keys[XK_Right])
+					{
+						velUpd(1);
+					}
+					if (g.keys[XK_w] || g.keys[XK_Up])
+					{
+						velUpd(2);
+					}
+					if (g.keys[XK_s] || g.keys[XK_Down])
+					{
+						velUpd(3);
+					}
+				}
 			}
 		}
-	}
 }
 
-extern void showSean(int, int, GLuint);
-extern void showJoshua(int, int, GLuint);
-extern void showDrake(int, int, GLuint);
-extern void showJuan(int, int, GLuint);
-extern void showLawrence(int,int, GLuint);
-extern void enemyHandler(GLuint);
-extern void setBackgroundNamek(int, int, GLuint);
-extern void powerupsRender();
-extern void sRender();
+	extern void showSean(int, int, GLuint);
+	extern void showJoshua(int, int, GLuint);
+	extern void showDrake(int, int, GLuint);
+	extern void showJuan(int, int, GLuint);
+	extern void showLawrence(int, int, GLuint);
+	extern void enemyHandler(GLuint);
+	extern void setBackgroundNamek(int, int, GLuint);
+	extern void powerupsRender();
+	extern void sRender();
 
-void render(void)
-{
-	if (g.creditFlag && !g.pauseFlag) {
-		//Put picture functions here
-		glClearColor(0.1, 0.1, 0.1, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
 
-		showSean(20, img[2].height, g.seanTexture);
-		showLawrence(40, img[6].height,g.lawrenceTexture);
-		showJoshua(40, img[3].height, g.joshTexture);
-		showDrake(70, img[5].height, g.drakeTexture);
-		showJuan(40, img[4].height, g.juanTexture);
-	} else {
+	void render(void)
+	{
+		if (g.creditFlag && !g.pauseFlag)
+		{
+			//Put picture functions here
+			glClearColor(0.1, 0.1, 0.1, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			showSean(20, img[2].height, g.seanTexture);
+			showLawrence(40, img[6].height, g.lawrenceTexture);
+			showJoshua(40, img[3].height, g.joshTexture);
+			showDrake(70, img[5].height, g.drakeTexture);
+			showJuan(40, img[4].height, g.juanTexture);
+		} else {
 		if (g.pauseFlag) {
 			extern void showPause(int, int);
 			showPause(350, 100);
