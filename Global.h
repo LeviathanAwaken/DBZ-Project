@@ -16,30 +16,33 @@ typedef double Vec[3];
 #define RESUMEGAME 2
 
 class Global {
-    public:
-        int done;
-        int xres, yres;
-        int score;
-        int walk;
-        int walkFrame;
-        int creditFlag;
-        int startFlag;
-        int pauseFlag;
-        bool paused;
-        double delay;
-        char keys[65536];
-        GLuint walkTexture;
-        GLuint cloudTexture;
-        GLuint seanTexture;
-        GLuint lawrenceTexture;
-        GLuint joshTexture;
-        GLuint drakeTexture;
-        GLuint juanTexture;
-        GLuint kiTexture;
-        GLuint namekTexture;
-        GLuint saibaTexture;
-        GLuint powerupTexture;
-        GLuint finalFormLogoTexture;
+	public:
+		int done;
+		int xres, yres;
+		int score;
+		int walk;
+		int walkFrame;
+		int creditFlag;
+		int startFlag;
+		int pauseFlag;
+		bool paused;
+		double delay;
+		char keys[65536];
+		GLuint walkTexture;
+		GLuint cloudTexture;
+		GLuint seanTexture;
+		GLuint lawrenceTexture;
+		GLuint joshTexture;
+		GLuint drakeTexture;
+		GLuint juanTexture;
+		GLuint kiTexture;
+		GLuint namekTexture;
+		GLuint saibaTexture;
+		GLuint powerupTexture;
+		GLuint bossTexture;
+		GLuint finalFormLogoTexture;
+		GLuint explosionTexture;
+
 
 		Vec box[20];
 		Global() {

@@ -40,16 +40,18 @@ void kiHandler(int);
 void gokuRender();
 void gokuCollision();
 void healthCheck();
+bool gokuBounds(int);
 extern void detection(int);
 
 class Protag {
 	public:
 		GLuint pic;
 		float pos[2];
-		float vel[2];
+		//float vel[2];
 		int height;
 		int width;
 		int health;
+		float moveS;
 } goku;
 
 //Class to track x and y positions of the blasts being sent by the character.
@@ -69,7 +71,7 @@ void enemyReference(Enemy* enem)
 //Initializes the kiClass for use.
 void kiInit()
 {
-	ki.kiVel = 2;
+	ki.kiVel = 4;
 	for (int i = 0; i < MAX_KI; i++) {
 		ki.kiTracker[i][0] = UNASSIGN;
 		ki.kiTracker[i][1] = UNASSIGN;
@@ -78,13 +80,14 @@ void kiInit()
 
 void gokuInit()
 {
-	goku.vel[0] = 0;
-	goku.vel[1] = 0;
+	//goku.vel[0] = 0;
+	//goku.vel[1] = 0;
 	goku.height = 70;
 	goku.width = 100;
 	goku.pos[0] = g.xres / 2 - (goku.width / 2);
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 	goku.health = 3;
+	goku.moveS = 3.5;
 }
 
 //Generalized initializer for the file, called in the main file.
@@ -124,7 +127,7 @@ void showSean(int x, int y, GLuint textInt)
 	showText(x+100, y+100);
 }
 
-void velUpd(int key)
+/*void velUpd(int key)
 {
 	switch (key) {
 		case 0:
@@ -140,9 +143,58 @@ void velUpd(int key)
 			goku.vel[1] -= .5;
 			break;
 	}
+}*/
+
+void gokuIMove(int key)
+{
+	bool bounds = gokuBounds(key);
+	switch (key) {
+		case 0:
+			if (bounds)
+				goku.pos[0] -= goku.moveS;
+			else
+				goku.pos[0] = 0;
+			break;
+		case 1:
+			if (bounds)
+				goku.pos[0] += goku.moveS;
+			else
+				goku.pos[0] = g.xres - goku.width;
+			break;
+		case 2:
+			if (bounds)
+				goku.pos[1] += goku.moveS;
+			else
+				goku.pos[1] = g.yres - goku.height;
+			break;
+		case 3:
+			if (bounds)
+				goku.pos[1] -= goku.moveS;
+			else
+				goku.pos[1] = 0;
+			break;
+	}
+	gokuCollision();
 }
 
-void gokuMove()
+bool gokuBounds(int dir)
+{
+	if (dir == 0) {
+		return (goku.pos[0] > 0 && goku.pos[0] - goku.moveS > 0);
+	} else if (dir == 1) {
+		return (goku.pos[0] < g.xres - goku.width
+				&& goku.pos[0] + goku.moveS < g.xres - goku.width);
+	} else if (dir == 2) {
+		return (goku.pos[1] <= g.yres - goku.height
+				&& goku.pos[1] + goku.moveS <= (g.yres + 30) - goku.width);
+	} else if (dir == 3) {
+		return (goku.pos[1] >= 0 && goku.pos[1] - goku.moveS >= 0);
+	} else {
+		return false;
+	}
+}
+
+/*void gokuMove()
 {
 	if ((goku.pos[0] > 0 && goku.vel[0] < 0)
 	|| (goku.pos[0] < (g.xres - goku.width) && goku.vel[0] > 0))
@@ -155,7 +207,7 @@ void gokuMove()
 	else
 		goku.vel[1] = 0;
 	gokuCollision();
-}
+}*/
 
 void sRender()
 {
