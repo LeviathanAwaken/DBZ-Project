@@ -47,11 +47,11 @@ class Protag {
 	public:
 		GLuint pic;
 		float pos[2];
-		float vel[2];
+		//float vel[2];
 		int height;
 		int width;
 		int health;
-		int moveS;
+		float moveS;
 } goku;
 
 //Class to track x and y positions of the blasts being sent by the character.
@@ -80,14 +80,14 @@ void kiInit()
 
 void gokuInit()
 {
-	goku.vel[0] = 0;
-	goku.vel[1] = 0;
+	//goku.vel[0] = 0;
+	//goku.vel[1] = 0;
 	goku.height = 70;
 	goku.width = 100;
 	goku.pos[0] = g.xres / 2 - (goku.width / 2);
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 	goku.health = 3;
-	goku.moveS = 3;
+	goku.moveS = 3.5;
 }
 
 //Generalized initializer for the file, called in the main file.
@@ -127,7 +127,7 @@ void showSean(int x, int y, GLuint textInt)
 	showText(x+100, y+100);
 }
 
-void velUpd(int key)
+/*void velUpd(int key)
 {
 	switch (key) {
 		case 0:
@@ -143,7 +143,7 @@ void velUpd(int key)
 			goku.vel[1] -= .5;
 			break;
 	}
-}
+}*/
 
 void gokuIMove(int key)
 {
@@ -186,7 +186,7 @@ bool gokuBounds(int dir)
 				&& goku.pos[0] + goku.moveS < g.xres - goku.width);
 	} else if (dir == 2) {
 		return (goku.pos[1] <= g.yres - goku.height
-				&& goku.pos[1] + goku.moveS <= g.yres - goku.width);
+				&& goku.pos[1] + goku.moveS <= (g.yres + 30) - goku.width);
 	} else if (dir == 3) {
 		return (goku.pos[1] >= 0 && goku.pos[1] - goku.moveS >= 0);
 	} else {
@@ -194,7 +194,7 @@ bool gokuBounds(int dir)
 	}
 }
 
-void gokuMove()
+/*void gokuMove()
 {
 	if ((goku.pos[0] > 0 && goku.vel[0] < 0)
 	|| (goku.pos[0] < (g.xres - goku.width) && goku.vel[0] > 0))
@@ -207,7 +207,7 @@ void gokuMove()
 	else
 		goku.vel[1] = 0;
 	gokuCollision();
-}
+}*/
 
 void sRender()
 {
