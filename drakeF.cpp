@@ -82,7 +82,7 @@ void Enemy_init ()
 	srand(time(NULL));
 	for (int i = 0; i < 10; i++) {
 		enemy[i].wavepos = (rand() % g.yres);
-		int choice = (rand() % 3 + 1);
+		int choice = (rand() % 4 + 1);
 		enemy[i].xSpeed = speed_Randomizer();
 		enemy[i].wavefreq = freq_Randomizer();
 		enemy[i].waveamp = amp_Randomizer();
@@ -109,10 +109,10 @@ void saibaPhysics ()
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
 			pattern_2(enemy[i]);
-		//if(enemy[i].pattern == 3)
-		//	pattern_3(enemy[i]);
-		//if(enemy[i].pattern == 4)
-		//	pattern_4(enemy[i]);
+		if(enemy[i].pattern == 3)
+			pattern_3(enemy[i]);
+		if(enemy[i].pattern == 4)
+			pattern_4(enemy[i]);
 	}
 
 }
@@ -275,25 +275,27 @@ void pattern_2 (Enemy &e)
 
 void pattern_3 (Enemy &e)
 {
-	e.pos[1] = g.yres;
+	//e.pos[1] = g.yres;
 	e.pos[0] -= e.xSpeed;
-	e.pos[1] -= 2;
+	e.pos[1] -= 2.0;
 	
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;		
 		e.xSpeed = speed_Randomizer();
+		e.pos[1] = (rand() % (g.yres));
 	}
 }
 
 void pattern_4 (Enemy &e)
 {
-	e.pos[1] = 0.0;
+	//e.pos[1] = 0.0;
 	e.pos[0] -= e.xSpeed;
-	e.pos[1] += 2;
+	e.pos[1] += 2.0;
 	
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;		
 		e.xSpeed = speed_Randomizer();
+		e.pos[1] = (rand() % (g.yres));
 	}
 }
 
