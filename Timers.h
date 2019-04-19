@@ -6,7 +6,7 @@ class Timers {
         double physicsRate;
         double oobillion;
         struct timespec timeStart, timeEnd, timeCurrent;
-        struct timespec walkTime;
+        struct timespec walkTime, menuSelectionTime, menuSelectionDelay;
         Timers();
         double timeDiff(timespec * start, timespec * end);
         void timeCopy(timespec * dest, timespec * source);
