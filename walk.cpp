@@ -52,6 +52,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
 	"images/Saibaman.gif", "images/powerup.gif", "images/gordon1.png", "images/explosion.gif"};
 
+
 //-----------------------------------------------------------------------------
 //Setup timers
 class Timers {
@@ -410,6 +411,7 @@ void initOpengl(void)
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
 
+
 	//------------------------explosion----------------------------------
 	w = img[12].width;
 	h = img[12].height;
@@ -578,8 +580,9 @@ extern void kiHandler(int);
 extern void saibaPhysics();
 extern void bossPhysics();
 extern void powerupsPhysics();
-extern void velUpd(int);
-extern void gokuMove();
+//extern void velUpd(int);
+//extern void gokuMove();
+extern void gokuIMove(int);
 
 void physics(void)
 {
@@ -598,7 +601,7 @@ void physics(void)
 			//CHANGED - shifts goku's pos by velocity, resets velocity
 			//          if character hits window edges
 			//++g.walkFrame;
-			gokuMove();
+			//gokuMove();
 			if (g.walkFrame >= 16)
 				g.walkFrame -= 16;
 			timers.recordTime(&timers.walkTime);
@@ -616,16 +619,16 @@ void physics(void)
 		//------------------check for movement keys-----------------------------
 		if (g.startFlag == 1 && g.pauseFlag == 0) {
 			if (g.keys[XK_a] || g.keys[XK_Left]) {
-				velUpd(0);
+				gokuIMove(0);
 			}
 			if (g.keys[XK_d] || g.keys[XK_Right]) {
-				velUpd(1);
+				gokuIMove(1);
 			}
 			if (g.keys[XK_w] || g.keys[XK_Up]) {
-				velUpd(2);
+				gokuIMove(2);
 			}
 			if (g.keys[XK_s] || g.keys[XK_Down]) {
-				velUpd(3);
+				gokuIMove(3);
 			}
 		}
 	}
@@ -703,7 +706,9 @@ void render(void)
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glDisable(GL_ALPHA_TEST);
 			}
+
 			enemyHandler(g.saibaTexture, g.bossTexture, g.explosionTexture);
+
 			powerupsRender(g.powerupTexture);
 
 			sRender();

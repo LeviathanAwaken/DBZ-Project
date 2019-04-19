@@ -41,7 +41,9 @@ class Global {
 		GLuint saibaTexture;
 		GLuint powerupTexture;
 		GLuint bossTexture;
+
 		GLuint explosionTexture;
+
 
 		Vec box[20];
 		Global() {

@@ -35,6 +35,7 @@ class Explosion {
 public:
 	float pos[3];
 
+
 	Explosion () {
 
 		pos[0] = 0.0;
@@ -42,6 +43,7 @@ public:
 		pos[2] = 0.0;
 	}
 } explosion;
+
 
 //-----------------------credit screen stuff-----------------------------------------
 
@@ -92,8 +94,10 @@ void Enemy_init ()
 
 	boss.pos[0] = (g.xres + 100);
 	boss.pos[1] = (g.yres/2);
+
 	explosion.pos[0] = 5000;
 	explosion.pos[1] = 0;
+
 }
 
 void saibaPhysics ()
@@ -196,6 +200,7 @@ void bossRender (GLuint image)
 
 }
 
+
 void explosionRender (GLuint image)
 {
 	glPushMatrix();
@@ -233,6 +238,7 @@ void enemyHandler (GLuint image1, GLuint image2, GLuint image3) {
 		saibaRender(image1);
 		bossRender(image2);
 		explosionRender(image3);
+
 }
 
 //--------------------enemy attack patterns----------------------------------------
@@ -325,8 +331,10 @@ int amp_Randomizer (void)
 void detection (int Eindices) {
 	enemy[Eindices].eHealth --;
 	if (enemy[Eindices].eHealth == 0) {
+
 		explosion.pos[0] = enemy[Eindices].pos[0];
 		explosion.pos[1] = enemy[Eindices].pos[1];
+
 		enemy[Eindices].pos[0] = g.xres;
 		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
 		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
