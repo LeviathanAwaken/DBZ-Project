@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif", "images/gordon.PNG"};
+	"images/Saibaman.gif", "images/powerup.gif", "images/gordon1.png", "images/explosion.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -409,6 +409,18 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+	//------------------------explosion----------------------------------
+	w = img[12].width;
+	h = img[12].height;
+	glGenTextures(1, &g.explosionTexture);
+	glBindTexture(GL_TEXTURE_2D, g.explosionTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[12]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint);
@@ -624,7 +636,7 @@ extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
-extern void enemyHandler(GLuint, GLuint);
+extern void enemyHandler(GLuint, GLuint, GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
@@ -691,7 +703,7 @@ void render(void)
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glDisable(GL_ALPHA_TEST);
 			}
-			enemyHandler(g.saibaTexture, g.bossTexture);
+			enemyHandler(g.saibaTexture, g.bossTexture, g.explosionTexture);
 			powerupsRender(g.powerupTexture);
 
 			sRender();

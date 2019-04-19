@@ -31,6 +31,17 @@ int freq_Randomizer(void);
 int amp_Randomizer(void);
 void detection();
 
+class Explosion {
+public:
+	float pos[3];
+
+	Explosion () {
+
+		pos[0] = 0.0;
+		pos[1] = 0.0;
+		pos[2] = 0.0;
+	}
+} explosion;
 
 //-----------------------credit screen stuff-----------------------------------------
 
@@ -81,6 +92,8 @@ void Enemy_init ()
 
 	boss.pos[0] = (g.xres + 100);
 	boss.pos[1] = (g.yres/2);
+	explosion.pos[0] = 5000;
+	explosion.pos[1] = 0;
 }
 
 void saibaPhysics ()
@@ -92,10 +105,10 @@ void saibaPhysics ()
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
 			pattern_2(enemy[i]);
-		if(enemy[i].pattern == 3)
-			pattern_3(enemy[i]);
-		/*if(enemy[i].pattern == 4)
-			pattern_4(enemy[i]);*/
+		//if(enemy[i].pattern == 3)
+		//	pattern_3(enemy[i]);
+		//if(enemy[i].pattern == 4)
+		//	pattern_4(enemy[i]);
 	}
 
 }
@@ -108,12 +121,13 @@ void bossPhysics ()
 	} 
 }
 
+
 //----------------------------Drawing the enemies-------------------------------------------------
 
 //render the saibamen
 void saibaRender (GLuint image)
 {
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 10; i++) {
 		glPushMatrix();
 		glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -182,12 +196,43 @@ void bossRender (GLuint image)
 
 }
 
+void explosionRender (GLuint image)
+{
+	glPushMatrix();
+		glTranslated(explosion.pos[0], explosion.pos[1], explosion.pos[2]);
+		glColor3f(1.0, 1.0, 1.0);
+		glBindTexture(GL_TEXTURE_2D, image);
+		//
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		glColor4ub(255,255,255,255);
+
+
+			float tx = 0, ty = 0;
+
+			
+			glBegin(GL_QUADS);
+			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
+			glTexCoord2f(tx+1, ty);   glVertex2i(0, 50);
+			glTexCoord2f(tx, ty);     glVertex2i(70, 50);
+			glTexCoord2f(tx, ty+1);   glVertex2i(70, 0);
+			glEnd();
+
+
+
+			glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_ALPHA_TEST);
+}
+
 //------------------------Draw the enemies-----------------------------------------
 
-void enemyHandler (GLuint image1, GLuint image2) {
+void enemyHandler (GLuint image1, GLuint image2, GLuint image3) {
 
 		saibaRender(image1);
 		bossRender(image2);
+		explosionRender(image3);
 }
 
 //--------------------enemy attack patterns----------------------------------------
@@ -224,27 +269,26 @@ void pattern_2 (Enemy &e)
 
 void pattern_3 (Enemy &e)
 {
-		e.pos[0] -= e.xSpeed;
-		while (e.pos[1] < (g.yres) + 10) {
-			e.pos[1] += 1;
-		}
-		if (e.pos[0] < -50){
-			e.pos[0] = g.xres;
-			e.pos[1] = (rand() % g.yres + 1);
-			e.xSpeed = speed_Randomizer();
-
-		}
+	e.pos[1] = g.yres;
+	e.pos[0] -= e.xSpeed;
+	e.pos[1] -= 2;
+	
+	if (e.pos[0] < -50){
+		e.pos[0] = g.xres;		
+		e.xSpeed = speed_Randomizer();
+	}
 }
 
 void pattern_4 (Enemy &e)
 {
-	e.pos[0] -= 1;
-	e.pos[1] = (e.pos[0] * e.pos[0]);
+	e.pos[1] = 0.0;
+	e.pos[0] -= e.xSpeed;
+	e.pos[1] += 2;
+	
 	if (e.pos[0] < -50){
-			e.pos[0] = g.xres;
-			e.pos[1] = (rand() % g.yres + 1);
-
-		}
+		e.pos[0] = g.xres;		
+		e.xSpeed = speed_Randomizer();
+	}
 }
 
 //------------------variable randomization------------------------------
@@ -271,6 +315,7 @@ int amp_Randomizer (void)
 	return amp;
 }
 
+
 //-------------------collision detection---------------------------------------
 
 /*Enemy collision detection for whenever an enemy is hit by a ki blast
@@ -280,6 +325,8 @@ int amp_Randomizer (void)
 void detection (int Eindices) {
 	enemy[Eindices].eHealth --;
 	if (enemy[Eindices].eHealth == 0) {
+		explosion.pos[0] = enemy[Eindices].pos[0];
+		explosion.pos[1] = enemy[Eindices].pos[1];
 		enemy[Eindices].pos[0] = g.xres;
 		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
 		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
