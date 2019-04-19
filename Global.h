@@ -40,6 +40,7 @@ class Global {
 		GLuint namekTexture;
 		GLuint saibaTexture;
 		GLuint powerupTexture;
+		GLuint bossTexture;
 
 		Vec box[20];
 		Global() {
