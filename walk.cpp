@@ -421,9 +421,19 @@ void init()
 	Enemy_init();
 	Powerups_init();
 }
+extern void checkMouseMenu(XEvent*);
 
 void checkMouse(XEvent *e)
 {
+	switch(gameState) {
+		case MAINMENU:
+			checkMouseMenu(e);
+			break;
+		case PAUSEMENU:
+			break;
+		case DEATH:
+			break;
+		case INGAME: {
 	//Did the mouse move?
 	//Was a mouse button clicked?
 	static int savex = 0;
@@ -444,6 +454,8 @@ void checkMouse(XEvent *e)
 		//Mouse moved
 		savex = e->xbutton.x;
 		savey = e->xbutton.y;
+	}
+		}
 	}
 }
 
@@ -594,7 +606,7 @@ Flt VecNormalize(Vec vec)
 	extern void gokuMove();
 	extern void checkKeysMainMenu();
 	extern void checkKeysPauseMenu();
-	// extern void checkKeysLost();
+	extern void checkKeysLost();
 
 	void physics(void)
 	{
@@ -607,7 +619,7 @@ Flt VecNormalize(Vec vec)
 			checkKeysPauseMenu();
 			break;
 		case DEATH:
-			// checkKeysLost();
+		  checkKeysLost();
 			break;
 		case INGAME:
 			if (g.pauseFlag)
@@ -676,9 +688,22 @@ extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
-
+extern void renderMainMenu();
+extern void renderPauseMenu();
+// extern void renderCredits();
 void render(void)
 {
+	switch(gameState)
+	{
+		case MAINMENU:
+			renderMainMenu();
+			break;
+		case PAUSEMENU:
+			renderPauseMenu();
+		case DEATH:
+		//need to develop death screen
+			break;
+		case INGAME: {
 	if (g.creditFlag && !g.pauseFlag) {
 		//Put picture functions here
 		glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -770,4 +795,6 @@ void render(void)
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 		}
 	}
+	}
+}
 }
