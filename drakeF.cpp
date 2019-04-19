@@ -13,9 +13,11 @@
 #include <cmath>
 #include "Global.h"
 #include "Enemy.h"
+#include "Boss.h"
 
 extern Global g;
 Enemy enemy[10];
+Boss boss;
 extern void enemyReference(Enemy *);
 float nticks = 0.0;
 int count = 5;
@@ -30,6 +32,7 @@ int amp_Randomizer(void);
 void detection();
 
 
+//-----------------------credit screen stuff-----------------------------------------
 
 void showdrakeText(int x, int y)
 {
@@ -59,7 +62,8 @@ void showDrake(int x, int y, GLuint textInt)
 
 }
 
-//-----------------------------movement for enemy work in progress-----------------------------
+//-----------------------------movement for enemies-----------------------------
+
 void Enemy_init ()
 {
 	srand(time(NULL));
@@ -74,6 +78,9 @@ void Enemy_init ()
 		enemy[i].pos[1] = (rand() % (g.yres));
 		enemyReference(&enemy[i]);
 	}
+
+	boss.pos[0] = (g.xres + 100);
+	boss.pos[1] = (g.yres/2);
 }
 
 void saibaPhysics ()
@@ -92,7 +99,18 @@ void saibaPhysics ()
 	}
 
 }
+
+void bossPhysics () 
+{
+	
+	if (boss.pos[0] > g.xres/2) {
+		boss.pos[0] -= 0.3;
+	} 
+}
+
 //----------------------------Drawing the enemies-------------------------------------------------
+
+//render the saibamen
 void saibaRender (GLuint image)
 {
 	for (int i = 0; i < 5; i++) {
@@ -108,7 +126,7 @@ void saibaRender (GLuint image)
 
 			float tx = 0, ty = 0;
 
-			// Render saibamen
+			
 			glBegin(GL_QUADS);
 			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
 			glTexCoord2f(tx+1, ty);   glVertex2i(0, 50);
@@ -128,11 +146,48 @@ void saibaRender (GLuint image)
 
 }
 
+//render the boss
+void bossRender (GLuint image)
+{
+	
+		glPushMatrix();
+		glTranslated(boss.pos[0], boss.pos[1], boss.pos[2]);
+		glColor3f(1.0, 1.0, 1.0);
+		glBindTexture(GL_TEXTURE_2D, image);
+		//
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		glColor4ub(255,255,255,255);
+
+
+			float tx = 0, ty = 0;
+
+			
+			glBegin(GL_QUADS);
+			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
+			glTexCoord2f(tx+1, ty);   glVertex2i(0, 150);
+			glTexCoord2f(tx, ty);     glVertex2i(200, 150);
+			glTexCoord2f(tx, ty+1);   glVertex2i(200, 0);
+			glEnd();
+
+
+
+			glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_ALPHA_TEST);
+
+
+	
+
+}
+
 //------------------------Draw the enemies-----------------------------------------
 
-void enemyHandler (GLuint image) {
+void enemyHandler (GLuint image1, GLuint image2) {
 
-		saibaRender(image);
+		saibaRender(image1);
+		bossRender(image2);
 }
 
 //--------------------enemy attack patterns----------------------------------------
@@ -216,12 +271,22 @@ int amp_Randomizer (void)
 	return amp;
 }
 
+//-------------------collision detection---------------------------------------
+
+/*Enemy collision detection for whenever an enemy is hit by a ki blast
+ *or collides with goku directly
+ */
+
 void detection (int Eindices) {
-	enemy[Eindices].pos[0] = g.xres;
-	enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
-	enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
-	enemy[Eindices].xSpeed = speed_Randomizer();
-	enemy[Eindices].wavefreq = freq_Randomizer();
-	enemy[Eindices].waveamp = amp_Randomizer();
+	enemy[Eindices].eHealth --;
+	if (enemy[Eindices].eHealth == 0) {
+		enemy[Eindices].pos[0] = g.xres;
+		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
+		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
+		enemy[Eindices].xSpeed = speed_Randomizer();
+		enemy[Eindices].wavefreq = freq_Randomizer();
+		enemy[Eindices].waveamp = amp_Randomizer();
+		enemy[Eindices].eHealth = 2;
+	}
 
 } 

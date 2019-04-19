@@ -50,7 +50,7 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif"};
+	"images/Saibaman.gif", "images/powerup.gif", "images/gordon.PNG"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -397,6 +397,18 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+	//------------------------Boss----------------------------------
+	w = img[11].width;
+	h = img[11].height;
+	glGenTextures(1, &g.bossTexture);
+	glBindTexture(GL_TEXTURE_2D, g.bossTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[11]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint);
@@ -552,6 +564,7 @@ Flt VecNormalize(Vec vec)
 
 extern void kiHandler(int);
 extern void saibaPhysics();
+extern void bossPhysics();
 extern void powerupsPhysics();
 extern void velUpd(int);
 extern void gokuMove();
@@ -585,6 +598,7 @@ void physics(void)
 				g.box[i][0] += g.xres + 10.0;
 		}
 		saibaPhysics();
+		bossPhysics();
 		powerupsPhysics();
 
 		//------------------check for movement keys-----------------------------
@@ -610,7 +624,7 @@ extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
-extern void enemyHandler(GLuint);
+extern void enemyHandler(GLuint, GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
@@ -677,7 +691,7 @@ void render(void)
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glDisable(GL_ALPHA_TEST);
 			}
-			enemyHandler(g.saibaTexture);
+			enemyHandler(g.saibaTexture, g.bossTexture);
 			powerupsRender(g.powerupTexture);
 
 			sRender();

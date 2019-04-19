@@ -1,5 +1,5 @@
-#ifndef ENEMY_H_
-#define ENEMY_H_
+#ifndef BOSS_H_
+#define BOSS_H_
 
 #include "Global.h"
 #include <stdlib.h>
@@ -8,7 +8,7 @@ extern Global g;
 
 
 //-------------------Enemy class---------------------------------
-class Enemy {
+class Boss {
 public:
     
     float pos[3];
@@ -21,11 +21,11 @@ public:
     
 
     
-    Enemy () {
+    Boss () {
      
      srand(time(NULL));
-     pattern = 1;
-     eHealth = 2;
+     //pattern = 1;
+     eHealth = 20;
      wavepos = 0.0;
      xSpeed = 0;
      wavefreq = 0;
