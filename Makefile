@@ -19,9 +19,11 @@ lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 	libggfontsMac.a -Wall -owalk \
 	-I/usr/X11R6/include \
 	-L/usr/X11R6/lib -lX11 \
+	-I/usr/local/opt/openssl/include \
+	-L/usr/local/opt/openssl/lib -lssl -lcrypto \
 	-framework OpenGL \
 	-framework Cocoa -lm -lGL \
-	-framework OpenAl
+	
 
 
 clean:
