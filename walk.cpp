@@ -575,6 +575,8 @@ int checkKeys(XEvent *e)
 			break;
 		case XK_j:
 			g.score++;
+			extern int score_add(int); //temporary spot
+			score_add(g.score);
 			break;
 		case XK_z:
 			if (g.paused == true && g.startFlag == 0)
