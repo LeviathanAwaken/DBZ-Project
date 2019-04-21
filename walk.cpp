@@ -386,7 +386,7 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 //--------------------------------------------------------------------------
-    
+
 //-------------------------Power-Up Texture---------------------------------
 	w = img[10].width;
 	h = img[10].height;
@@ -550,8 +550,9 @@ int checkKeys(XEvent *e)
 		{
 		case XK_c:
 			g.creditFlag ^= 1;
-			// [[fallthrough]];
-
+			timers.recordTime(&timers.walkTime);
+			g.walk ^= 1;
+			break;
 		case XK_space:
 			timers.recordTime(&timers.walkTime);
 			g.walk ^= 1;
@@ -598,9 +599,9 @@ int checkKeys(XEvent *e)
 		break;
 	default:
 		printf("FATAL ERROR IN GAME STATE\n\n");
-    exit(1);
+	exit(1);
 	}
-			
+
 
 	return 0;
 }
@@ -623,86 +624,81 @@ Flt VecNormalize(Vec vec)
 	vec[1] = ylen * tlen;
 	vec[2] = zlen * tlen;
 	return (len);
-	}
+}
 
-	extern void kiHandler(int);
-	extern void saibaPhysics();
-	extern void powerupsPhysics();
-	extern void velUpd(int);
-	extern void gokuMove();
-	extern void checkKeysMainMenu();
-	extern void checkKeysPauseMenu();
-	extern void checkKeysLost();
+extern void kiHandler(int);
+extern void saibaPhysics();
+extern void bossPhysics();
+extern void powerupsPhysics();
+//extern void velUpd(int);
+//extern void gokuMove();
+extern void gokuIMove(int);
+extern void checkKeysMainMenu();
+extern void checkKeysPauseMenu();
+extern void checkKeysLost();
 
-	void physics(void)
+void physics(void)
+{
+	switch (gameState)
 	{
-		switch (gameState)
+	case MAINMENU:
+		checkKeysMainMenu();
+		break;
+	case PAUSEMENU:
+		checkKeysPauseMenu();
+		break;
+	case DEATH:
+	  checkKeysLost();
+		break;
+	case INGAME:
+		if (g.pauseFlag)
 		{
-		case MAINMENU:
-			checkKeysMainMenu();
-			break;
-		case PAUSEMENU:
-			checkKeysPauseMenu();
-			break;
-		case DEATH:
-		  checkKeysLost();
-			break;
-		case INGAME:
-			if (g.pauseFlag)
-			{
-				return;
+			return;
+		}
+
+		if (g.walk) {
+			//man is walking...
+			//when time is up, advance the frame.
+			timers.recordTime(&timers.timeCurrent);
+			double timeSpan = timers.timeDiff(&timers.walkTime,
+							&timers.timeCurrent);
+			if (timeSpan > g.delay) {
+				//advance
+				//CHANGED - shifts goku's pos by velocity, resets velocity
+				//          if character hits window edges
+				//++g.walkFrame;
+				//gokuMove();
+				if (g.walkFrame >= 16)
+					g.walkFrame -= 16;
+				timers.recordTime(&timers.walkTime);
+				kiHandler(0);
 			}
+			for (int i=0; i<20; i++) {
+				g.box[i][0] -= 0.3 * (0.05 / g.delay);
+				if (g.box[i][0] < -10.0)
+					g.box[i][0] += g.xres + 10.0;
+			}
+			saibaPhysics();
+			bossPhysics();
+			powerupsPhysics();
 
-			if (g.walk)
-			{
-				//man is walking...
-				//when time is up, advance the frame.
-				timers.recordTime(&timers.timeCurrent);
-				double timeSpan = timers.timeDiff(&timers.walkTime,
-																					&timers.timeCurrent);
-				if (timeSpan > g.delay)
-				{
-					//advance
-					//CHANGED - shifts goku's pos by velocity, resets velocity
-					//          if character hits window edges
-					//++g.walkFrame;
-					gokuMove();
-					if (g.walkFrame >= 16)
-						g.walkFrame -= 16;
-					timers.recordTime(&timers.walkTime);
-					kiHandler(0);
+			//------------------check for movement keys-----------------------------
+			if (g.startFlag == 1 && g.pauseFlag == 0) {
+				if (g.keys[XK_a] || g.keys[XK_Left]) {
+					gokuIMove(0);
 				}
-				for (int i = 0; i < 20; i++)
-				{
-					g.box[i][0] -= 0.3 * (0.05 / g.delay);
-					if (g.box[i][0] < -10.0)
-						g.box[i][0] += g.xres + 10.0;
+				if (g.keys[XK_d] || g.keys[XK_Right]) {
+					gokuIMove(1);
 				}
-				saibaPhysics();
-				powerupsPhysics();
-
-				//------------------check for movement keys-----------------------------
-				if (g.startFlag == 1 && g.pauseFlag == 0)
-				{
-					if (g.keys[XK_a] || g.keys[XK_Left])
-					{
-						velUpd(0);
-					}
-					if (g.keys[XK_d] || g.keys[XK_Right])
-					{
-						velUpd(1);
-					}
-					if (g.keys[XK_w] || g.keys[XK_Up])
-					{
-						velUpd(2);
-					}
-					if (g.keys[XK_s] || g.keys[XK_Down])
-					{
-						velUpd(3);
-					}
+				if (g.keys[XK_w] || g.keys[XK_Up]) {
+					gokuIMove(2);
+				}
+				if (g.keys[XK_s] || g.keys[XK_Down]) {
+					gokuIMove(3);
 				}
 			}
 		}
+	}
 }
 
 extern void showSean(int, int, GLuint);
