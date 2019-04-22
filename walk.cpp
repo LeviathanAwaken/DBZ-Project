@@ -50,7 +50,9 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif","images/finalFormLogoTexture.gif","images/gordon1.png", "images/explosion.gif"};
+	"images/Saibaman.gif", "images/powerup.gif",
+	"images/finalFormLogoTexture.gif","images/gordon1.png",
+	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png"};
 
 
 //-----------------------------------------------------------------------------
@@ -435,15 +437,41 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+
+	//------------------------Goku SS3----------------------------------
+	w = img[14].width;
+	h = img[14].height;
+	glGenTextures(1, &g.ss3Texture);
+	glBindTexture(GL_TEXTURE_2D, g.ss3Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[14]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
+
+	//------------------------Goku SSB----------------------------------
+	w = img[15].width;
+	h = img[15].height;
+	glGenTextures(1, &g.ssbTexture);
+	glBindTexture(GL_TEXTURE_2D, g.ssbTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[15]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
 }
 
-extern void sInit(GLuint, GLuint);
+extern void sInit(GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
-	sInit(g.walkTexture, g.kiTexture);
+	sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
 	img[13].rows = 9;
@@ -748,7 +776,7 @@ void render(void)
 			showPause(350, 100);
 		}
 		else {
-			Rect r;
+			//Rect r;
 			//Clear the screen
 			glClearColor(0.1, 0.1, 0.1, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -802,7 +830,7 @@ void render(void)
 			sRender();
 
 			//
-			unsigned int c = 0x000000;
+			/*unsigned int c = 0x000000;
 			r.bot = g.yres - 20;
 			r.left = 10;
 			r.center = 0;
@@ -816,7 +844,7 @@ void render(void)
 			ggprint8b(&r, 16, c, "down arrow/s -> fly down");
 			ggprint8b(&r, 16, c, "j -> test temp score update");
 			ggprint8b(&r, 16, c, "p -> test pause screen");
-			ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+			ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);*/
 			extern void showScore(int, int, int);
 			showScore(5, 22, g.score);
 			if (g.startFlag == 0) {

@@ -53,7 +53,8 @@ extern void detection(int);
 //Class encompassing the main character's position and other attributes.
 class Protag {
 	public:
-		GLuint pic;
+		GLuint pics[3];
+		int currentPic;
 		float pos[2];
 		//float vel[2];
 		int height;
@@ -110,13 +111,15 @@ void gokuInit()
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 	goku.health = 3;
 	goku.moveS = 3.5;
+	goku.currentPic = 0;
 }
 
 //Generalized initializer for the file, called in the main file.
-void sInit(GLuint gok, GLuint image)
+void sInit(GLuint gok, GLuint gok2, GLuint gok3)
 {
-	goku.pic = gok;
-	ki.image = image;
+	goku.pics[0] = gok;
+	goku.pics[1] = gok2;
+	goku.pics[2] = gok3;
 	gokuInit();
 	kiInit();
 }
@@ -244,21 +247,14 @@ void gokuRender()
 
 	glTranslatef(goku.pos[0], goku.pos[1], 0);
 	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, g.walkTexture);
-	//
+	glBindTexture(GL_TEXTURE_2D, goku.pics[goku.currentPic]);
+
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);
 
-	// CHANGED
-	int ix = 0;
-	int iy = 0;
-	if (g.walkFrame >= 8)
-		iy = 1;
-
-	float tx = (float)ix;
-	float ty = (float)iy;
-
+	float tx = 0.0;
+	float ty = 0.0;
 	glBegin(GL_QUADS);
 		glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
 		glTexCoord2f(tx+1, ty);    	glVertex2i(0, goku.height);
@@ -318,7 +314,7 @@ void kiRender(int kiID)
 
 	glTranslatef(ki.kiTracker[kiID][0], ki.kiTracker[kiID][1], 0);
 	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, ki.image);
+	glBindTexture(GL_TEXTURE_2D, g.kiTexture);
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
@@ -375,10 +371,27 @@ void gokuCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
+			if (goku.currentPic > 0) {
+				goku.moveS -= goku.currentPic;
+				goku.currentPic--;
+			}
 			detection(i);
 			healthCheck();
 			break;
 		}
+	}
+	//Boss Collision
+	bool xColl = finBoss->pos[0] + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= finBoss->pos[0];
+	bool yColl = finBoss->pos[1] + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= finBoss->pos[1];
+	if (xColl && yColl) {
+		goku.health--;
+		if (goku.currentPic > 0) {
+			goku.moveS -= goku.currentPic;
+			goku.currentPic--;
+		}
+		healthCheck();
 	}
 }
 
@@ -392,6 +405,10 @@ void gokuPower()
 			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health++;
+			if (goku.currentPic < 2 && goku.health > 3 + goku.currentPic) {
+				goku.currentPic++;
+				goku.moveS += goku.currentPic;
+			}
 			//insert powerup removal function here
 			break;
 		}

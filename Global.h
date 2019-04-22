@@ -42,6 +42,8 @@ class Global {
 		GLuint bossTexture;
 		GLuint finalFormLogoTexture;
 		GLuint explosionTexture;
+		GLuint ss3Texture;
+		GLuint ssbTexture;
 
 
 		Vec box[20];
