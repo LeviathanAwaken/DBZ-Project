@@ -23,6 +23,7 @@ const int count = 10;
 Enemy enemy[count];
 Boss boss;
 extern void enemyReference(Enemy *);
+extern void bossReference(Boss *);
 float nticks = 0.0;
 void Enemy_init();
 void pattern_1(Enemy&);
@@ -101,6 +102,7 @@ void Enemy_init ()
 
 	boss.pos[0] = (g.xres + 100);
 	boss.pos[1] = (g.yres/2);
+	bossReference(&boss);
 
 }
 
@@ -121,9 +123,9 @@ void saibaPhysics ()
 
 }
 
-void bossPhysics () 
+void bossPhysics ()
 {
-	
+
 	if (boss.pos[0] > g.xres/2) {
 		
 		boss.pos[0] -= 0.7;
@@ -131,6 +133,7 @@ void bossPhysics ()
 	}
 	nticks+= 0.3;
 	boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
+
 }
 
 
@@ -152,7 +155,7 @@ void saibaRender (GLuint image)
 
 			float tx = 0, ty = 0;
 
-			
+
 			glBegin(GL_QUADS);
 			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
 			glTexCoord2f(tx+1, ty);   glVertex2i(0, 50);
@@ -175,7 +178,7 @@ void saibaRender (GLuint image)
 //render the boss
 void bossRender (GLuint image)
 {
-	
+
 		glPushMatrix();
 		glTranslated(boss.pos[0], boss.pos[1], boss.pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -188,7 +191,7 @@ void bossRender (GLuint image)
 
 			float tx = 0, ty = 0;
 
-			
+
 			glBegin(GL_QUADS);
 			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
 			glTexCoord2f(tx+1, ty);   glVertex2i(0, 150);
@@ -204,7 +207,7 @@ void bossRender (GLuint image)
 		glDisable(GL_ALPHA_TEST);
 
 
-	
+
 
 }
 
@@ -245,6 +248,7 @@ void Explosion::draw(GLuint image)
 	if (frame >= img[spriteSheetIndex].columns) {
 		iy = 1;
 	}
+
 
 	if (frame >= (img[spriteSheetIndex].columns*2)) {
 		iy = 2;
@@ -329,6 +333,7 @@ void pattern_1 (Enemy &e)
 
 void pattern_2 (Enemy &e)
 {
+
 		
 	
 		
@@ -351,12 +356,14 @@ void pattern_3 (Enemy &e)
 	
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] -= 2.0;
+
 	if (e.pos[1] == g.yres/2) {
 		e.pos[1] += 2.0;
 	}
 	
+
 	if (e.pos[0] < -50){
-		e.pos[0] = g.xres;		
+		e.pos[0] = g.xres;
 		e.xSpeed = speed_Randomizer();
 		e.pos[1] = (rand() % (g.yres));
 	}
@@ -367,12 +374,14 @@ void pattern_4 (Enemy &e)
 	
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] += 2.0;
+
 	if (e.pos[1] == g.yres/2) {
 		e.pos[1] -= 2.0;
 	}
 	
+
 	if (e.pos[0] < -50){
-		e.pos[0] = g.xres;		
+		e.pos[0] = g.xres;
 		e.xSpeed = speed_Randomizer();
 		e.pos[1] = (rand() % (g.yres));
 	}
@@ -443,4 +452,4 @@ void detection (int Eindices) {
 		enemy[Eindices].eHealth = 2;
 	}
 
-} 
+}

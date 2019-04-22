@@ -21,6 +21,8 @@
 #include <cmath>
 #include <vector>
 #include "Enemy.h"
+#include "Powerups.h"
+#include "Boss.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -32,17 +34,23 @@ const int COLLISION = 2;
 const int MAX_ENEM = 10;
 
 Enemy *enemyRef[MAX_ENEM];
-int limiter = 0;
+Boss *finBoss;
+Powerups *powRef[2];
+int elimiter = 0;
+int plimiter = 0;
 
 //Prototypes and extern function calls
 void kiCollision(int);
 void kiHandler(int);
+void bossCollision(int);
 void gokuRender();
 void gokuCollision();
 void healthCheck();
 bool gokuBounds(int);
+void gokuPower();
 extern void detection(int);
 
+//Class encompassing the main character's position and other attributes.
 class Protag {
 	public:
 		GLuint pic;
@@ -62,22 +70,36 @@ class kiBlast {
 		int kiVel;
 } ki;
 
+//Establishes a poiner to enemies being handled in Drake's file.
 void enemyReference(Enemy* enem)
 {
-	enemyRef[limiter] = enem;
-	limiter++;
+	enemyRef[elimiter] = enem;
+	elimiter++;
+}
+
+void bossReference(Boss* bossIn)
+{
+	finBoss = bossIn;
+}
+
+//Establishes a pointer to powerups being handled in Josh's file.
+void powerReference(Powerups* power)
+{
+	powRef[plimiter] = power;
+	plimiter++;
 }
 
 //Initializes the kiClass for use.
 void kiInit()
 {
-	ki.kiVel = 4;
+	ki.kiVel = 5;
 	for (int i = 0; i < MAX_KI; i++) {
 		ki.kiTracker[i][0] = UNASSIGN;
 		ki.kiTracker[i][1] = UNASSIGN;
 	}
 }
 
+//Sets up the starting values for the main character.
 void gokuInit()
 {
 	//goku.vel[0] = 0;
@@ -175,6 +197,7 @@ void gokuIMove(int key)
 			break;
 	}
 	gokuCollision();
+	gokuPower();
 }
 
 bool gokuBounds(int dir)
@@ -283,6 +306,7 @@ void kiMove(int kiID)
 		ki.kiTracker[kiID][0] += ki.kiVel;
 	}
 	kiCollision(kiID);
+	bossCollision(kiID);
 }
 
 //Handles graphics for the kiBlasts.
@@ -317,7 +341,6 @@ void kiRender(int kiID)
 void kiCollision(int kiRef)
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
-		//printf("%f\t%d\t%d\n", enemyRef[i]->pos[0], ki.kiTracker[kiRef][0], g.xres);
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
 			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
 		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]
@@ -327,6 +350,18 @@ void kiCollision(int kiRef)
 			detection(i);
 			break;
 		}
+	}
+}
+
+void bossCollision(int kiRef)
+{
+	bool xColl = finBoss->pos[0] + 200 >= ki.kiTracker[kiRef][0]
+		&& ki.kiTracker[kiRef][0] + 15 >= finBoss->pos[0];
+	bool yColl = finBoss->pos[1] + 150 >= ki.kiTracker[kiRef][1]
+		&& ki.kiTracker[kiRef][1] + 30 >= finBoss->pos[1];
+	if (xColl && yColl) {
+		kiFree(kiRef);
+		//insert Boss update function here
 	}
 }
 
@@ -342,6 +377,22 @@ void gokuCollision()
 			goku.health--;
 			detection(i);
 			healthCheck();
+			break;
+		}
+	}
+}
+
+//Collision detection with powerups.
+void gokuPower()
+{
+	for (int i = 0; i < plimiter; i++) {
+		bool xColl = powRef[i]->pos[0] + 70 >= goku.pos[0]
+			&& goku.pos[0] + goku.width >= powRef[i]->pos[0];
+		bool yColl = powRef[i]->pos[1] + 50 >= goku.pos[1]
+			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
+		if (xColl && yColl) {
+			goku.health++;
+			//insert powerup removal function here
 			break;
 		}
 	}
