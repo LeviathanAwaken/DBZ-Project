@@ -474,6 +474,8 @@ void init()
 	sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	img[13].rows = 9;
+	img[13].columns = 9;
 }
 extern void checkMouseMenu(XEvent*);
 
@@ -742,6 +744,8 @@ extern void powerupsRender(GLuint);
 extern void sRender();
 extern void renderMainMenu();
 extern void renderPauseMenu();
+extern void explosionRender(GLuint);
+extern void cleanExplosions();
 // extern void renderCredits();
 void render(void)
 {
@@ -820,6 +824,8 @@ void render(void)
 			enemyHandler(g.saibaTexture, g.bossTexture, g.explosionTexture);
 
 			powerupsRender(g.powerupTexture);
+			cleanExplosions();
+			explosionRender(g.explosionTexture);
 
 			sRender();
 
