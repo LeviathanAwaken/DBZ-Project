@@ -438,6 +438,11 @@ void cleanExplosions()
 void detection (int Eindices) {
 	
 	enemy[Eindices].eHealth --;
+	boss.eHealth --;
+	if (boss.eHealth == 0) {
+		createExplosion(boss.pos[0], boss.pos[1]);
+		boss.pos[0] = 10000;
+	}
 	if (enemy[Eindices].eHealth == 0) {
 		createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
 		//explosion.pos[0] = enemy[Eindices].pos[0];

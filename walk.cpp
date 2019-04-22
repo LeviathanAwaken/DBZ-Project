@@ -796,9 +796,9 @@ void render(void)
 			enemyHandler(g.saibaTexture, g.bossTexture, g.explosionTexture);
 
 			powerupsRender(g.powerupTexture);
-			cleanExplosions();
+			
 			explosionRender(g.explosionTexture);
-
+			cleanExplosions();
 			sRender();
 
 			//
