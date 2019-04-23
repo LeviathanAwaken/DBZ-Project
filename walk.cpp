@@ -52,7 +52,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
-	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png"};
+	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png", 
+	"images/explosion2.gif", "images/explosion3.gif"};
 
 
 //-----------------------------------------------------------------------------
@@ -463,6 +464,30 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+	//------------------------Explosion 2----------------------------------
+	w = img[16].width;
+	h = img[16].height;
+	glGenTextures(1, &g.explosion2Texture);
+	glBindTexture(GL_TEXTURE_2D, g.explosion2Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[16]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
+	//------------------------Explosion 2----------------------------------
+	w = img[17].width;
+	h = img[17].height;
+	glGenTextures(1, &g.explosion3Texture);
+	glBindTexture(GL_TEXTURE_2D, g.explosion3Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[17]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint, GLuint);
@@ -476,6 +501,10 @@ void init()
 	Powerups_init();
 	img[13].rows = 9;
 	img[13].columns = 9;
+	img[16].rows = 6;
+	img[16].columns = 5;
+	img[17].rows = 9;
+	img[17].columns = 8;
 }
 extern void checkMouseMenu(XEvent*);
 
@@ -738,13 +767,13 @@ extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
-extern void enemyHandler(GLuint, GLuint, GLuint);
+extern void enemyHandler(GLuint, GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
 extern void renderMainMenu();
 extern void renderPauseMenu();
-extern void explosionRender(GLuint);
+extern void explosionRender();
 extern void cleanExplosions();
 // extern void renderCredits();
 void render(void)
@@ -821,11 +850,11 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 
-			enemyHandler(g.saibaTexture, g.bossTexture, g.explosionTexture);
+			enemyHandler(g.saibaTexture, g.bossTexture);
 
 			powerupsRender(g.powerupTexture);
 			
-			explosionRender(g.explosionTexture);
+			explosionRender();
 			cleanExplosions();
 			sRender();
 
