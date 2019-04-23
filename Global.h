@@ -44,6 +44,7 @@ class Global {
 		GLuint explosionTexture;
 		GLuint ss3Texture;
 		GLuint ssbTexture;
+		GLuint braceTexture;
 
 
 		Vec box[20];

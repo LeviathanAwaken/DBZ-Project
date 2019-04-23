@@ -52,7 +52,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
-	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png"};
+	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
+	"images/brace.png"};
 
 
 //-----------------------------------------------------------------------------
@@ -463,6 +464,20 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+
+	//------------------------Goku SSB----------------------------------
+	w = img[16].width;
+	h = img[16].height;
+	glGenTextures(1, &g.braceTexture);
+	glBindTexture(GL_TEXTURE_2D, g.braceTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[16]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
 }
 
 extern void sInit(GLuint, GLuint, GLuint);
@@ -668,6 +683,7 @@ extern void gokuIMove(int);
 extern void checkKeysMainMenu();
 extern void checkKeysPauseMenu();
 extern void checkKeysLost();
+extern void braceHandler(int);
 
 void physics(void)
 {
@@ -704,6 +720,7 @@ void physics(void)
 					g.walkFrame -= 16;
 				timers.recordTime(&timers.walkTime);
 				kiHandler(0);
+				braceHandler(0);
 			}
 			for (int i=0; i<20; i++) {
 				g.box[i][0] -= 0.3 * (0.05 / g.delay);

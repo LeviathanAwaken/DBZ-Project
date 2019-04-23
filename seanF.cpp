@@ -29,6 +29,7 @@
 #endif
 
 const int MAX_KI = 10;
+const int MAX_BRACE = 20;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
 const int MAX_ENEM = 10;
@@ -42,6 +43,7 @@ int plimiter = 0;
 //Prototypes and extern function calls
 void kiCollision(int);
 void kiHandler(int);
+void braceHandler(int);
 void bossCollision(int);
 void gokuRender();
 void gokuCollision();
@@ -70,6 +72,14 @@ class kiBlast {
 		int kiTracker[MAX_KI][2];
 		int kiVel;
 } ki;
+
+class bossProjectile {
+	public:
+		GLuint image;
+		int bossTracker[MAX_BRACE][2];
+		int bossXVel;
+		int bossYVel[MAX_BRACE];
+} brace;
 
 //Establishes a poiner to enemies being handled in Drake's file.
 void enemyReference(Enemy* enem)
@@ -114,6 +124,15 @@ void gokuInit()
 	goku.currentPic = 0;
 }
 
+void braceInit()
+{
+	brace.bossXVel = -6;
+	for (int i = 0; i < MAX_BRACE; i++) {
+		brace.bossTracker[i][0] = UNASSIGN;
+		brace.bossTracker[i][1] = UNASSIGN;
+	}
+}
+
 //Generalized initializer for the file, called in the main file.
 void sInit(GLuint gok, GLuint gok2, GLuint gok3)
 {
@@ -122,6 +141,7 @@ void sInit(GLuint gok, GLuint gok2, GLuint gok3)
 	goku.pics[2] = gok3;
 	gokuInit();
 	kiInit();
+	braceInit();
 }
 
 void showText(int x, int y)
@@ -239,6 +259,7 @@ void sRender()
 {
 	gokuRender();
 	kiHandler(1);
+	braceHandler(1);
 }
 
 void gokuRender()
@@ -333,6 +354,63 @@ void kiRender(int kiID)
 	glDisable(GL_ALPHA_TEST);
 }
 
+//Creates a kiBlast, if it's not at max.
+void launchBrace(int id)
+{
+	brace.bossTracker[id][0] = finBoss->pos[0] - 20;
+	brace.bossTracker[id][1] = finBoss->pos[1];
+	srand(time(0));
+	brace.bossYVel[id] = (rand() % 5) * ((rand() % 2 == 1) ? 1 : -1);
+}
+
+//Destroys the kiBlast, and 'unassigns' it.
+void braceFree(int braceID)
+{
+	brace.bossTracker[braceID][0] = UNASSIGN;
+	brace.bossTracker[braceID][1] = UNASSIGN;
+}
+
+//Updates the position of the kiBlast.
+void braceMove(int braceID)
+{
+	if (brace.bossTracker[braceID][0] < 0 ||
+		brace.bossTracker[braceID][1] > g.yres ||
+		brace.bossTracker[braceID][1] < 0) {
+		braceFree(braceID);
+	} else {
+		brace.bossTracker[braceID][0] += brace.bossXVel;
+		brace.bossTracker[braceID][1] += brace.bossYVel[braceID];
+	}
+}
+
+void braceRender(int braceID)
+{
+	float h = 40.0;
+	float w = h/2;
+	glPushMatrix();
+
+	glTranslatef(brace.bossTracker[braceID][0],
+		brace.bossTracker[braceID][1], 0);
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, g.braceTexture);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255,255,255,255);
+
+	float tx = 0.0;
+	float ty = 0.0;
+	glBegin(GL_QUADS);
+	glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
+	glTexCoord2f(tx+1, ty);    	glVertex2i(0, h);
+	glTexCoord2f(tx, ty);    	glVertex2i(w, h);
+	glTexCoord2f(tx, ty+1); 	glVertex2i(w, 0);
+	glEnd();
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
+}
+
 //Collision checking between kiblast and enemies.
 void kiCollision(int kiRef)
 {
@@ -377,7 +455,22 @@ void gokuCollision()
 			}
 			detection(i);
 			healthCheck();
-			break;
+		}
+	}
+	for (int i = 0; i < MAX_BRACE; i++) {
+		bool xColl = brace.bossTracker[i][0] + 40 >= goku.pos[0]
+			&& goku.pos[0] + goku.width >= brace.bossTracker[i][0];
+		bool yColl = brace.bossTracker[i][1] + 20 >= goku.pos[1]
+			&& goku.pos[1] + goku.height >= brace.bossTracker[i][1];
+		if (xColl && yColl) {
+			goku.health--;
+			if (goku.currentPic > 0) {
+				goku.moveS -= goku.currentPic;
+				goku.currentPic--;
+			}
+			braceFree(i);
+			healthCheck();
+			printf("Brace hit.\n");
 		}
 	}
 	//Boss Collision
@@ -432,6 +525,24 @@ void kiHandler(int type)
 				kiMove(i);
 			} else if (type == 1) {
 				kiRender(i);
+			}
+		}
+	}
+}
+
+void braceHandler(int type)
+{
+	if (finBoss->pos[0] < g.xres) {
+		for (int i = 0; i < MAX_BRACE; i++) {
+			if (brace.bossTracker[i][0] == UNASSIGN &&
+				brace.bossTracker[i][1] == UNASSIGN) {
+				launchBrace(type);
+			} else {
+				if (type == 0) {
+					braceMove(i);
+				} else if (type == 1) {
+					braceRender(i);
+				}
 			}
 		}
 	}
