@@ -44,11 +44,8 @@ public:
     int spriteSheetIndex;
     int frame;
     bool done;
-    // struct timespec animationTime;
-	// float animationSpeedFactor;
-      
     Explosion(float, float);
-    void draw(GLuint image);
+    void draw();
 };
 
 std::vector<Explosion> explosions;
@@ -212,10 +209,10 @@ void bossRender (GLuint image)
 }
 
 
-void explosionRender (GLuint image)
+void explosionRender ()
 {
 	for (unsigned int i = 0; i < explosions.size(); i++) {
-		explosions[i].draw(image);
+		explosions[i].draw();
 	}
 }
 
@@ -225,16 +222,33 @@ Explosion::Explosion(float x, float y)
 	centerY = y;
 	height = .1* (float)g.yres;
 	width = height;
-	spriteSheetIndex = 13;
+	int exp = rand() % 3;
+	if (exp == 0) {
+		spriteSheetIndex = 16;
+	}
+	else if (exp == 1) {
+		spriteSheetIndex = 13;
+	}
+	else {
+		spriteSheetIndex = 17;
+	}
 	frame = 0;
 	done = false;
 }
 
-void Explosion::draw(GLuint image)
+void Explosion::draw()
 {
+	GLuint temp;
+	if (spriteSheetIndex == 16) {
+		temp = g.explosion2Texture;
+	} else if (spriteSheetIndex == 13) {
+		temp = g.explosionTexture;
+	} else {
+		temp = g.explosion3Texture;
+	}
 	glPushMatrix();
 	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, image);
+	glBindTexture(GL_TEXTURE_2D, temp);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);
@@ -310,11 +324,10 @@ void Explosion::draw(GLuint image)
 
 //------------------------Draw the enemies-----------------------------------------
 
-void enemyHandler (GLuint image1, GLuint image2, GLuint image3) {
+void enemyHandler (GLuint image1, GLuint image2) {
 
 	saibaRender(image1);
 	bossRender(image2);
-	explosionRender(image3);
 
 }
 
@@ -438,11 +451,13 @@ void cleanExplosions()
 void detection (int Eindices) {
 	
 	enemy[Eindices].eHealth --;
+	boss.eHealth --;
+	if (boss.eHealth == 0) {
+		createExplosion(boss.pos[0], boss.pos[1]);
+		boss.pos[0] = 10000;
+	}
 	if (enemy[Eindices].eHealth == 0) {
 		createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
-		//explosion.pos[0] = enemy[Eindices].pos[0];
-		//explosion.pos[1] = enemy[Eindices].pos[1];
-
 		enemy[Eindices].pos[0] = g.xres;
 		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
 		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
