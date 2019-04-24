@@ -43,6 +43,11 @@ class Global {
 		GLuint finalFormLogoTexture;
 		GLuint explosionTexture;
 		GLuint deathTexture;
+		GLuint ss3Texture;
+		GLuint ssbTexture;
+		GLuint braceTexture;
+		GLuint explosion2Texture;
+		GLuint explosion3Texture;
 
 		Vec box[20];
 		Global() {
