@@ -427,62 +427,6 @@ void braceRender(int braceID)
 	glDisable(GL_ALPHA_TEST);
 }
 
-//Creates a kiBlast, if it's not at max.
-void launchBrace(int id)
-{
-	brace.bossTracker[id][0] = finBoss->pos[0] - 20;
-	brace.bossTracker[id][1] = finBoss->pos[1];
-	srand(time(0));
-	brace.bossYVel[id] = (rand() % 5) * ((rand() % 2 == 1) ? 1 : -1);
-}
-
-//Destroys the kiBlast, and 'unassigns' it.
-void braceFree(int braceID)
-{
-	brace.bossTracker[braceID][0] = UNASSIGN;
-	brace.bossTracker[braceID][1] = UNASSIGN;
-}
-
-//Updates the position of the kiBlast.
-void braceMove(int braceID)
-{
-	if (brace.bossTracker[braceID][0] < 0 ||
-		brace.bossTracker[braceID][1] > g.yres ||
-		brace.bossTracker[braceID][1] < 0) {
-		braceFree(braceID);
-	} else {
-		brace.bossTracker[braceID][0] += brace.bossXVel;
-		brace.bossTracker[braceID][1] += brace.bossYVel[braceID];
-	}
-}
-
-void braceRender(int braceID)
-{
-	float h = 40.0;
-	float w = h/2;
-	glPushMatrix();
-
-	glTranslatef(brace.bossTracker[braceID][0],
-		brace.bossTracker[braceID][1], 0);
-	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, g.braceTexture);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.0f);
-	glColor4ub(255,255,255,255);
-
-	float tx = 0.0;
-	float ty = 0.0;
-	glBegin(GL_QUADS);
-	glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
-	glTexCoord2f(tx+1, ty);    	glVertex2i(0, h);
-	glTexCoord2f(tx, ty);    	glVertex2i(w, h);
-	glTexCoord2f(tx, ty+1); 	glVertex2i(w, 0);
-	glEnd();
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_ALPHA_TEST);
-}
 
 //Collision checking between kiblast and enemies.
 void kiCollision(int kiRef)
