@@ -1,7 +1,7 @@
 //3350
 //Program:  joshuaA.cpp
 //Author:   Joshua Annis
-//Date Last Modified:     3/3/19
+//Date Last Modified: 4/24/19
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdlib>
@@ -18,6 +18,7 @@
 extern Global g;
 extern void powerReference(Powerups*);
 Powerups powerups;
+//blastPowerup blastPowerup;
 //------------------Background----------------------------------
 void setBackgroundNamek(int x, int y, GLuint textInt)
 {
@@ -76,7 +77,6 @@ void Powerups_init ()
 	powerReference(&powerups);
 }
 
-
 void powerupsPhysics ()
 {
    powerups.pos[0] -= 2;
@@ -115,6 +115,13 @@ void powerupsRender (GLuint image)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_ALPHA_TEST);
-
-
 }
+/*void blastPowerup_init()
+{
+    srand(time(NULL));
+    blastPowerup.pos[0] = g.xres + (rand() % 100);
+    blastPowerup.pos[1] = (rand() % g.yres);
+    powerReference(&blastPowerup);
+}
+
+*/
