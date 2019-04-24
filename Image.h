@@ -1,10 +1,12 @@
 #ifndef IMAGE_H_
 #define IMAGE_H_
 #include <string.h>
+#include <unistd.h>
+#include <stdio.h>
 
 class Image {
     public:
-	int width, height;
+	int width, height, rows, columns;
 	unsigned char *data;
 	~Image() { delete [] data; }
 	Image(const char *fname) {

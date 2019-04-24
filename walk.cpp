@@ -50,7 +50,10 @@ int keys[65536];
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
 	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
-	"images/Saibaman.gif", "images/powerup.gif","images/finalFormLogoTexture.gif","images/gordon1.png", "images/explosion.gif"};
+	"images/Saibaman.gif", "images/powerup.gif",
+	"images/finalFormLogoTexture.gif","images/gordon1.png",
+	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
+	"images/explosion2.gif", "images/explosion3.gif", "images/brace.png"};
 
 
 //-----------------------------------------------------------------------------
@@ -435,17 +438,86 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+
+	//------------------------Goku SS3----------------------------------
+	w = img[14].width;
+	h = img[14].height;
+	glGenTextures(1, &g.ss3Texture);
+	glBindTexture(GL_TEXTURE_2D, g.ss3Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[14]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
+
+	//------------------------Goku SSB----------------------------------
+	w = img[15].width;
+	h = img[15].height;
+	glGenTextures(1, &g.ssbTexture);
+	glBindTexture(GL_TEXTURE_2D, g.ssbTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[15]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
+	//------------------------Explosion 2----------------------------------
+	w = img[16].width;
+	h = img[16].height;
+	glGenTextures(1, &g.explosion2Texture);
+	glBindTexture(GL_TEXTURE_2D, g.explosion2Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[16]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
+	//------------------------Explosion 2----------------------------------
+	w = img[17].width;
+	h = img[17].height;
+	glGenTextures(1, &g.explosion3Texture);
+	glBindTexture(GL_TEXTURE_2D, g.explosion3Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[17]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
+	//------------------------Explosion 2----------------------------------
+	w = img[18].width;
+	h = img[18].height;
+	glGenTextures(1, &g.braceTexture);
+	glBindTexture(GL_TEXTURE_2D, g.braceTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[18]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
+
 }
 
-extern void sInit(GLuint, GLuint);
+extern void sInit(GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
-	sInit(g.walkTexture, g.kiTexture);
+	sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	img[13].rows = 9;
+	img[13].columns = 9;
+	img[16].rows = 6;
+	img[16].columns = 5;
+	img[17].rows = 9;
+	img[17].columns = 8;
 }
 extern void checkMouseMenu(XEvent*);
 
@@ -638,6 +710,7 @@ extern void gokuIMove(int);
 extern void checkKeysMainMenu();
 extern void checkKeysPauseMenu();
 extern void checkKeysLost();
+extern void braceHandler(int);
 
 void physics(void)
 {
@@ -674,6 +747,7 @@ void physics(void)
 					g.walkFrame -= 16;
 				timers.recordTime(&timers.walkTime);
 				kiHandler(0);
+				braceHandler(0);
 			}
 			for (int i=0; i<20; i++) {
 				g.box[i][0] -= 0.3 * (0.05 / g.delay);
@@ -708,12 +782,14 @@ extern void showJoshua(int, int, GLuint);
 extern void showDrake(int, int, GLuint);
 extern void showJuan(int, int, GLuint);
 extern void showLawrence(int,int,GLuint);
-extern void enemyHandler(GLuint, GLuint, GLuint);
+extern void enemyHandler(GLuint, GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
 extern void renderMainMenu();
 extern void renderPauseMenu();
+extern void explosionRender();
+extern void cleanExplosions();
 // extern void renderCredits();
 void render(void)
 {
@@ -744,7 +820,7 @@ void render(void)
 			showPause(350, 100);
 		}
 		else {
-			Rect r;
+			//Rect r;
 			//Clear the screen
 			glClearColor(0.1, 0.1, 0.1, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -789,14 +865,16 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 
-			enemyHandler(g.saibaTexture, g.bossTexture, g.explosionTexture);
+			enemyHandler(g.saibaTexture, g.bossTexture);
 
 			powerupsRender(g.powerupTexture);
 
+			explosionRender();
+			cleanExplosions();
 			sRender();
 
 			//
-			unsigned int c = 0x000000;
+			/*unsigned int c = 0x000000;
 			r.bot = g.yres - 20;
 			r.left = 10;
 			r.center = 0;
@@ -810,7 +888,7 @@ void render(void)
 			ggprint8b(&r, 16, c, "down arrow/s -> fly down");
 			ggprint8b(&r, 16, c, "j -> test temp score update");
 			ggprint8b(&r, 16, c, "p -> test pause screen");
-			ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+			ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);*/
 			extern void showScore(int, int, int);
 			showScore(5, 22, g.score);
 			if (g.startFlag == 0) {

@@ -14,13 +14,17 @@
 #include "Global.h"
 #include "Enemy.h"
 #include "Boss.h"
+#include "Image.h"
+#include <vector>
 
 extern Global g;
+extern Image img[];
+int count = 5;
 Enemy enemy[10];
 Boss boss;
 extern void enemyReference(Enemy *);
+extern void bossReference(Boss *);
 float nticks = 0.0;
-int count = 5;
 void Enemy_init();
 void pattern_1(Enemy&);
 void pattern_2(Enemy&);
@@ -33,17 +37,18 @@ void detection();
 
 class Explosion {
 public:
-	float pos[3];
+	float centerX;
+	float centerY;
+	float height;
+	float width;
+    int spriteSheetIndex;
+    int frame;
+    bool done;
+    Explosion(float, float);
+    void draw();
+};
 
-
-	Explosion () {
-
-		pos[0] = 0.0;
-		pos[1] = 0.0;
-		pos[2] = 0.0;
-	}
-} explosion;
-
+std::vector<Explosion> explosions;
 
 //-----------------------credit screen stuff-----------------------------------------
 
@@ -94,9 +99,7 @@ void Enemy_init ()
 
 	boss.pos[0] = (g.xres + 100);
 	boss.pos[1] = (g.yres/2);
-
-	explosion.pos[0] = 5000;
-	explosion.pos[1] = 0;
+	bossReference(&boss);
 
 }
 
@@ -117,12 +120,17 @@ void saibaPhysics ()
 
 }
 
-void bossPhysics () 
+void bossPhysics ()
 {
-	
+
 	if (boss.pos[0] > g.xres/2) {
-		boss.pos[0] -= 0.3;
-	} 
+		
+		boss.pos[0] -= 0.7;
+		
+	}
+	nticks+= 0.3;
+	boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
+
 }
 
 
@@ -131,7 +139,8 @@ void bossPhysics ()
 //render the saibamen
 void saibaRender (GLuint image)
 {
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < count; i++) {
+		enemy[i].isRendered = true;
 		glPushMatrix();
 		glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -144,7 +153,7 @@ void saibaRender (GLuint image)
 
 			float tx = 0, ty = 0;
 
-			
+
 			glBegin(GL_QUADS);
 			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
 			glTexCoord2f(tx+1, ty);   glVertex2i(0, 50);
@@ -167,7 +176,7 @@ void saibaRender (GLuint image)
 //render the boss
 void bossRender (GLuint image)
 {
-	
+
 		glPushMatrix();
 		glTranslated(boss.pos[0], boss.pos[1], boss.pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -180,7 +189,7 @@ void bossRender (GLuint image)
 
 			float tx = 0, ty = 0;
 
-			
+
 			glBegin(GL_QUADS);
 			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
 			glTexCoord2f(tx+1, ty);   glVertex2i(0, 150);
@@ -196,48 +205,130 @@ void bossRender (GLuint image)
 		glDisable(GL_ALPHA_TEST);
 
 
-	
+
 
 }
 
 
-void explosionRender (GLuint image)
+void explosionRender ()
 {
+	for (unsigned int i = 0; i < explosions.size(); i++) {
+		explosions[i].draw();
+	}
+}
+
+Explosion::Explosion(float x, float y)
+{
+	centerX = x;
+	centerY = y;
+	height = .1* (float)g.yres;
+	width = height;
+	int exp = rand() % 3;
+	if (exp == 0) {
+		spriteSheetIndex = 16;
+	}
+	else if (exp == 1) {
+		spriteSheetIndex = 13;
+	}
+	else {
+		spriteSheetIndex = 17;
+	}
+	frame = 0;
+	done = false;
+}
+
+void Explosion::draw()
+{
+	GLuint temp;
+	if (spriteSheetIndex == 16) {
+		temp = g.explosion2Texture;
+	} else if (spriteSheetIndex == 13) {
+		temp = g.explosionTexture;
+	} else {
+		temp = g.explosion3Texture;
+	}
 	glPushMatrix();
-		glTranslated(explosion.pos[0], explosion.pos[1], explosion.pos[2]);
-		glColor3f(1.0, 1.0, 1.0);
-		glBindTexture(GL_TEXTURE_2D, image);
-		//
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.0f);
-		glColor4ub(255,255,255,255);
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, temp);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255,255,255,255);
+
+	float ssWidth = (float)1.0/img[spriteSheetIndex].columns;
+	float ssHeight = (float)1.0/img[spriteSheetIndex].rows;
+
+	int ix = this->frame % img[spriteSheetIndex].columns;
+	int iy = 0;
+
+	if (frame >= img[spriteSheetIndex].columns) {
+		iy = 1;
+	}
 
 
-			float tx = 0, ty = 0;
+	if (frame >= (img[spriteSheetIndex].columns*2)) {
+		iy = 2;
+	}
 
-			
-			glBegin(GL_QUADS);
-			glTexCoord2f(tx+1, ty+1); glVertex2i(0, 0);
-			glTexCoord2f(tx+1, ty);   glVertex2i(0, 50);
-			glTexCoord2f(tx, ty);     glVertex2i(70, 50);
-			glTexCoord2f(tx, ty+1);   glVertex2i(70, 0);
-			glEnd();
+	if (frame >= (img[spriteSheetIndex].columns*3)) {
+		iy = 3;
+	}
 
+	if (frame >= img[spriteSheetIndex].columns*4) {
+		iy = 4;
+	}
 
+	if (frame >= (img[spriteSheetIndex].columns*5)) {
+		iy = 5;
+	}
 
-			glPopMatrix();
+	if (frame >= (img[spriteSheetIndex].columns*6)) {
+		iy = 6;
+	}
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_ALPHA_TEST);
+	if (frame >= img[spriteSheetIndex].columns*7) {
+		iy = 7;
+	}
+
+	if (frame >= img[spriteSheetIndex].columns*8) {
+		iy = 8;
+	}
+
+	float textureX = (float)ix / img[spriteSheetIndex].columns;
+	float textureY = (float)iy / img[spriteSheetIndex].rows;
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(textureX, textureY+ssHeight);
+	glVertex2i(centerX-width, centerY-height);
+
+	glTexCoord2f(textureX, textureY);
+	glVertex2i(centerX-width, centerY+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY);
+	glVertex2i(centerX+width, centerY+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+	glVertex2i(centerX+width, centerY-height);
+	glEnd();
+
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
+
+	//advance frame
+	frame++;
+	if(frame >= img[spriteSheetIndex].columns*8){
+		frame = 0;
+		done = true;
+	}
+	
 }
 
 //------------------------Draw the enemies-----------------------------------------
 
-void enemyHandler (GLuint image1, GLuint image2, GLuint image3) {
+void enemyHandler (GLuint image1, GLuint image2) {
 
-		saibaRender(image1);
-		bossRender(image2);
-		explosionRender(image3);
+	saibaRender(image1);
+	bossRender(image2);
 
 }
 
@@ -245,42 +336,48 @@ void enemyHandler (GLuint image1, GLuint image2, GLuint image3) {
 
 void pattern_1 (Enemy &e)
 {
-		e.pos[0] -= e.xSpeed;
-		if (e.pos[0] < -50){
-			e.pos[0] = g.xres;
-			e.pos[1] = (rand() % (g.yres - 100) + 1);
-			e.xSpeed = speed_Randomizer();
-		}
+	
+	e.pos[0] -= e.xSpeed;
+	if (e.pos[0] < -50){
+		e.pos[0] = g.xres;
+		e.pos[1] = (rand() % (g.yres - 100) + 1);
+		e.xSpeed = speed_Randomizer();
+	}
 }
 
 void pattern_2 (Enemy &e)
 {
-		
-		srand(time(NULL));
-		
-		nticks+= 0.3;
-		e.pos[0] -= e.xSpeed;
-		e.pos[1] = (e.waveamp * sin(nticks/e.wavefreq) + (e.wavepos));
 
-		if (e.pos[0] < -50){
-			e.pos[0] = g.xres;
-			e.wavepos = (rand() % (g.yres) + 1);
-			e.xSpeed = speed_Randomizer();
-			e.wavefreq = freq_Randomizer();
-			e.waveamp = amp_Randomizer();
+		
+	
+		
+	nticks+= 0.3;
+	e.pos[0] -= e.xSpeed;
+	e.pos[1] = (e.waveamp * sin(nticks/e.wavefreq) + (e.wavepos));
 
-		}
+	if (e.pos[0] < -50){
+		e.pos[0] = g.xres;
+		e.wavepos = (rand() % (g.yres) + 1);
+		e.xSpeed = speed_Randomizer();
+		e.wavefreq = freq_Randomizer();
+		e.waveamp = amp_Randomizer();
+	}
 
 }
 
 void pattern_3 (Enemy &e)
 {
-	//e.pos[1] = g.yres;
+	
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] -= 2.0;
+
+	if (e.pos[1] == g.yres/2) {
+		e.pos[1] += 2.0;
+	}
 	
+
 	if (e.pos[0] < -50){
-		e.pos[0] = g.xres;		
+		e.pos[0] = g.xres;
 		e.xSpeed = speed_Randomizer();
 		e.pos[1] = (rand() % (g.yres));
 	}
@@ -288,12 +385,17 @@ void pattern_3 (Enemy &e)
 
 void pattern_4 (Enemy &e)
 {
-	//e.pos[1] = 0.0;
+	
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] += 2.0;
+
+	if (e.pos[1] == g.yres/2) {
+		e.pos[1] -= 2.0;
+	}
 	
+
 	if (e.pos[0] < -50){
-		e.pos[0] = g.xres;		
+		e.pos[0] = g.xres;
 		e.xSpeed = speed_Randomizer();
 		e.pos[1] = (rand() % (g.yres));
 	}
@@ -307,22 +409,39 @@ void pattern_4 (Enemy &e)
 
 int speed_Randomizer (void)
 {
+	
 	int speed = (rand() % 3 + 2);
 	return speed;
 }
 
 int freq_Randomizer (void)
 {
+	
 	int freq = ((rand() % 31 + 1) + 19);
 	return freq;
 }
 
 int amp_Randomizer (void)
 {
+	
 	int amp = ((rand() % 3 + 5) * 10);
 	return amp;
 }
 
+void createExplosion(float x, float y)
+{
+	Explosion temp(x,y);
+	explosions.push_back(temp);
+}
+
+void cleanExplosions()
+{
+	for (int i = explosions.size()-1; i >= 0; i--) {
+		if (explosions[i].done) {
+			explosions.erase(explosions.begin()+i);
+		}
+	}
+}
 
 //-------------------collision detection---------------------------------------
 
@@ -331,19 +450,39 @@ int amp_Randomizer (void)
  */
 
 void detection (int Eindices) {
-	enemy[Eindices].eHealth --;
-	if (enemy[Eindices].eHealth == 0) {
-
-		explosion.pos[0] = enemy[Eindices].pos[0];
-		explosion.pos[1] = enemy[Eindices].pos[1];
-
-		enemy[Eindices].pos[0] = g.xres;
-		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
-		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
-		enemy[Eindices].xSpeed = speed_Randomizer();
-		enemy[Eindices].wavefreq = freq_Randomizer();
-		enemy[Eindices].waveamp = amp_Randomizer();
-		enemy[Eindices].eHealth = 2;
+	if (enemy[Eindices].isRendered) {
+		enemy[Eindices].eHealth --;
+		//boss.eHealth --;
+		//createExplosion(boss.pos[0], boss.pos[1]);
+		/*if (boss.eHealth == 0) {
+			createExplosion(boss.pos[0], boss.pos[1]);
+			boss.pos[0] = 10000;
+		}*/
+		if (enemy[Eindices].eHealth == 0) {
+			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
+			enemy[Eindices].pos[0] = g.xres;
+			enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
+			enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
+			enemy[Eindices].xSpeed = speed_Randomizer();
+			enemy[Eindices].wavefreq = freq_Randomizer();
+			enemy[Eindices].waveamp = amp_Randomizer();
+			enemy[Eindices].eHealth = 2;
+		}
 	}
 
-} 
+}
+
+void bossDetection () {
+	
+	
+	boss.eHealth --;
+	createExplosion(boss.pos[0], boss.pos[1]);
+	if (boss.eHealth == 0) {
+		createExplosion(boss.pos[0], boss.pos[1]+100);
+		createExplosion(boss.pos[0]+100, boss.pos[1]+100);
+		createExplosion(boss.pos[0]+100, boss.pos[1]);
+		createExplosion(boss.pos[0], boss.pos[1]);
+		boss.pos[0] = 10000;
+	}
+
+}

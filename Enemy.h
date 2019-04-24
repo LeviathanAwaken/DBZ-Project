@@ -18,12 +18,14 @@ public:
     int waveamp;
     int xSpeed;
     int eHealth;
+    bool isRendered;
     
 
     
     Enemy () {
      
      srand(time(NULL));
+     isRendered = false;
      pattern = 1;
      eHealth = 2;
      wavepos = 0.0;
