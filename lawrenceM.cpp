@@ -379,42 +379,42 @@ void renderPauseMenu()
     }
 }
 
-void renderDeath()
-{ //thinking of using an image for the death screen but i can just put you are dead 
-  glPushMatrix();
-  glColor3f(1.0, 1.0, 1.0);
-  glBindTexture(GL_TEXTURE_2D, g.deathTexture);
-  glEnable(GL_ALPHA_TEST);
-  glAlphaFunc(GL_GREATER, 0.0f);
-  glColor4ub(255,255,255,255);
+// void renderDeath()
+// { //thinking of using an image for the death screen but i can just put you are dead 
+//   glPushMatrix();
+//   glColor3f(1.0, 1.0, 1.0);
+//   glBindTexture(GL_TEXTURE_2D, g.deathTexture);
+//   glEnable(GL_ALPHA_TEST);
+//   glAlphaFunc(GL_GREATER, 0.0f);
+//   glColor4ub(255,255,255,255);
 
-  float ssWidth = (float)1.0/img[14].width;
-  float ssHeight = (float)1.0/img[14].height;
+//   float ssWidth = (float)1.0/img[14].width;
+//   float ssHeight = (float)1.0/img[14].height;
 
-  float textureX = 0;
-  float textureY = 0;
+//   float textureX = 0;
+//   float textureY = 0;
 
-  float centerX = g.xres/2;
-  float centerY = g.yres*2/3; 
+//   float centerX = g.xres/2;
+//   float centerY = g.yres*2/3; 
 
-  float width = floor(((float)g.xres/2200)*img[14].width);
-  float height = floor(((float)g.yres/1200)*img[14].height);
+//   float width = floor(((float)g.xres/2200)*img[14].width);
+//   float height = floor(((float)g.yres/1200)*img[14].height);
 
-  glBegin(GL_QUADS);
-  glTexCoord2f(textureX, textureY+ssHeight);
-  glVertex2i(centerX-width, centerY-height);
+//   glBegin(GL_QUADS);
+//   glTexCoord2f(textureX, textureY+ssHeight);
+//   glVertex2i(centerX-width, centerY-height);
 
-  glTexCoord2f(textureX, textureY);
-  glVertex2i(centerX-width, centerY+height);
+//   glTexCoord2f(textureX, textureY);
+//   glVertex2i(centerX-width, centerY+height);
 
-  glTexCoord2f(textureX+ssWidth, textureY);
-  glVertex2i(centerX+width, centerY+height);
+//   glTexCoord2f(textureX+ssWidth, textureY);
+//   glVertex2i(centerX+width, centerY+height);
 
-  glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
-  glVertex2i(centerX+width, centerY-height);
-  glEnd();
+//   glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+//   glVertex2i(centerX+width, centerY-height);
+//   glEnd();
 
-  glPopMatrix();
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_ALPHA_TEST);
-}
+//   glPopMatrix();
+//   glBindTexture(GL_TEXTURE_2D, 0);
+//   glDisable(GL_ALPHA_TEST);
+// }
