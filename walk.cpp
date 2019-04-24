@@ -56,6 +56,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion2.gif", "images/explosion3.gif", "images/brace.png"};
 
 
+
 //-----------------------------------------------------------------------------
 //Setup timers
 class Timers {
@@ -488,6 +489,7 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
 
 	//------------------------Explosion 2----------------------------------
 	w = img[18].width;

@@ -74,6 +74,7 @@ class kiBlast {
 		int kiVel;
 } ki;
 
+
 class bossProjectile {
 	public:
 		GLuint image;
@@ -81,6 +82,7 @@ class bossProjectile {
 		int bossXVel;
 		int bossYVel[MAX_BRACE];
 } brace;
+
 
 //Establishes a poiner to enemies being handled in Drake's file.
 void enemyReference(Enemy* enem)
@@ -123,6 +125,7 @@ void gokuInit()
 	goku.health = 3;
 	goku.moveS = 3.5;
 	goku.currentPic = 0;
+
 }
 
 void braceInit()
@@ -132,6 +135,7 @@ void braceInit()
 		brace.bossTracker[i][0] = UNASSIGN;
 		brace.bossTracker[i][1] = UNASSIGN;
 	}
+
 }
 
 //Generalized initializer for the file, called in the main file.
@@ -338,6 +342,7 @@ void kiRender(int kiID)
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, g.kiTexture);
 
+
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);
@@ -395,6 +400,7 @@ void braceRender(int braceID)
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, g.braceTexture);
 
+
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);
@@ -437,7 +443,9 @@ void bossCollision(int kiRef)
 	if (xColl && yColl) {
 		kiFree(kiRef);
 		//insert Boss update function here
+
 		bossDetection();
+
 	}
 }
 
@@ -473,6 +481,39 @@ void gokuCollision()
 			braceFree(i);
 			healthCheck();
 			printf("Brace hit.\n");
+		}
+	}
+	//Boss Collision
+	bool xColl = finBoss->pos[0] + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= finBoss->pos[0];
+	bool yColl = finBoss->pos[1] + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= finBoss->pos[1];
+	if (xColl && yColl) {
+		goku.health--;
+		if (goku.currentPic > 0) {
+			goku.moveS -= goku.currentPic;
+			goku.currentPic--;
+		}
+		healthCheck();
+	}
+}
+
+//Collision detection with powerups.
+void gokuPower()
+{
+	for (int i = 0; i < plimiter; i++) {
+		bool xColl = powRef[i]->pos[0] + 70 >= goku.pos[0]
+			&& goku.pos[0] + goku.width >= powRef[i]->pos[0];
+		bool yColl = powRef[i]->pos[1] + 50 >= goku.pos[1]
+			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
+		if (xColl && yColl) {
+			goku.health++;
+			if (goku.currentPic < 2 && goku.health > 3 + goku.currentPic) {
+				goku.currentPic++;
+				goku.moveS += goku.currentPic;
+			}
+			//insert powerup removal function here
+			break;
 		}
 	}
 	//Boss Collision

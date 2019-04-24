@@ -85,7 +85,7 @@ void showDrake(int x, int y, GLuint textInt)
 void Enemy_init ()
 {
 	srand(time(NULL));
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < count; i++) {
 		enemy[i].wavepos = (rand() % g.yres);
 		int choice = (rand() % 4 + 1);
 		enemy[i].xSpeed = speed_Randomizer();
@@ -107,7 +107,7 @@ void saibaPhysics ()
 {
 
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < count; i++) {
 		if(enemy[i].pattern == 1)
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
@@ -486,3 +486,4 @@ void bossDetection () {
 	}
 
 }
+
