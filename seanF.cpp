@@ -51,7 +51,6 @@ void healthCheck();
 bool gokuBounds(int);
 void gokuPower();
 extern void detection(int);
-extern void bossDetection();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -74,7 +73,6 @@ class kiBlast {
 		int kiVel;
 } ki;
 
-
 class bossProjectile {
 	public:
 		GLuint image;
@@ -82,7 +80,6 @@ class bossProjectile {
 		int bossXVel;
 		int bossYVel[MAX_BRACE];
 } brace;
-
 
 //Establishes a poiner to enemies being handled in Drake's file.
 void enemyReference(Enemy* enem)
@@ -125,17 +122,6 @@ void gokuInit()
 	goku.health = 3;
 	goku.moveS = 3.5;
 	goku.currentPic = 0;
-
-}
-
-void braceInit()
-{
-	brace.bossXVel = -6;
-	for (int i = 0; i < MAX_BRACE; i++) {
-		brace.bossTracker[i][0] = UNASSIGN;
-		brace.bossTracker[i][1] = UNASSIGN;
-	}
-
 }
 
 void braceInit()
@@ -351,7 +337,6 @@ void kiRender(int kiID)
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, g.kiTexture);
 
-
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);
@@ -409,7 +394,6 @@ void braceRender(int braceID)
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, g.braceTexture);
 
-
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255,255,255,255);
@@ -426,7 +410,6 @@ void braceRender(int braceID)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_ALPHA_TEST);
 }
-
 
 //Collision checking between kiblast and enemies.
 void kiCollision(int kiRef)
@@ -453,9 +436,6 @@ void bossCollision(int kiRef)
 	if (xColl && yColl) {
 		kiFree(kiRef);
 		//insert Boss update function here
-
-		bossDetection();
-
 	}
 }
 
@@ -491,7 +471,6 @@ void gokuCollision()
 			braceFree(i);
 			healthCheck();
 			printf("Brace hit.\n");
-
 		}
 	}
 	//Boss Collision
