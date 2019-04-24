@@ -435,6 +435,18 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+	//------------------------explosion----------------------------------
+	w = img[14].width;
+	h = img[14].height;
+	glGenTextures(1, &g.deathTexture);
+	glBindTexture(GL_TEXTURE_2D, g.deathTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[14]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	//--------------------------------------------------------------------------
 }
 
 extern void sInit(GLuint, GLuint);
@@ -601,7 +613,7 @@ int checkKeys(XEvent *e)
 		break;
 	default:
 		printf("FATAL ERROR IN GAME STATE\n\n");
-	exit(1);
+		exit(1);
 	}
 
 
@@ -650,7 +662,7 @@ void physics(void)
 		checkKeysPauseMenu();
 		break;
 	case DEATH:
-	  checkKeysLost();
+	  	checkKeysLost();
 		break;
 	case INGAME:
 		if (g.pauseFlag)

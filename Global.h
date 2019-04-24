@@ -42,7 +42,7 @@ class Global {
 		GLuint bossTexture;
 		GLuint finalFormLogoTexture;
 		GLuint explosionTexture;
-
+		GLuint deathTexture;
 
 		Vec box[20];
 		Global() {
