@@ -53,7 +53,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
-	"images/explosion2.gif", "images/explosion3.gif", "images/brace.png", "images/deathTexture.gif"};
+	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png", 
+	"images/deathTexture.gif"};
 
 
 //-----------------------------------------------------------------------------
@@ -736,7 +737,7 @@ void physics(void)
 		checkKeysPauseMenu();
 		break;
 	case DEATH:
-	  	checkKeysLost();
+		  checkKeysLost();
 		break;
 	case INGAME:
 		if (g.pauseFlag)

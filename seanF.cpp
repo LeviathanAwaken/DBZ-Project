@@ -29,7 +29,7 @@
 #endif
 
 const int MAX_KI = 10;
-const int MAX_BRACE = 20;
+const int MAX_BRACE = 1;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
 const int MAX_ENEM = 10;
@@ -378,7 +378,7 @@ void braceMove(int braceID)
 		brace.bossTracker[braceID][1] < 0) {
 		braceFree(braceID);
 	} else {
-		brace.bossTracker[braceID][0] += brace.bossXVel;
+		brace.bossTracker[braceID][0] -= 6;
 		brace.bossTracker[braceID][1] += brace.bossYVel[braceID];
 	}
 }
@@ -470,7 +470,6 @@ void gokuCollision()
 			}
 			braceFree(i);
 			healthCheck();
-			printf("Brace hit.\n");
 		}
 	}
 	//Boss Collision
