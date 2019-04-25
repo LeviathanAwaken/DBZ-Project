@@ -12,6 +12,7 @@ class Enemy {
 public:
     
     float pos[3];
+    bool isRendered;
     int pattern;
     float wavepos;
     int wavefreq;
@@ -24,6 +25,7 @@ public:
     Enemy () {
      
      srand(time(NULL));
+     isRendered = false;
      pattern = 1;
      eHealth = 2;
      wavepos = 0.0;

@@ -12,6 +12,7 @@ class Boss {
 public:
     
     float pos[3];
+    bool isRendered;
     int pattern;
     float wavepos;
     int wavefreq;
@@ -25,7 +26,8 @@ public:
      
      srand(time(NULL));
      //pattern = 1;
-     eHealth = 50;
+     isRendered = false;
+     eHealth = 100;
      wavepos = 0.0;
      xSpeed = 0;
      wavefreq = 0;

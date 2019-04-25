@@ -19,8 +19,8 @@
 
 extern Global g;
 extern Image img[];
-const int count = 10;
-Enemy enemy[count];
+int count = 5;
+Enemy enemy[10];
 Boss boss;
 extern void enemyReference(Enemy *);
 extern void bossReference(Boss *);
@@ -85,7 +85,7 @@ void showDrake(int x, int y, GLuint textInt)
 void Enemy_init ()
 {
 	srand(time(NULL));
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < 10; i++) {
 		enemy[i].wavepos = (rand() % g.yres);
 		int choice = (rand() % 4 + 1);
 		enemy[i].xSpeed = speed_Randomizer();
@@ -107,7 +107,7 @@ void saibaPhysics ()
 {
 
 
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < 10; i++) {
 		if(enemy[i].pattern == 1)
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
@@ -140,6 +140,7 @@ void bossPhysics ()
 void saibaRender (GLuint image)
 {
 	for (int i = 0; i < count; i++) {
+		enemy[i].isRendered = true;
 		glPushMatrix();
 		glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -448,23 +449,37 @@ void cleanExplosions()
  *or collides with goku directly
  */
 
-void detection (int Eindices) {
+void detection (int Eindices) 
+{
+	if (enemy[Eindices].isRendered) {
+		enemy[Eindices].eHealth --;
+		/*boss.eHealth --;
+		if (boss.eHealth == 0) {
+			createExplosion(boss.pos[0], boss.pos[1]);
+			boss.pos[0] = 10000;
+		}*/
+		if (enemy[Eindices].eHealth == 0) {
+			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
+			enemy[Eindices].pos[0] = g.xres;
+			enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
+			enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
+			enemy[Eindices].xSpeed = speed_Randomizer();
+			enemy[Eindices].wavefreq = freq_Randomizer();
+			enemy[Eindices].waveamp = amp_Randomizer();
+			enemy[Eindices].eHealth = 2;
+		}
+	}
+
+}
+
+void bossDetection () 
+{
 	
-	enemy[Eindices].eHealth --;
 	boss.eHealth --;
+	createExplosion(boss.pos[0], boss.pos[1]);
 	if (boss.eHealth == 0) {
 		createExplosion(boss.pos[0], boss.pos[1]);
 		boss.pos[0] = 10000;
-	}
-	if (enemy[Eindices].eHealth == 0) {
-		createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
-		enemy[Eindices].pos[0] = g.xres;
-		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
-		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
-		enemy[Eindices].xSpeed = speed_Randomizer();
-		enemy[Eindices].wavefreq = freq_Randomizer();
-		enemy[Eindices].waveamp = amp_Randomizer();
-		enemy[Eindices].eHealth = 2;
 	}
 
 }
