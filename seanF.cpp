@@ -29,7 +29,7 @@
 #endif
 
 const int MAX_KI = 10;
-const int MAX_BRACE = 1;
+const int MAX_BRACE = 2;
 const int UNASSIGN = -5000;
 const int COLLISION = 2;
 const int MAX_ENEM = 10;
@@ -81,13 +81,14 @@ class bossProjectile {
 		int bossYVel[MAX_BRACE];
 } brace;
 
-//Establishes a poiner to enemies being handled in Drake's file.
+//Establishes a pointer to enemies being handled in Drake's file.
 void enemyReference(Enemy* enem)
 {
 	enemyRef[elimiter] = enem;
 	elimiter++;
 }
 
+//Establishes a pointer to the boss being handled in Drake's file.
 void bossReference(Boss* bossIn)
 {
 	finBoss = bossIn;
@@ -131,6 +132,7 @@ void braceInit()
 		brace.bossTracker[i][0] = UNASSIGN;
 		brace.bossTracker[i][1] = UNASSIGN;
 	}
+	srand(time(NULL));
 }
 
 //Generalized initializer for the file, called in the main file.
@@ -359,8 +361,7 @@ void launchBrace(int id)
 {
 	brace.bossTracker[id][0] = finBoss->pos[0] - 20;
 	brace.bossTracker[id][1] = finBoss->pos[1];
-	srand(time(0));
-	brace.bossYVel[id] = (rand() % 5) * ((rand() % 2 == 1) ? 1 : -1);
+	brace.bossYVel[id] = (rand() % 5 + 1) * ((rand() % 2 == 1) ? 1 : -1);
 }
 
 //Destroys the kiBlast, and 'unassigns' it.
@@ -374,7 +375,7 @@ void braceFree(int braceID)
 void braceMove(int braceID)
 {
 	if (brace.bossTracker[braceID][0] < 0 ||
-		brace.bossTracker[braceID][1] > g.yres ||
+		brace.bossTracker[braceID][1] + 40 > g.yres ||
 		brace.bossTracker[braceID][1] < 0) {
 		braceFree(braceID);
 	} else {
