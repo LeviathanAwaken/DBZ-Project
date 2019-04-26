@@ -17,6 +17,7 @@
  */
 extern Global g;
 extern void powerReference(Powerups*);
+extern void powerCollision();
 Powerups powerups;
 //blastPowerup blastPowerup;
 //------------------Background----------------------------------
@@ -25,13 +26,13 @@ void setBackgroundNamek(int x, int y, GLuint textInt)
 	glBindTexture(GL_TEXTURE_2D, textInt);
 	glColor4f(1, 1, 1, 1);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f); 
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex2i(0, 35); //bottom left
-	glTexCoord2f(0.0f, 0.0f); 
+	glTexCoord2f(0.0f, 0.0f);
 	glVertex2i(0, y); //top left
-	glTexCoord2f(1.0f, 0.0f); 
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex2i(x, y); //top right
-	glTexCoord2f(1.0f, 1.0f); 
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex2i(x, 35);
 	glEnd();
 }
@@ -51,13 +52,13 @@ void showJoshuaPic(int x, int y, GLuint textInt)
 	glBindTexture(GL_TEXTURE_2D, textInt);
 	glColor4f(1, 1, 1, 1);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f); 
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex2i(x+525, y+250); //bottom left
-	glTexCoord2f(0.0f, 0.0f); 
+	glTexCoord2f(0.0f, 0.0f);
 	glVertex2i(x+525, y+500); //top left
-	glTexCoord2f(1.0f, 0.0f); 
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex2i(x+675, y+500); //top right
-	glTexCoord2f(1.0f, 1.0f); 
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex2i(x+675, y+250);
 	glEnd();
 }
@@ -84,6 +85,7 @@ void powerupsPhysics ()
 		powerups.pos[0] = g.xres;
 		powerups.pos[1] = (rand() % (g.yres - 100) + 1);
    }
+   powerCollision();
 }
 
 void powerupsRender (GLuint image)
@@ -101,13 +103,13 @@ void powerupsRender (GLuint image)
 
 	// Render powerups
 	glBegin(GL_QUADS);
-	glTexCoord2f(tx+1, ty+1); 
+	glTexCoord2f(tx+1, ty+1);
 	glVertex2i(0, 0);
-	glTexCoord2f(tx+1, ty);   
+	glTexCoord2f(tx+1, ty);
 	glVertex2i(0, 50);
-	glTexCoord2f(tx, ty);     
+	glTexCoord2f(tx, ty);
 	glVertex2i(70, 50);
-	glTexCoord2f(tx, ty+1);   
+	glTexCoord2f(tx, ty+1);
 	glVertex2i(70, 0);
 	glEnd();
 
@@ -118,10 +120,10 @@ void powerupsRender (GLuint image)
 }
 /*void blastPowerup_init()
 {
-    srand(time(NULL));
-    blastPowerup.pos[0] = g.xres + (rand() % 100);
-    blastPowerup.pos[1] = (rand() % g.yres);
-    powerReference(&blastPowerup);
+	srand(time(NULL));
+	blastPowerup.pos[0] = g.xres + (rand() % 100);
+	blastPowerup.pos[1] = (rand() % g.yres);
+	powerReference(&blastPowerup);
 }
 
 */
