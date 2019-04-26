@@ -125,7 +125,7 @@ void saibaPhysics ()
 
 void bossPhysics ()
 {
-	if (g.score == 2000) {
+	if (g.score >= 4000) {
 		if (boss.pos[0] > g.xres/2) {
 			boss.pos[0] -= 0.7;
 			if (boss.pos[0] < g.xres + 100) {
@@ -137,7 +137,7 @@ void bossPhysics ()
 		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
 		bossCollision();
 	}
-}	
+}
 
 
 //----------------------------Drawing the enemies-------------------------------------------------
@@ -470,7 +470,7 @@ void detection (int Eindices, bool type)
 	} else {
 		if (enemy[Eindices].isRendered) {
 			enemy[Eindices].eHealth -=2 ;
-		}	
+		}
 	}
 		if (enemy[Eindices].eHealth <= 0) {
 			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
@@ -483,7 +483,7 @@ void detection (int Eindices, bool type)
 			enemy[Eindices].eHealth = 2;
 			score_update(100);
 		}
-	
+
 
 }
 
