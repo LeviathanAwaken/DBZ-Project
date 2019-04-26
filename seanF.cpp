@@ -31,7 +31,8 @@
 const int MAX_KI = 10;
 const int MAX_BRACE = 2;
 const int UNASSIGN = -5000;
-const int MAX_ENEM = 10;
+extern const int count;
+const int MAX_ENEM = count;
 
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
@@ -557,6 +558,16 @@ void braceHandler(int type)
 			}
 		}
 	}
+}
+
+void gokuHealth(int x, int y)
+{
+	Rect r;
+	unsigned int c = 0x00ffff44;
+	r.bot = y+20;
+	r.left = x+200;
+	r.center = 0;
+	ggprint16(&r, 16, c,"Goku Health: %d", goku.health);
 }
 
 //Sound handler, not functioning yet.
