@@ -19,7 +19,7 @@
 
 extern Global g;
 extern Image img[];
-int count = 5;
+int count = 10;
 Enemy enemy[10];
 Boss boss;
 extern void enemyReference(Enemy *);
@@ -86,7 +86,7 @@ void Enemy_init ()
 {
 	srand(time(NULL));
 	for (int i = 0; i < 10; i++) {
-		enemy[i].wavepos = (rand() % g.yres);
+		enemy[i].wavepos = ((rand() % (g.yres/2))+100);
 		int choice = (rand() % 4 + 1);
 		enemy[i].xSpeed = speed_Randomizer();
 		enemy[i].wavefreq = freq_Randomizer();
@@ -97,7 +97,7 @@ void Enemy_init ()
 		enemyReference(&enemy[i]);
 	}
 
-	boss.pos[0] = (g.xres + 100);
+	boss.pos[0] = (g.xres + 2000);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
 
@@ -123,9 +123,12 @@ void saibaPhysics ()
 void bossPhysics ()
 {
 
+	
 	if (boss.pos[0] > g.xres/2) {
-		
 		boss.pos[0] -= 0.7;
+		if (boss.pos[0] < g.xres + 100) {
+			boss.isRendered = true;
+		}
 		
 	}
 	nticks+= 0.3;
@@ -177,9 +180,10 @@ void saibaRender (GLuint image)
 void bossRender (GLuint image)
 {
 
+	
 		glPushMatrix();
 		glTranslated(boss.pos[0], boss.pos[1], boss.pos[2]);
-		glColor3f(1.0, 1.0, 1.0);
+		glColor3f(0.0, 0.0, 0.0);
 		glBindTexture(GL_TEXTURE_2D, image);
 		//
 		glEnable(GL_ALPHA_TEST);
@@ -203,7 +207,7 @@ void bossRender (GLuint image)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_ALPHA_TEST);
-
+	
 
 
 
@@ -328,7 +332,9 @@ void Explosion::draw()
 void enemyHandler (GLuint image1, GLuint image2) {
 
 	saibaRender(image1);
-	bossRender(image2);
+	if (boss.isRendered) {
+		bossRender(image2);
+	}
 
 }
 
@@ -357,7 +363,7 @@ void pattern_2 (Enemy &e)
 
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
-		e.wavepos = (rand() % (g.yres) + 1);
+		e.wavepos = ((rand() % (g.yres/2)) + 100);
 		e.xSpeed = speed_Randomizer();
 		e.wavefreq = freq_Randomizer();
 		e.waveamp = amp_Randomizer();
@@ -479,7 +485,11 @@ void bossDetection ()
 	createExplosion(boss.pos[0], boss.pos[1]);
 	if (boss.eHealth == 0) {
 		createExplosion(boss.pos[0], boss.pos[1]);
+		createExplosion(boss.pos[0] + 50, boss.pos[1]);
+		createExplosion(boss.pos[0] + 50, boss.pos[1] + 50);
+		createExplosion(boss.pos[0], boss.pos[1] + 50);
 		boss.pos[0] = 10000;
+		boss.eHealth = 100;
 	}
 
 }

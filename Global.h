@@ -51,8 +51,8 @@ class Global {
 		Vec box[20];
 		Global() {
 			done=0;
-			xres=800;
-			yres=600;
+			xres=1920;
+			yres=1080;
 			score = 0;
 			memset(keys, 0, 65536);
 			//CHANGED - back scroll starts on launch now
