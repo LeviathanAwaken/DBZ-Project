@@ -472,7 +472,7 @@ void bossCollision()
 		&& goku.pos[1] + goku.height >= finBoss->pos[1];
 	if (xColl && yColl) {
 		goku.health--;
-		if (goku.currentPic > 0) {
+		if (goku.currentPic > 3) {
 			goku.moveS -= goku.currentPic;
 			goku.currentPic--;
 		}
@@ -490,7 +490,7 @@ void saibaCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
-			if (goku.currentPic > 0) {
+			if (goku.currentPic > 3) {
 				goku.moveS -= goku.currentPic;
 				goku.currentPic--;
 			}
