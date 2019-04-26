@@ -31,14 +31,14 @@
 const int MAX_KI = 10;
 const int MAX_BRACE = 2;
 const int UNASSIGN = -5000;
-extern const int count;
-const int MAX_ENEM = count;
+//extern const int count;
+const int MAX_ENEM = 15;
 
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
 Powerups *powRef[2];
-int elimiter = 0;
-int plimiter = 0;
+int elimiter;
+int plimiter;
 extern int gameState;
 
 //Prototypes and extern function calls
@@ -52,7 +52,7 @@ void healthCheck();
 bool gokuBounds(int);
 extern void detection(int, bool);
 extern void bossDetection();
-extern int score_add(int);
+extern int score_update(int);
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -140,6 +140,8 @@ void braceInit()
 //Generalized initializer for the file, called in the main file.
 void sInit(GLuint gok, GLuint gok2, GLuint gok3)
 {
+	elimiter = 0;
+	plimiter = 0;
 	goku.pics[0] = gok;
 	goku.pics[1] = gok2;
 	goku.pics[2] = gok3;
@@ -514,7 +516,7 @@ void powerCollision()
 			}
 			powRef[i]->pos[0] = g.xres;
 			powRef[i]->pos[1] = (rand() % (g.yres - 100) + 1);
-			score_add(25);
+			score_update(25);
 			break;
 		}
 	}
@@ -523,7 +525,7 @@ void powerCollision()
 void healthCheck()
 {
 	if (goku.health <= 0) {
-		//gameState = DEATH;
+		gameState = DEATH;
 	}
 }
 
