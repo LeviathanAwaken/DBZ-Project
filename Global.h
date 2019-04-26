@@ -22,10 +22,10 @@ class Global {
 		int score;
 		int walk;
 		int walkFrame;
-		int creditFlag;
-		int startFlag;
-		int pauseFlag;
-		bool paused;
+		// int creditFlag;
+		// int startFlag;
+		// int pauseFlag;
+		// bool paused;
 		double delay;
 		char keys[65536];
 		GLuint walkTexture;
@@ -59,10 +59,10 @@ class Global {
 			//CHANGED - back scroll starts on launch now
 			walk=1;
 			walkFrame=0;
-			creditFlag = 0;
-			startFlag = 0;
-			pauseFlag = 0;
-			paused = true;
+			// creditFlag = 0;
+			// startFlag = 0;
+			// pauseFlag = 0;
+			// paused = true;
 			delay = 0.09;
 			for (int i=0; i<20; i++) {
 				box[i][0] = rnd() * xres;
