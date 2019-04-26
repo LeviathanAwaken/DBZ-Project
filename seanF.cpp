@@ -51,7 +51,7 @@ void healthCheck();
 bool gokuBounds(int);
 extern void detection(int, bool);
 extern void bossDetection();
-extern int score_update(int);
+extern int score_add(int);
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -513,7 +513,7 @@ void powerCollision()
 			}
 			powRef[i]->pos[0] = g.xres;
 			powRef[i]->pos[1] = (rand() % (g.yres - 100) + 1);
-			score_update(25);
+			score_add(25);
 			break;
 		}
 	}
@@ -522,7 +522,7 @@ void powerCollision()
 void healthCheck()
 {
 	if (goku.health <= 0) {
-		gameState = DEATH;
+		//gameState = DEATH;
 	}
 }
 

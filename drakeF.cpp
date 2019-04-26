@@ -19,8 +19,8 @@
 
 extern Global g;
 extern Image img[];
-int count = 10;
-Enemy enemy[10];
+const int count = 15;
+Enemy enemy[count];
 Boss boss;
 extern void enemyReference(Enemy *);
 extern void bossReference(Boss *);
@@ -88,7 +88,7 @@ void showDrake(int x, int y, GLuint textInt)
 void Enemy_init ()
 {
 	srand(time(NULL));
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < count; i++) {
 		enemy[i].wavepos = ((rand() % (g.yres/2))+100);
 		int choice = (rand() % 4 + 1);
 		enemy[i].xSpeed = speed_Randomizer();
@@ -100,7 +100,7 @@ void Enemy_init ()
 		enemyReference(&enemy[i]);
 	}
 
-	boss.pos[0] = (g.xres + 2000);
+	boss.pos[0] = (g.xres + 100);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
 
@@ -110,7 +110,7 @@ void saibaPhysics ()
 {
 
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < count; i++) {
 		if(enemy[i].pattern == 1)
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
@@ -125,19 +125,19 @@ void saibaPhysics ()
 
 void bossPhysics ()
 {
+	if (g.score == 2000) {
+		if (boss.pos[0] > g.xres/2) {
+			boss.pos[0] -= 0.7;
+			if (boss.pos[0] < g.xres + 100) {
+				boss.isRendered = true;
+			}
 
-
-	if (boss.pos[0] > g.xres/2) {
-		boss.pos[0] -= 0.7;
-		if (boss.pos[0] < g.xres + 100) {
-			boss.isRendered = true;
 		}
-
+		nticks+= 0.3;
+		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
+		bossCollision();
 	}
-	nticks+= 0.3;
-	boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
-	bossCollision();
-}
+}	
 
 
 //----------------------------Drawing the enemies-------------------------------------------------
@@ -356,9 +356,6 @@ void pattern_1 (Enemy &e)
 
 void pattern_2 (Enemy &e)
 {
-
-
-
 
 	nticks+= 0.3;
 	e.pos[0] -= e.xSpeed;
