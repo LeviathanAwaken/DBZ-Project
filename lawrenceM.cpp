@@ -69,9 +69,11 @@ void setBackground(int x,int y, GLuint textInt)
 extern void sInit(GLuint,GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
+extern int score_reset();
 
 void newGame() 
 {
+  score_reset(g.score);
   sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
