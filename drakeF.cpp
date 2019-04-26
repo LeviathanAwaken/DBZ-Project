@@ -24,6 +24,8 @@ Enemy enemy[10];
 Boss boss;
 extern void enemyReference(Enemy *);
 extern void bossReference(Boss *);
+extern void bossCollision();
+extern void saibaCollision();
 float nticks = 0.0;
 void Enemy_init();
 void pattern_1(Enemy&);
@@ -41,11 +43,11 @@ public:
 	float centerY;
 	float height;
 	float width;
-    int spriteSheetIndex;
-    int frame;
-    bool done;
-    Explosion(float, float);
-    void draw();
+	int spriteSheetIndex;
+	int frame;
+	bool done;
+	Explosion(float, float);
+	void draw();
 };
 
 std::vector<Explosion> explosions;
@@ -117,23 +119,23 @@ void saibaPhysics ()
 		if(enemy[i].pattern == 4)
 			pattern_4(enemy[i]);
 	}
-
+	saibaCollision();
 }
 
 void bossPhysics ()
 {
 
-	
+
 	if (boss.pos[0] > g.xres/2) {
 		boss.pos[0] -= 0.7;
 		if (boss.pos[0] < g.xres + 100) {
 			boss.isRendered = true;
 		}
-		
+
 	}
 	nticks+= 0.3;
 	boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
-
+	bossCollision();
 }
 
 
@@ -180,7 +182,7 @@ void saibaRender (GLuint image)
 void bossRender (GLuint image)
 {
 
-	
+
 		glPushMatrix();
 		glTranslated(boss.pos[0], boss.pos[1], boss.pos[2]);
 		glColor3f(0.0, 0.0, 0.0);
@@ -207,7 +209,7 @@ void bossRender (GLuint image)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_ALPHA_TEST);
-	
+
 
 
 
@@ -324,7 +326,7 @@ void Explosion::draw()
 		frame = 0;
 		done = true;
 	}
-	
+
 }
 
 //------------------------Draw the enemies-----------------------------------------
@@ -342,7 +344,7 @@ void enemyHandler (GLuint image1, GLuint image2) {
 
 void pattern_1 (Enemy &e)
 {
-	
+
 	e.pos[0] -= e.xSpeed;
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
@@ -354,9 +356,9 @@ void pattern_1 (Enemy &e)
 void pattern_2 (Enemy &e)
 {
 
-		
-	
-		
+
+
+
 	nticks+= 0.3;
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] = (e.waveamp * sin(nticks/e.wavefreq) + (e.wavepos));
@@ -373,14 +375,14 @@ void pattern_2 (Enemy &e)
 
 void pattern_3 (Enemy &e)
 {
-	
+
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] -= 2.0;
 
 	if (e.pos[1] == g.yres/2) {
 		e.pos[1] += 2.0;
 	}
-	
+
 
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
@@ -391,14 +393,14 @@ void pattern_3 (Enemy &e)
 
 void pattern_4 (Enemy &e)
 {
-	
+
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] += 2.0;
 
 	if (e.pos[1] == g.yres/2) {
 		e.pos[1] -= 2.0;
 	}
-	
+
 
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
@@ -415,21 +417,21 @@ void pattern_4 (Enemy &e)
 
 int speed_Randomizer (void)
 {
-	
+
 	int speed = (rand() % 3 + 2);
 	return speed;
 }
 
 int freq_Randomizer (void)
 {
-	
+
 	int freq = ((rand() % 31 + 1) + 19);
 	return freq;
 }
 
 int amp_Randomizer (void)
 {
-	
+
 	int amp = ((rand() % 3 + 5) * 10);
 	return amp;
 }
@@ -455,7 +457,7 @@ void cleanExplosions()
  *or collides with goku directly
  */
 
-void detection (int Eindices) 
+void detection (int Eindices)
 {
 	if (enemy[Eindices].isRendered) {
 		enemy[Eindices].eHealth --;
@@ -478,9 +480,9 @@ void detection (int Eindices)
 
 }
 
-void bossDetection () 
+void bossDetection ()
 {
-	
+
 	boss.eHealth --;
 	createExplosion(boss.pos[0], boss.pos[1]);
 	if (boss.eHealth == 0) {

@@ -44,11 +44,10 @@ void kiCollision(int);
 void kiHandler(int);
 void braceHandler(int);
 void bossHitCollision(int);
+void braceCollision(int);
 void gokuRender();
-void gokuCollision();
 void healthCheck();
 bool gokuBounds(int);
-void gokuPower();
 extern void detection(int);
 extern void bossDetection();
 
@@ -221,8 +220,6 @@ void gokuIMove(int key)
 				goku.pos[1] = 0;
 			break;
 	}
-	gokuCollision();
-	gokuPower();
 }
 
 bool gokuBounds(int dir)
@@ -381,6 +378,7 @@ void braceMove(int braceID)
 	} else {
 		brace.bossTracker[braceID][0] -= 6;
 		brace.bossTracker[braceID][1] += brace.bossYVel[braceID];
+		braceCollision(braceID);
 	}
 }
 
@@ -443,22 +441,20 @@ void bossHitCollision(int kiRef)
 }
 
 //Goku hit by curly brace collision.
-void braceCollision()
+void braceCollision(int braceID)
 {
-	for (int i = 0; i < MAX_BRACE; i++) {
-		bool xColl = brace.bossTracker[i][0] + 40 >= goku.pos[0]
-			&& goku.pos[0] + goku.width >= brace.bossTracker[i][0];
-		bool yColl = brace.bossTracker[i][1] + 20 >= goku.pos[1]
-			&& goku.pos[1] + goku.height >= brace.bossTracker[i][1];
-		if (xColl && yColl) {
-			goku.health--;
-			if (goku.currentPic > 0) {
-				goku.moveS -= goku.currentPic;
-				goku.currentPic--;
-			}
-			braceFree(i);
-			healthCheck();
+	bool xColl = brace.bossTracker[braceID][0] + 40 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= brace.bossTracker[braceID][0];
+	bool yColl = brace.bossTracker[braceID][1] + 20 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
+	if (xColl && yColl) {
+		goku.health--;
+		if (goku.currentPic > 0) {
+			goku.moveS -= goku.currentPic;
+			goku.currentPic--;
 		}
+		braceFree(braceID);
+		healthCheck();
 	}
 }
 
@@ -480,7 +476,7 @@ void bossCollision()
 }
 
 //Collision checking for the main character and the enemies.
-void gokuCollision()
+void saibaCollision()
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
 		bool xColl = enemyRef[i]->pos[0] + 70 >= goku.pos[0]
@@ -500,7 +496,7 @@ void gokuCollision()
 }
 
 //Collision detection with powerups.
-void gokuPower()
+void powerCollision()
 {
 	for (int i = 0; i < plimiter; i++) {
 		bool xColl = powRef[i]->pos[0] + 70 >= goku.pos[0]
