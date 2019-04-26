@@ -38,6 +38,7 @@ Boss *finBoss;
 Powerups *powRef[2];
 int elimiter = 0;
 int plimiter = 0;
+extern int gameState;
 
 //Prototypes and extern function calls
 void kiCollision(int);
@@ -50,6 +51,7 @@ void healthCheck();
 bool gokuBounds(int);
 extern void detection(int);
 extern void bossDetection();
+extern int score_add(int);
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -511,6 +513,7 @@ void powerCollision()
 			}
 			powRef[i]->pos[0] = g.xres;
 			powRef[i]->pos[1] = (rand() % (g.yres - 100) + 1);
+			score_add(25);
 			break;
 		}
 	}
@@ -519,7 +522,7 @@ void powerCollision()
 void healthCheck()
 {
 	if (goku.health <= 0) {
-		//printf("You've ran out of health.\n");
+		//gameState = DEATH;
 	}
 }
 
