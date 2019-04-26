@@ -305,8 +305,15 @@ void score_update (int score)
 {
     score_glob += score;
 }
+
 int score_receive () {
     int score_tmp = score_glob;
     score_glob = 0;
     return score_tmp;
+}
+
+int score_reset ()
+{
+    score_glob = 0;
+    return 0;
 }
