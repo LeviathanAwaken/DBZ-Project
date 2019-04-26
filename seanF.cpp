@@ -50,6 +50,7 @@ void healthCheck();
 bool gokuBounds(int);
 void gokuPower();
 extern void detection(int);
+extern void bossDetection();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -437,6 +438,7 @@ void bossHitCollision(int kiRef)
 	if (xColl && yColl) {
 		kiFree(kiRef);
 		//insert Boss update function here
+		bossDetection();
 	}
 }
 

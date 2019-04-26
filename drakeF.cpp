@@ -19,8 +19,8 @@
 
 extern Global g;
 extern Image img[];
-const int count = 10;
-Enemy enemy[count];
+int count = 10;
+Enemy enemy[10];
 Boss boss;
 extern void enemyReference(Enemy *);
 extern void bossReference(Boss *);
@@ -85,8 +85,8 @@ void showDrake(int x, int y, GLuint textInt)
 void Enemy_init ()
 {
 	srand(time(NULL));
-	for (int i = 0; i < count; i++) {
-		enemy[i].wavepos = (rand() % g.yres);
+	for (int i = 0; i < 10; i++) {
+		enemy[i].wavepos = ((rand() % (g.yres/2))+100);
 		int choice = (rand() % 4 + 1);
 		enemy[i].xSpeed = speed_Randomizer();
 		enemy[i].wavefreq = freq_Randomizer();
@@ -97,7 +97,7 @@ void Enemy_init ()
 		enemyReference(&enemy[i]);
 	}
 
-	boss.pos[0] = (g.xres + 100);
+	boss.pos[0] = (g.xres + 2000);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
 
@@ -107,7 +107,7 @@ void saibaPhysics ()
 {
 
 
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < 10; i++) {
 		if(enemy[i].pattern == 1)
 			pattern_1(enemy[i]);
 		if(enemy[i].pattern == 2)
@@ -123,9 +123,12 @@ void saibaPhysics ()
 void bossPhysics ()
 {
 
+	
 	if (boss.pos[0] > g.xres/2) {
-		
 		boss.pos[0] -= 0.7;
+		if (boss.pos[0] < g.xres + 100) {
+			boss.isRendered = true;
+		}
 		
 	}
 	nticks+= 0.3;
@@ -140,6 +143,7 @@ void bossPhysics ()
 void saibaRender (GLuint image)
 {
 	for (int i = 0; i < count; i++) {
+		enemy[i].isRendered = true;
 		glPushMatrix();
 		glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
@@ -176,9 +180,10 @@ void saibaRender (GLuint image)
 void bossRender (GLuint image)
 {
 
+	
 		glPushMatrix();
 		glTranslated(boss.pos[0], boss.pos[1], boss.pos[2]);
-		glColor3f(1.0, 1.0, 1.0);
+		glColor3f(0.0, 0.0, 0.0);
 		glBindTexture(GL_TEXTURE_2D, image);
 		//
 		glEnable(GL_ALPHA_TEST);
@@ -202,7 +207,7 @@ void bossRender (GLuint image)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_ALPHA_TEST);
-
+	
 
 
 
@@ -327,7 +332,9 @@ void Explosion::draw()
 void enemyHandler (GLuint image1, GLuint image2) {
 
 	saibaRender(image1);
-	bossRender(image2);
+	if (boss.isRendered) {
+		bossRender(image2);
+	}
 
 }
 
@@ -356,7 +363,7 @@ void pattern_2 (Enemy &e)
 
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
-		e.wavepos = (rand() % (g.yres) + 1);
+		e.wavepos = ((rand() % (g.yres/2)) + 100);
 		e.xSpeed = speed_Randomizer();
 		e.wavefreq = freq_Randomizer();
 		e.waveamp = amp_Randomizer();
@@ -448,23 +455,41 @@ void cleanExplosions()
  *or collides with goku directly
  */
 
-void detection (int Eindices) {
+void detection (int Eindices) 
+{
+	if (enemy[Eindices].isRendered) {
+		enemy[Eindices].eHealth --;
+		/*boss.eHealth --;
+		if (boss.eHealth == 0) {
+			createExplosion(boss.pos[0], boss.pos[1]);
+			boss.pos[0] = 10000;
+		}*/
+		if (enemy[Eindices].eHealth == 0) {
+			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
+			enemy[Eindices].pos[0] = g.xres;
+			enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
+			enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
+			enemy[Eindices].xSpeed = speed_Randomizer();
+			enemy[Eindices].wavefreq = freq_Randomizer();
+			enemy[Eindices].waveamp = amp_Randomizer();
+			enemy[Eindices].eHealth = 2;
+		}
+	}
+
+}
+
+void bossDetection () 
+{
 	
-	enemy[Eindices].eHealth --;
 	boss.eHealth --;
+	createExplosion(boss.pos[0], boss.pos[1]);
 	if (boss.eHealth == 0) {
 		createExplosion(boss.pos[0], boss.pos[1]);
+		createExplosion(boss.pos[0] + 50, boss.pos[1]);
+		createExplosion(boss.pos[0] + 50, boss.pos[1] + 50);
+		createExplosion(boss.pos[0], boss.pos[1] + 50);
 		boss.pos[0] = 10000;
-	}
-	if (enemy[Eindices].eHealth == 0) {
-		createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
-		enemy[Eindices].pos[0] = g.xres;
-		enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
-		enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
-		enemy[Eindices].xSpeed = speed_Randomizer();
-		enemy[Eindices].wavefreq = freq_Randomizer();
-		enemy[Eindices].waveamp = amp_Randomizer();
-		enemy[Eindices].eHealth = 2;
+		boss.eHealth = 100;
 	}
 
 }
