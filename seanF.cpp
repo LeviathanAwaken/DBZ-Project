@@ -522,7 +522,7 @@ void powerCollision()
 void healthCheck()
 {
 	if (goku.health <= 0) {
-		//gameState = DEATH;
+		gameState = DEATH;
 	}
 }
 

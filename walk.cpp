@@ -41,8 +41,8 @@ const float gravity = -0.2f;
 //global declarations
 int selectedOption = NEWGAME;
 int gameState = MAINMENU;
-int done = 0;
 int keys[65536];
+int done = 0;
 
 //CHANGED
 //Tracks character's position
