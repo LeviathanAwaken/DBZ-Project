@@ -300,7 +300,7 @@ void renderPauseMenu()
 {
   //draw final form logo 
   glPushMatrix();
-  glColor4f(1.0, 1.0, 1.0, 1.0);
+  glColor3f(1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_GREATER, 0.0f);
@@ -330,6 +330,7 @@ void renderPauseMenu()
 
   glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
   glVertex2i(centerX+width, centerY-height);
+
   glEnd();
 
   glPopMatrix();
@@ -377,25 +378,26 @@ void renderPauseMenu()
 void renderDeath()
 { //thinking of using an image for the death screen but i can just put you are dead 
   glPushMatrix();
-  glColor3f(1.0, 1.0, 1.0);
+  glColor4f(1.0, 1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.deathTexture);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_GREATER, 0.0f);
   glColor4ub(255,255,255,255);
 
-  float ssWidth = (float)1.0/img[14].width;
-  float ssHeight = (float)1.0/img[14].height;
+  float ssWidth = 1;//(float)1.0/img[19].width;
+  float ssHeight = 1;//(float)1.0/img[19].height;
 
-  float textureX = 0;
-  float textureY = 0;
+  float textureX = 1;
+  float textureY = 1;
 
   float centerX = g.xres/2;
   float centerY = g.yres*2/3; 
 
-  float width = floor(((float)g.xres/2200)*img[14].width);
-  float height = floor(((float)g.yres/1200)*img[14].height);
+  float width = floor(((float)g.xres/450)*img[14].width);
+  float height = floor(((float)g.yres/250)*img[14].height);
 
   glBegin(GL_QUADS);
+
   glTexCoord2f(textureX, textureY+ssHeight);
   glVertex2i(centerX-width, centerY-height);
 
@@ -407,9 +409,36 @@ void renderDeath()
 
   glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
   glVertex2i(centerX+width, centerY-height);
+
   glEnd();
 
   glPopMatrix();
   glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_ALPHA_TEST);
+
+  // display menu options
+Rect r;
+r.bot = g.yres/3;
+r.left = g.xres/2;
+r.center = 1;
+
+switch (selectedOption) {
+case 0:
+  ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+  ggprint8b(&r,16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+  break;
+case 1:
+  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+  ggprint8b(&r, 16, 0x123fff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+  break;
+case 2:
+  ggprint8b(&r, 16, 0xffffff,"NEW GAME");
+  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+  break;
+default:
+  break;
+}
 }
