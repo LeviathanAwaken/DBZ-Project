@@ -821,7 +821,7 @@ void render(void)
 			renderPauseMenu();
 		case DEATH:
 			renderDeath();
-			//need to develop death screen
+		//need to develop death screen
 			break;
 		case INGAME: {
 	// if (g.creditFlag && !g.pauseFlag) {
