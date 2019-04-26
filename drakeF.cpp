@@ -26,6 +26,7 @@ extern void enemyReference(Enemy *);
 extern void bossReference(Boss *);
 extern void bossCollision();
 extern void saibaCollision();
+extern void score_update(int);
 float nticks = 0.0;
 void Enemy_init();
 void pattern_1(Enemy&);
@@ -483,6 +484,7 @@ void detection (int Eindices, bool type)
 			enemy[Eindices].wavefreq = freq_Randomizer();
 			enemy[Eindices].waveamp = amp_Randomizer();
 			enemy[Eindices].eHealth = 2;
+			score_update(100);
 		}
 	
 
@@ -500,6 +502,7 @@ void bossDetection ()
 		createExplosion(boss.pos[0], boss.pos[1] + 50);
 		boss.pos[0] = 10000;
 		boss.eHealth = 100;
+		score_update(10000);
 	}
 
 }
