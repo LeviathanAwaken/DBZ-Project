@@ -21,6 +21,8 @@
 #include <iostream>
 using namespace std;
 
+int score_glob = 0;
+
 #ifdef PROFILE
 //This code is activated only for profiling while optimization
 //is attempted.
@@ -130,7 +132,8 @@ void showPause(int x, int y)
 }
 
 #ifdef PROFILE
-void showTimes(int x, int y, double runtime) {
+void showTimes(int x, int y, double runtime) 
+{
     Rect r;
     unsigned int c = 0x00ffff44;
     r.bot = y+20;
@@ -166,12 +169,6 @@ int score_add (int score)
     strcat(pagename, scor);
     int port = PORT;
 
-/*    //Get any command-line arguments.
-    if (argc > 1)
-        strcpy(hostname, argv[1]);
-    if (argc > 2)
-        strcpy(pagename, argv[2]);
-*/
     //Setup the SSL BIO
     outbio = ssl_setup_bio();
     //Initialize the SSL library
@@ -207,6 +204,55 @@ int score_add (int score)
     SSL_CTX_free(ctx);
 
     return 0;
+}
+
+void score_get ()
+{
+    int sd;
+    struct hostent *host;
+    struct sockaddr_in addr;
+    BIO *outbio = NULL;
+
+    const SSL_METHOD *method;
+    SSL_CTX *ctx;
+    SSL *ssl;
+ char hostname[256] = "odin.cs.csub.edu";
+    char pagename[256] = "/~jtrigueros/3350/project/scores.html";
+    int port = PORT;
+
+    //Setup the SSL BIO
+    outbio = ssl_setup_bio();
+    //Initialize the SSL library
+    if (SSL_library_init() < 0)
+        BIO_printf(outbio, "Could not initialize the OpenSSL library !\n");
+    method = SSLv23_client_method();
+    ctx = SSL_CTX_new(method);
+    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+
+    //Setup the socket used for connection.
+    host = gethostbyname(hostname);
+    sd = socket(AF_INET, SOCK_STREAM, 0);
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = *(long*)(host->h_addr);
+    if (connect(sd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
+        BIO_printf(outbio, "Cannot connect to host %s [%s] on port %d.\n",
+                hostname, inet_ntoa(addr.sin_addr), port);
+    }
+    //Connect using the SSL certificate.
+    ssl = SSL_new(ctx);
+    SSL_set_fd(ssl, sd);
+    SSL_connect(ssl);
+ //A non-blocking socket will make the ssl_read() not block.
+    set_non_blocking(sd);
+
+    get_a_page(ssl, hostname, pagename);
+
+    //Cleanup.
+    SSL_free(ssl);
+    close(sd);
+    SSL_CTX_free(ctx);
 }
 
 void get_a_page(SSL *ssl, char *hostname, char *pagename)
@@ -255,3 +301,12 @@ void set_non_blocking (const int sock)
     }
 }
 
+void score_update (int score)
+{
+    score_glob += score;
+}
+int score_receive () {
+    int score_tmp = score_glob;
+    score_glob = 0;
+    return score_tmp;
+}
