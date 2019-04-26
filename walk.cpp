@@ -199,6 +199,8 @@ int main(void)
 		#endif
 	}
 	cleanup_fonts();
+	//extern void score_get();
+	//score_get();
 	return 0;
 }
 
@@ -656,6 +658,8 @@ int checkKeys(XEvent *e)
 			  break;
 			  */
 		case XK_Escape:
+			//extern void score_get();
+			//score_get();
 			gameState = PAUSEMENU;
 			selectedOption = RESUMEGAME;
 			break;

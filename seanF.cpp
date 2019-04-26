@@ -29,9 +29,8 @@
 #endif
 
 const int MAX_KI = 10;
-const int MAX_BRACE = 1;
+const int MAX_BRACE = 2;
 const int UNASSIGN = -5000;
-const int COLLISION = 2;
 const int MAX_ENEM = 10;
 
 Enemy *enemyRef[MAX_ENEM];
@@ -44,13 +43,13 @@ int plimiter = 0;
 void kiCollision(int);
 void kiHandler(int);
 void braceHandler(int);
-void bossCollision(int);
+void bossHitCollision(int);
+void braceCollision(int);
 void gokuRender();
-void gokuCollision();
 void healthCheck();
 bool gokuBounds(int);
-void gokuPower();
 extern void detection(int);
+extern void bossDetection();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -81,13 +80,14 @@ class bossProjectile {
 		int bossYVel[MAX_BRACE];
 } brace;
 
-//Establishes a poiner to enemies being handled in Drake's file.
+//Establishes a pointer to enemies being handled in Drake's file.
 void enemyReference(Enemy* enem)
 {
 	enemyRef[elimiter] = enem;
 	elimiter++;
 }
 
+//Establishes a pointer to the boss being handled in Drake's file.
 void bossReference(Boss* bossIn)
 {
 	finBoss = bossIn;
@@ -131,6 +131,7 @@ void braceInit()
 		brace.bossTracker[i][0] = UNASSIGN;
 		brace.bossTracker[i][1] = UNASSIGN;
 	}
+	srand(time(NULL));
 }
 
 //Generalized initializer for the file, called in the main file.
@@ -219,8 +220,6 @@ void gokuIMove(int key)
 				goku.pos[1] = 0;
 			break;
 	}
-	gokuCollision();
-	gokuPower();
 }
 
 bool gokuBounds(int dir)
@@ -323,7 +322,7 @@ void kiMove(int kiID)
 		ki.kiTracker[kiID][0] += ki.kiVel;
 	}
 	kiCollision(kiID);
-	bossCollision(kiID);
+	bossHitCollision(kiID);
 }
 
 //Handles graphics for the kiBlasts.
@@ -359,8 +358,7 @@ void launchBrace(int id)
 {
 	brace.bossTracker[id][0] = finBoss->pos[0] - 20;
 	brace.bossTracker[id][1] = finBoss->pos[1];
-	srand(time(0));
-	brace.bossYVel[id] = (rand() % 5) * ((rand() % 2 == 1) ? 1 : -1);
+	brace.bossYVel[id] = (rand() % 5 + 1) * ((rand() % 2 == 1) ? 1 : -1);
 }
 
 //Destroys the kiBlast, and 'unassigns' it.
@@ -374,12 +372,13 @@ void braceFree(int braceID)
 void braceMove(int braceID)
 {
 	if (brace.bossTracker[braceID][0] < 0 ||
-		brace.bossTracker[braceID][1] > g.yres ||
+		brace.bossTracker[braceID][1] + 40 > g.yres ||
 		brace.bossTracker[braceID][1] < 0) {
 		braceFree(braceID);
 	} else {
 		brace.bossTracker[braceID][0] -= 6;
 		brace.bossTracker[braceID][1] += brace.bossYVel[braceID];
+		braceCollision(braceID);
 	}
 }
 
@@ -427,7 +426,8 @@ void kiCollision(int kiRef)
 	}
 }
 
-void bossCollision(int kiRef)
+//Boss hit by a ki blast collission.
+void bossHitCollision(int kiRef)
 {
 	bool xColl = finBoss->pos[0] + 200 >= ki.kiTracker[kiRef][0]
 		&& ki.kiTracker[kiRef][0] + 15 >= finBoss->pos[0];
@@ -436,11 +436,47 @@ void bossCollision(int kiRef)
 	if (xColl && yColl) {
 		kiFree(kiRef);
 		//insert Boss update function here
+		bossDetection();
+	}
+}
+
+//Goku hit by curly brace collision.
+void braceCollision(int braceID)
+{
+	bool xColl = brace.bossTracker[braceID][0] + 40 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= brace.bossTracker[braceID][0];
+	bool yColl = brace.bossTracker[braceID][1] + 20 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
+	if (xColl && yColl) {
+		goku.health--;
+		if (goku.currentPic > 0) {
+			goku.moveS -= goku.currentPic;
+			goku.currentPic--;
+		}
+		braceFree(braceID);
+		healthCheck();
+	}
+}
+
+//Goku hit by the boss.
+void bossCollision()
+{
+	bool xColl = finBoss->pos[0] + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= finBoss->pos[0];
+	bool yColl = finBoss->pos[1] + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= finBoss->pos[1];
+	if (xColl && yColl) {
+		goku.health--;
+		if (goku.currentPic > 0) {
+			goku.moveS -= goku.currentPic;
+			goku.currentPic--;
+		}
+		healthCheck();
 	}
 }
 
 //Collision checking for the main character and the enemies.
-void gokuCollision()
+void saibaCollision()
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
 		bool xColl = enemyRef[i]->pos[0] + 70 >= goku.pos[0]
@@ -457,38 +493,10 @@ void gokuCollision()
 			healthCheck();
 		}
 	}
-	for (int i = 0; i < MAX_BRACE; i++) {
-		bool xColl = brace.bossTracker[i][0] + 40 >= goku.pos[0]
-			&& goku.pos[0] + goku.width >= brace.bossTracker[i][0];
-		bool yColl = brace.bossTracker[i][1] + 20 >= goku.pos[1]
-			&& goku.pos[1] + goku.height >= brace.bossTracker[i][1];
-		if (xColl && yColl) {
-			goku.health--;
-			if (goku.currentPic > 0) {
-				goku.moveS -= goku.currentPic;
-				goku.currentPic--;
-			}
-			braceFree(i);
-			healthCheck();
-		}
-	}
-	//Boss Collision
-	bool xColl = finBoss->pos[0] + 70 >= goku.pos[0]
-		&& goku.pos[0] + goku.width >= finBoss->pos[0];
-	bool yColl = finBoss->pos[1] + 50 >= goku.pos[1]
-		&& goku.pos[1] + goku.height >= finBoss->pos[1];
-	if (xColl && yColl) {
-		goku.health--;
-		if (goku.currentPic > 0) {
-			goku.moveS -= goku.currentPic;
-			goku.currentPic--;
-		}
-		healthCheck();
-	}
 }
 
 //Collision detection with powerups.
-void gokuPower()
+void powerCollision()
 {
 	for (int i = 0; i < plimiter; i++) {
 		bool xColl = powRef[i]->pos[0] + 70 >= goku.pos[0]
@@ -501,7 +509,8 @@ void gokuPower()
 				goku.currentPic++;
 				goku.moveS += goku.currentPic;
 			}
-			//insert powerup removal function here
+			powRef[i]->pos[0] = g.xres;
+			powRef[i]->pos[1] = (rand() % (g.yres - 100) + 1);
 			break;
 		}
 	}
