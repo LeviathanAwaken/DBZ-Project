@@ -48,7 +48,7 @@ void braceCollision(int);
 void gokuRender();
 void healthCheck();
 bool gokuBounds(int);
-extern void detection(int);
+extern void detection(int, bool);
 extern void bossDetection();
 
 //Class encompassing the main character's position and other attributes.
@@ -420,7 +420,7 @@ void kiCollision(int kiRef)
 			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
-			detection(i);
+			detection(i, false);
 			break;
 		}
 	}
@@ -489,7 +489,7 @@ void saibaCollision()
 				goku.moveS -= goku.currentPic;
 				goku.currentPic--;
 			}
-			detection(i);
+			detection(i, true);
 			healthCheck();
 		}
 	}
