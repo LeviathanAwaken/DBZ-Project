@@ -457,15 +457,23 @@ void cleanExplosions()
  *or collides with goku directly
  */
 
-void detection (int Eindices)
+void detection (int Eindices, bool type)
 {
-	if (enemy[Eindices].isRendered) {
-		enemy[Eindices].eHealth --;
-		/*boss.eHealth --;
-		if (boss.eHealth == 0) {
-			createExplosion(boss.pos[0], boss.pos[1]);
-			boss.pos[0] = 10000;
-		}*/
+	if (type == false) {
+		if (enemy[Eindices].isRendered) {
+			enemy[Eindices].eHealth --;
+			/*boss.eHealth --;
+			if (boss.eHealth == 0) {
+				createExplosion(boss.pos[0], boss.pos[1]);
+				boss.pos[0] = 10000;
+			}*/
+
+		}
+	} else {
+		if (enemy[Eindices].isRendered) {
+			enemy[Eindices].eHealth -=2 ;
+		}	
+	}
 		if (enemy[Eindices].eHealth == 0) {
 			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
 			enemy[Eindices].pos[0] = g.xres;
@@ -476,7 +484,7 @@ void detection (int Eindices)
 			enemy[Eindices].waveamp = amp_Randomizer();
 			enemy[Eindices].eHealth = 2;
 		}
-	}
+	
 
 }
 

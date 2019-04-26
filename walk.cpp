@@ -910,6 +910,8 @@ void render(void)
 			ggprint8b(&r, 16, c, "p -> test pause screen");
 			ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
 			extern void showScore(int, int, int);
+			extern int score_receive();
+			g.score += score_receive();
 			showScore(5, 22, g.score);
 			// if (g.startFlag == 0) {
 			// 	extern void showStart(int, int);
