@@ -42,6 +42,7 @@ class Global {
 		GLuint bossTexture;
 		GLuint finalFormLogoTexture;
 		GLuint explosionTexture;
+		GLuint deathTexture;
 		GLuint ss3Texture;
 		GLuint ssbTexture;
 		GLuint braceTexture;

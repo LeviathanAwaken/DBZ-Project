@@ -53,7 +53,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
-	"images/explosion2.gif", "images/explosion3.gif", "images/brace.png"};
+	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png", 
+	"images/deathTexture.gif"};
 
 
 //-----------------------------------------------------------------------------
@@ -439,7 +440,6 @@ void initOpengl(void)
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
 
-
 	//------------------------Goku SS3----------------------------------
 	w = img[14].width;
 	h = img[14].height;
@@ -500,6 +500,20 @@ void initOpengl(void)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	//--------------------------------------------------------------------------
+
+	//------------------------death texture----------------------------------
+	w = img[19].width;
+	h = img[19].height;
+	glGenTextures(1, &g.deathTexture);
+	glBindTexture(GL_TEXTURE_2D, g.deathTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[19]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
+	//--------------------------------------------------------------------------
+
 
 }
 
@@ -673,7 +687,7 @@ int checkKeys(XEvent *e)
 		break;
 	default:
 		printf("FATAL ERROR IN GAME STATE\n\n");
-	exit(1);
+		exit(1);
 	}
 
 
@@ -723,7 +737,7 @@ void physics(void)
 		checkKeysPauseMenu();
 		break;
 	case DEATH:
-	  checkKeysLost();
+		  checkKeysLost();
 		break;
 	case INGAME:
 		if (g.pauseFlag)
