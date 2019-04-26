@@ -472,7 +472,7 @@ void detection (int Eindices, bool type)
 			enemy[Eindices].eHealth -=2 ;
 		}	
 	}
-		if (enemy[Eindices].eHealth == 0) {
+		if (enemy[Eindices].eHealth <= 0) {
 			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
 			enemy[Eindices].pos[0] = g.xres;
 			enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
@@ -492,7 +492,7 @@ void bossDetection ()
 
 	boss.eHealth --;
 	createExplosion(boss.pos[0], boss.pos[1]);
-	if (boss.eHealth == 0) {
+	if (boss.eHealth <= 0) {
 		createExplosion(boss.pos[0], boss.pos[1]);
 		createExplosion(boss.pos[0] + 50, boss.pos[1]);
 		createExplosion(boss.pos[0] + 50, boss.pos[1] + 50);

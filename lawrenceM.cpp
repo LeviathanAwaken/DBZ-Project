@@ -13,10 +13,11 @@
 #include "Timers.h"
 #include "Image.h"
 #include <X11/keysym.h>
+extern void init();
 extern Global g; // global declaration
 // extern Timers timers; //timer class
 extern int gameState;
-extern int done;
+extern Global done;
 extern int selectedOption;
 extern Global walkTexture;
 extern Timers timers;
@@ -65,28 +66,35 @@ void setBackground(int x,int y, GLuint textInt)
 	glVertex2i(x, 35);
 	glEnd();
 }
+extern void sInit(GLuint,GLuint, GLuint);
+extern void Enemy_init();
+extern void Powerups_init();
+extern int score_reset();
+
 void newGame() 
 {
-
-  //setup new game when option is selected
+  score_reset(g.score);
+  sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
+	Enemy_init();
+	Powerups_init();
 }
 int acceptGameState(int selectedOption)
 {
     //update game state to selected option in main menu
     switch (selectedOption) {
         case 0:
-            // newGame();
             gameState = INGAME;
+            newGame();
             break;
         case 1:
             printf("score");
             //make leaderboard function           
             break;
         case 2:
-            done = 1;
+            g.done = 1;
             return 1;
         case 3:
-            done = 0;
+            g.done = 0;
             break;
         default:
             printf("FATAL ERROR IN GAME STATE\n\n");
@@ -270,14 +278,14 @@ void renderMainMenu() {
 
 // display menu options
 Rect r;
-r.bot = g.yres/3;
+r.bot = g.yres/2;
 r.left = g.xres/2;
 r.center = 1;
 
 switch (selectedOption) {
 case 0:
   ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-  ggprint8b(&r,16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "SCORES");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 1:
@@ -339,9 +347,9 @@ void renderPauseMenu()
 /* menu text */
   //display menu options
   Rect r;
-  r.bot = g.yres/3;
+  r.bot = g.yres/2;
   r.left = g.xres/2;
-  r.center = 1;
+  r.center = 2;
 
   switch (selectedOption) {
       case 0:
@@ -375,7 +383,10 @@ void renderPauseMenu()
 }
 
 void renderDeath()
-{ //thinking of using an image for the death screen but i can just put you are dead 
+{ 
+  glClearColor(1.0, 1.0, 1.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  //thinking of using an image for the death screen but i can just put you are dead 
   glPushMatrix();
   glColor3f(1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.deathTexture);
@@ -383,8 +394,8 @@ void renderDeath()
   glAlphaFunc(GL_GREATER, 0.0f);
   glColor4ub(255,255,255,255);
 
-  float ssWidth = (float)1.0/img[14].width;
-  float ssHeight = (float)1.0/img[14].height;
+  float ssWidth = 1;
+  float ssHeight = 1;
 
   float textureX = 0;
   float textureY = 0;
@@ -392,8 +403,8 @@ void renderDeath()
   float centerX = g.xres/2;
   float centerY = g.yres*2/3; 
 
-  float width = floor(((float)g.xres/2200)*img[14].width);
-  float height = floor(((float)g.yres/1200)*img[14].height);
+  float width = (((float)g.xres/400)*img[14].width);
+  float height = (((float)g.yres/257)*img[14].height);
 
   glBegin(GL_QUADS);
   glTexCoord2f(textureX, textureY+ssHeight);
@@ -412,4 +423,30 @@ void renderDeath()
   glPopMatrix();
   glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_ALPHA_TEST);
+
+  // display menu options
+Rect r;
+r.bot = g.yres/3;
+r.left = g.xres/2;
+r.center = 2;
+
+switch (selectedOption) {
+case 0:
+  ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+  ggprint8b(&r,16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "EXIT");
+  break;
+case 1:
+  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+  ggprint8b(&r, 16, 0x123fff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "EXIT");
+  break;
+case 2:
+  ggprint8b(&r, 16, 0xffffff,"NEW GAME");
+  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0x123fff, "EXIT");
+  break;
+default:
+  break;
+}
 }

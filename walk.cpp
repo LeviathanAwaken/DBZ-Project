@@ -41,8 +41,8 @@ const float gravity = -0.2f;
 //global declarations
 int selectedOption = NEWGAME;
 int gameState = MAINMENU;
-int done = 0;
 int keys[65536];
+int done = 0;
 
 //CHANGED
 //Tracks character's position
@@ -53,7 +53,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
-	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png", 
+	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif"};
 
 
@@ -919,6 +919,8 @@ void render(void)
 			// }
 			extern void showTimes(int, int, double);
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
+			extern void gokuHealth(int, int);
+			gokuHealth(g.xres/5, -15);
 		//}
 	}
 	}
