@@ -306,7 +306,7 @@ void renderPauseMenu()
 {
   //draw final form logo 
   glPushMatrix();
-  glColor3f(1.0, 1.0, 1.0);
+  glColor4f(1.0, 1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_GREATER, 0.0f);
@@ -336,7 +336,6 @@ void renderPauseMenu()
 
   glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
   glVertex2i(centerX+width, centerY-height);
-
   glEnd();
 
   glPopMatrix();
@@ -387,17 +386,17 @@ void renderDeath()
   glClear(GL_COLOR_BUFFER_BIT);
   //thinking of using an image for the death screen but i can just put you are dead 
   glPushMatrix();
-  glColor4f(1.0, 1.0, 1.0, 1.0);
+  glColor3f(1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.deathTexture);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_GREATER, 0.0f);
   glColor4ub(255,255,255,255);
 
-  float ssWidth = 1;//(float)1.0/img[19].width;
-  float ssHeight = 1;//(float)1.0/img[19].height;
+  float ssWidth = (float)1.0/img[14].width;
+  float ssHeight = (float)1.0/img[14].height;
 
-  float textureX = 1;
-  float textureY = 1;
+  float textureX = 0;
+  float textureY = 0;
 
   float centerX = g.xres/2;
   float centerY = g.yres*2/3; 
@@ -406,7 +405,6 @@ void renderDeath()
   float height = (((float)g.yres/257)*img[14].height);
 
   glBegin(GL_QUADS);
-
   glTexCoord2f(textureX, textureY+ssHeight);
   glVertex2i(centerX-width, centerY-height);
 
@@ -418,7 +416,6 @@ void renderDeath()
 
   glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
   glVertex2i(centerX+width, centerY-height);
-
   glEnd();
 
   glPopMatrix();

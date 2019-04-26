@@ -53,7 +53,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
-	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png", 
+	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif"};
 
 
@@ -821,7 +821,7 @@ void render(void)
 			renderPauseMenu();
 		case DEATH:
 			renderDeath();
-			//need to develop death screen
+		//need to develop death screen
 			break;
 		case INGAME: {
 	// if (g.creditFlag && !g.pauseFlag) {
@@ -919,6 +919,8 @@ void render(void)
 			// }
 			extern void showTimes(int, int, double);
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
+			extern void gokuHealth(int, int);
+			gokuHealth(g.xres/5, -15);
 		//}
 	}
 	}
