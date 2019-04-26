@@ -12,12 +12,11 @@
 #include "Global.h"
 #include "Timers.h"
 #include "Image.h"
+#include <X11/keysym.h>
 extern Global g; // global declaration
 // extern Timers timers; //timer class
-extern int keys[];
 extern int gameState;
 extern int done;
-extern int cursorPosition[];
 extern int selectedOption;
 extern Global walkTexture;
 extern Timers timers;
@@ -51,6 +50,21 @@ void showLawrence(int x, int y,  GLuint textint)
     showLawrencePicture(0,0,textint);
     showLawrenceText(x+500, y-400);
 }
+void setBackground(int x,int y, GLuint textInt)
+{
+	glBindTexture(GL_TEXTURE_2D, textInt);
+	glColor4f(1, 1, 1, 1);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 1.0f); 
+	glVertex2i(0, 35); //bottom left
+	glTexCoord2f(0.0f, 0.0f); 
+	glVertex2i(0, y); //top left
+	glTexCoord2f(1.0f, 0.0f); 
+	glVertex2i(x, y); //top right
+	glTexCoord2f(1.0f, 1.0f); 
+	glVertex2i(x, 35);
+	glEnd();
+}
 void newGame() 
 {
 
@@ -65,13 +79,14 @@ int acceptGameState(int selectedOption)
             gameState = INGAME;
             break;
         case 1:
+            printf("score");
             //make leaderboard function           
             break;
         case 2:
-            done=1;
+            done = 1;
             return 1;
         case 3:
-            gameState = INGAME;
+            done = 0;
             break;
         default:
             printf("FATAL ERROR IN GAME STATE\n\n");
@@ -105,7 +120,7 @@ void checkMouseMenu(XEvent *e)
 }
 void checkKeysLost()
 {
-    if (keys[XK_Up]) {
+    if (g.keys[XK_Up]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
@@ -115,7 +130,7 @@ void checkKeysLost()
 	}
     }
 
-    if (keys[XK_Down]) {
+    if (g.keys[XK_Down]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
@@ -125,7 +140,7 @@ void checkKeysLost()
 	}
     }
 
-    if (keys[XK_Return]) {
+    if (g.keys[XK_Return]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
@@ -138,7 +153,7 @@ void checkKeysLost()
 
 void checkKeysMainMenu() 
 {
-  if(keys[XK_Up]) {
+  if(g.keys[XK_Up]) {
     timers.recordTime(&timers.timeCurrent);
     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
     if (timeSpan > menuSelectionDelay) {
@@ -146,7 +161,7 @@ void checkKeysMainMenu()
       timers.recordTime(&timers.menuSelectionTime);
     }
   }
-  if(keys[XK_Down]) {
+  if(g.keys[XK_Down]) {
     timers.recordTime(&timers.timeCurrent);
     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
     if(timeSpan > menuSelectionDelay) {
@@ -154,7 +169,7 @@ void checkKeysMainMenu()
       timers.recordTime(&timers.menuSelectionTime);
     }
   }
-  if(keys[XK_Return]) {
+  if(g.keys[XK_Return]) {
     timers.recordTime(&timers.timeCurrent);
     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
     if (timeSpan > menuSelectionDelay) {
@@ -166,7 +181,7 @@ void checkKeysMainMenu()
 
 void checkKeysPauseMenu()
 {
-  if(keys[XK_Up]) {
+  if(g.keys[XK_Up]) {
     timers.recordTime(&timers.timeCurrent);
     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
     if (timeSpan > menuSelectionDelay) {
@@ -174,7 +189,7 @@ void checkKeysPauseMenu()
       timers.recordTime(&timers.menuSelectionTime);
     }
   }
-  if(keys[XK_Down]) {
+  if(g.keys[XK_Down]) {
     timers.recordTime(&timers.timeCurrent);
     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
     if(timeSpan > menuSelectionDelay) {
@@ -182,7 +197,7 @@ void checkKeysPauseMenu()
       timers.recordTime(&timers.menuSelectionTime);
     }
   }
-  if(keys[XK_Return]) {
+  if(g.keys[XK_Return]) {
     timers.recordTime(&timers.timeCurrent);
     double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
     if (timeSpan > menuSelectionDelay) {
@@ -193,84 +208,66 @@ void checkKeysPauseMenu()
 }
 // extern void setBackgroundNamek(int, int, GLuint);
 
-void renderMainMenu() 
+void renderMainMenuBackground(int x, int y, GLuint textInt) 
 {
-  // setBackgroundNamek(g.xres, g.yres, g.namekTexture);
+	glBindTexture(GL_TEXTURE_2D, textInt);
+	glColor4f(1, 1, 1, 1);
 
-  //set background to game background
+	glBegin(GL_QUADS);
+	
+  glTexCoord2f(0.0f, 1.0f); 
+	glVertex2i(0, 35); //bottom left
+	
+  glTexCoord2f(0.0f, 0.0f); 
+	glVertex2i(0, y); //top left
+
+	glTexCoord2f(1.0f, 0.0f); 
+	glVertex2i(x, y); //top right
+	
+  glTexCoord2f(1.0f, 1.0f); 
+	glVertex2i(x, 35);
+
+	glEnd();
+}
+// draw main logo
+void renderMainMenu() {
   glPushMatrix();
-  glColor3f(1.0, 1.0, 1.0);
-  glBindTexture(GL_TEXTURE_2D, g.namekTexture);
+  glColor4f(1.0, 1.0, 1.0, 1.0);
+  glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_GREATER, 0.0f);
-  glColor4ub(255, 255, 255, 255);
+  glColor4ub(255,255,255,255);
 
-  //working on menu placement
-  float ssWidth = (float)1.0/img[8].width;
-  float ssHeight = (float)1.0/img[8].height;
+  float ssWidth = 1;
+  float ssHeight = 1;
 
   float textureX = 0;
   float textureY = 0;
 
   float centerX = g.xres/2;
-  float centerY = (g.yres/2) + g.yres *0.25;
+  float centerY = g.yres*2/3; 
 
-  float width = img[8].width/1.6;
-  float height = img[8].height/1.5;
+  float width = floor(((float)g.xres/2200)*img[11].width);
+  float height = floor(((float)g.yres/1200)*img[11].height);
 
   glBegin(GL_QUADS);
-
-  glTexCoord2f(textureX, textureY + ssHeight);
-  glVertex2i(centerX - width, centerY - height);
+  glTexCoord2f(textureX, textureY+ssHeight);
+  glVertex2i(centerX-width, centerY-height);
 
   glTexCoord2f(textureX, textureY);
-  glVertex2i(centerX -width, centerY + height);
+  glVertex2i(centerX-width, centerY+height);
 
-  glTexCoord2f(textureX + ssWidth, textureY + ssHeight);
-  glVertex2i(centerX + width, centerY - height);
+  glTexCoord2f(textureX+ssWidth, textureY);
+  glVertex2i(centerX+width, centerY+height);
+
+  glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+  glVertex2i(centerX+width, centerY-height);
   glEnd();
 
- 
-// draw main logo
-    glPushMatrix();
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
+  glPopMatrix();
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_ALPHA_TEST);
 
-    ssWidth = (float)1.0/img[11].width;
-    ssHeight = (float)1.0/img[11].height;
-
-    textureX = 0;
-    textureY = 0;
-
-    centerX = g.xres/2;
-    centerY = g.yres*2/3; 
-
-    width = floor(((float)g.xres/2200)*img[11].width);
-    height = floor(((float)g.yres/1200)*img[11].height);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(textureX, textureY+ssHeight);
-    glVertex2i(centerX-width, centerY-height);
-
-    glTexCoord2f(textureX, textureY);
-    glVertex2i(centerX-width, centerY+height);
-
-    glTexCoord2f(textureX+ssWidth, textureY);
-    glVertex2i(centerX+width, centerY+height);
-
-    glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
-    glVertex2i(centerX+width, centerY-height);
-    glEnd();
-
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
-
-
-  
 // display menu options
 Rect r;
 r.bot = g.yres/3;
@@ -278,143 +275,141 @@ r.left = g.xres/2;
 r.center = 1;
 
 switch (selectedOption) {
-  case 0:
-    ggprint8b(&r, 16, 0x123fff, "START A NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-    break;
-  case 1:
-    ggprint8b(&r, 16, 0xffffff, "START A NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-    break;
-  case 2:
-    ggprint8b(&r, 16, 0xffffff, "START A NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-    break;
-  default:
-    break;
+case 0:
+  ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+  ggprint8b(&r,16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+  break;
+case 1:
+  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+  ggprint8b(&r, 16, 0x123fff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+  break;
+case 2:
+  ggprint8b(&r, 16, 0xffffff,"NEW GAME");
+  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+  break;
+default:
+  break;
 }
  
 }
 
 void renderPauseMenu()
 {
-    //draw final form logo //////////////////////////////////////
-    glPushMatrix();
-    glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.0f);
-    glColor4ub(255,255,255,255);
+  //draw final form logo 
+  glPushMatrix();
+  glColor4f(1.0, 1.0, 1.0, 1.0);
+  glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
+  glEnable(GL_ALPHA_TEST);
+  glAlphaFunc(GL_GREATER, 0.0f);
+  glColor4ub(255,255,255,255);
 
-    float ssWidth = 1;
-    float ssHeight = 1;
+  float ssWidth = 1;
+  float ssHeight = 1;
 
-    float textureX = 0;
-    float textureY = 0;
+  float textureX = 0;
+  float textureY = 0;
 
-    float centerX = g.xres/2;
-    float centerY = g.yres*2/3; 
+  float centerX = g.xres/2;
+  float centerY = g.yres*2/3; 
 
-    float width = (((float)g.xres/2200)*img[11].width);
-    float height = (((float)g.yres/1200)*img[11].height);
+  float width = (((float)g.xres/2200)*img[11].width);
+  float height = (((float)g.yres/1200)*img[11].height);
 
-    glBegin(GL_QUADS);
-    glTexCoord2f(textureX, textureY+ssHeight);
-    glVertex2i(centerX-width, centerY-height);
+  glBegin(GL_QUADS);
+  glTexCoord2f(textureX, textureY+ssHeight);
+  glVertex2i(centerX-width, centerY-height);
 
-    glTexCoord2f(textureX, textureY);
-    glVertex2i(centerX-width, centerY+height);
+  glTexCoord2f(textureX, textureY);
+  glVertex2i(centerX-width, centerY+height);
 
-    glTexCoord2f(textureX+ssWidth, textureY);
-    glVertex2i(centerX+width, centerY+height);
+  glTexCoord2f(textureX+ssWidth, textureY);
+  glVertex2i(centerX+width, centerY+height);
 
-    glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
-    glVertex2i(centerX+width, centerY-height);
-    glEnd();
+  glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+  glVertex2i(centerX+width, centerY-height);
+  glEnd();
 
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_ALPHA_TEST);
+  glPopMatrix();
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_ALPHA_TEST);
 
-    ////////////////////////////////////////////
+/* menu text */
+  //display menu options
+  Rect r;
+  r.bot = g.yres/3;
+  r.left = g.xres/2;
+  r.center = 1;
 
-    //display meny options
-    Rect r;
-    r.bot = g.yres/3;
-    r.left = g.xres/2;
-    r.center = 1;
-
-    switch (selectedOption) {
-        case 0:
-            // if (walkTexture.centerY!=800) {
-                ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
-            // }
-            ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-            ggprint8b(&r, 16, 0xffffff, "EXIT");
-            break;
-        case 1:
-            // if (walkTexture.centerY!=800) {
-                ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
-            // }
-            ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-            ggprint8b(&r, 16, 0xffffff, "EXIT");
-            break;
-        case 2:
-            // if (walkTexture.centerY!=800) {
-                ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
-            // }
-            ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-            ggprint8b(&r, 16, 0x123fff, "EXIT");
-            break;
-        case 3:
-            // if (walkTexture.centerY!=800) {
-                ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
-            // }
-            ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-            ggprint8b(&r, 16, 0xffffff, "EXIT");
-            break;
-        default:
-            // printf("FATAL GAME ERROR\n\n");
-            break;
-    }
+  switch (selectedOption) {
+      case 0:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT");
+          break;
+      case 1:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0x123fff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT");
+          break;
+      case 2:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0x123fff, "EXIT");
+          break;
+      case 3:
+          ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff,"SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT");
+          break;
+      default:
+          // printf("FATAL GAME ERROR\n\n");
+          break;
+  }
 }
 
-// void renderDeath()
-// { //thinking of using an image for the death screen but i can just put you are dead 
-//   glPushMatrix();
-//   glColor3f(1.0, 1.0, 1.0);
-//   glBindTexture(GL_TEXTURE_2D, g.deathTexture);
-//   glEnable(GL_ALPHA_TEST);
-//   glAlphaFunc(GL_GREATER, 0.0f);
-//   glColor4ub(255,255,255,255);
+void renderDeath()
+{ //thinking of using an image for the death screen but i can just put you are dead 
+  glPushMatrix();
+  glColor3f(1.0, 1.0, 1.0);
+  glBindTexture(GL_TEXTURE_2D, g.deathTexture);
+  glEnable(GL_ALPHA_TEST);
+  glAlphaFunc(GL_GREATER, 0.0f);
+  glColor4ub(255,255,255,255);
 
-//   float ssWidth = (float)1.0/img[14].width;
-//   float ssHeight = (float)1.0/img[14].height;
+  float ssWidth = (float)1.0/img[14].width;
+  float ssHeight = (float)1.0/img[14].height;
 
-//   float textureX = 0;
-//   float textureY = 0;
+  float textureX = 0;
+  float textureY = 0;
 
-//   float centerX = g.xres/2;
-//   float centerY = g.yres*2/3; 
+  float centerX = g.xres/2;
+  float centerY = g.yres*2/3; 
 
-//   float width = floor(((float)g.xres/2200)*img[14].width);
-//   float height = floor(((float)g.yres/1200)*img[14].height);
+  float width = floor(((float)g.xres/2200)*img[14].width);
+  float height = floor(((float)g.yres/1200)*img[14].height);
 
-//   glBegin(GL_QUADS);
-//   glTexCoord2f(textureX, textureY+ssHeight);
-//   glVertex2i(centerX-width, centerY-height);
+  glBegin(GL_QUADS);
+  glTexCoord2f(textureX, textureY+ssHeight);
+  glVertex2i(centerX-width, centerY-height);
 
-//   glTexCoord2f(textureX, textureY);
-//   glVertex2i(centerX-width, centerY+height);
+  glTexCoord2f(textureX, textureY);
+  glVertex2i(centerX-width, centerY+height);
 
-//   glTexCoord2f(textureX+ssWidth, textureY);
-//   glVertex2i(centerX+width, centerY+height);
+  glTexCoord2f(textureX+ssWidth, textureY);
+  glVertex2i(centerX+width, centerY+height);
 
-//   glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
-//   glVertex2i(centerX+width, centerY-height);
-//   glEnd();
+  glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+  glVertex2i(centerX+width, centerY-height);
+  glEnd();
 
-//   glPopMatrix();
-//   glBindTexture(GL_TEXTURE_2D, 0);
-//   glDisable(GL_ALPHA_TEST);
-// }
+  glPopMatrix();
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_ALPHA_TEST);
+}
