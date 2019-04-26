@@ -73,8 +73,8 @@ extern void Powerups_init();
 void newGame() 
 {
   sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
-	// Enemy_init();
-	// Powerups_init();
+	Enemy_init();
+	Powerups_init();
 }
 int acceptGameState(int selectedOption)
 {
@@ -392,8 +392,8 @@ void renderDeath()
   glAlphaFunc(GL_GREATER, 0.0f);
   glColor4ub(255,255,255,255);
 
-  float ssWidth = (float)1.0/img[14].width;
-  float ssHeight = (float)1.0/img[14].height;
+  float ssWidth = 1;
+  float ssHeight = 1;
 
   float textureX = 0;
   float textureY = 0;
