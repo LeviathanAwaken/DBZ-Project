@@ -12,8 +12,11 @@ typedef double Vec[3];
 
 //menu options
 #define NEWGAME 0
-#define EXIT 1
-#define RESUMEGAME 2
+#define SCORES 1
+#define CONTROL 2
+#define EXIT 3
+#define RESUMEGAME 4
+
 
 class Global {
 	public:
