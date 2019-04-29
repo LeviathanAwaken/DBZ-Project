@@ -16,7 +16,7 @@
  * my own personal picture in the credits.
  *
  */
-extern Global g;
+//extern Global g;
 extern void powerReference(Powerups*);
 extern void powerCollision();
 Powerups powerups;
@@ -128,12 +128,12 @@ void blastPowerup_init()
 }
 void blastPowerupPhysics()
 {
-    blastPowerup.pos[0] -=2;
-    if(blastPowerup.pos[0] < -50) {
+	blastPowerup.pos[0] -=2;
+	if(blastPowerup.pos[0] < -50) {
 	blastPowerup.pos[0] = g.xres;
 	blastPowerup.pos[1] = (rand() % g.yres);
-    }
-    //blastCollision();
+	}
+	//blastCollision();
 }
 void blastPowerupRender (GLuint image)
 {
@@ -165,7 +165,3 @@ void blastPowerupRender (GLuint image)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_ALPHA_TEST);
 }
-
-
-
-
