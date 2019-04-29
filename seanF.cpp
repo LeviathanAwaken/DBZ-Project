@@ -28,10 +28,9 @@
 	#include <unistd.h>
 #endif
 
-const int MAX_KI = 10;
+const int MAX_KI = 20;
 const int MAX_BRACE = 2;
 const int UNASSIGN = -5000;
-//extern const int count;
 const int MAX_ENEM = 15;
 
 Enemy *enemyRef[MAX_ENEM];
@@ -57,7 +56,7 @@ extern int score_update(int);
 //Class encompassing the main character's position and other attributes.
 class Protag {
 	public:
-		GLuint pics[3];
+		GLuint pics[6];
 		int currentPic;
 		float pos[2];
 		//float vel[2];
@@ -106,7 +105,7 @@ void powerReference(Powerups* power)
 //Initializes the kiClass for use.
 void kiInit()
 {
-	ki.kiVel = 5;
+	ki.kiVel = 7;
 	for (int i = 0; i < MAX_KI; i++) {
 		ki.kiTracker[i][0] = UNASSIGN;
 		ki.kiTracker[i][1] = UNASSIGN;
@@ -138,13 +137,17 @@ void braceInit()
 }
 
 //Generalized initializer for the file, called in the main file.
-void sInit(GLuint gok, GLuint gok2, GLuint gok3)
+void sInit(GLuint gok, GLuint gok2, GLuint gok3, GLuint gok4, GLuint gok5,
+	GLuint gok6)
 {
 	elimiter = 0;
 	plimiter = 0;
 	goku.pics[0] = gok;
 	goku.pics[1] = gok2;
 	goku.pics[2] = gok3;
+	goku.pics[3] = gok4;
+	goku.pics[4] = gok5;
+	goku.pics[5] = gok6;
 	gokuInit();
 	kiInit();
 	braceInit();
@@ -294,7 +297,7 @@ void gokuRender()
 //Checks ki position against window bounds.
 int kiLimitCheck()
 {
-	for (int i = 0; i < MAX_KI; i++) {
+	for (int i = 0; i < MAX_KI - (10 - (2 * goku.currentPic)); i++) {
 		if (ki.kiTracker[i][0] == UNASSIGN && ki.kiTracker[i][1] == UNASSIGN)
 			return i;
 	}
@@ -454,8 +457,8 @@ void braceCollision(int braceID)
 		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
 	if (xColl && yColl) {
 		goku.health--;
-		if (goku.currentPic > 0) {
-			goku.moveS -= goku.currentPic;
+		if (goku.currentPic > 0 && goku.health < 8) {
+			goku.moveS -= 2;
 			goku.currentPic--;
 		}
 		braceFree(braceID);
@@ -472,8 +475,8 @@ void bossCollision()
 		&& goku.pos[1] + goku.height >= finBoss->pos[1];
 	if (xColl && yColl) {
 		goku.health--;
-		if (goku.currentPic > 0) {
-			goku.moveS -= goku.currentPic;
+		if (goku.currentPic > 0 && goku.health < 8) {
+			goku.moveS -= 2;
 			goku.currentPic--;
 		}
 		healthCheck();
@@ -490,8 +493,8 @@ void saibaCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
-			if (goku.currentPic > 0) {
-				goku.moveS -= goku.currentPic;
+			if (goku.currentPic > 0 && goku.health < 8) {
+				goku.moveS -= 2;
 				goku.currentPic--;
 			}
 			detection(i, true);
@@ -510,9 +513,9 @@ void powerCollision()
 			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health++;
-			if (goku.currentPic < 2 && goku.health > 3 + goku.currentPic) {
+			if (goku.currentPic < 5 && goku.health > 3) {
 				goku.currentPic++;
-				goku.moveS += goku.currentPic;
+				goku.moveS += 2;
 			}
 			powRef[i]->pos[0] = g.xres;
 			powRef[i]->pos[1] = (rand() % (g.yres - 100) + 1);
@@ -532,7 +535,7 @@ void healthCheck()
 //Handler function to prevent repetitive code of parsing through the kiBlasts.
 void kiHandler(int type)
 {
-	for (int i = 0; i < MAX_KI; i++) {
+	for (int i = 0; i < MAX_KI - (10 - (2 * goku.currentPic)); i++) {
 		if (ki.kiTracker[i][0] != UNASSIGN &&
 			ki.kiTracker[i][1] != UNASSIGN) {
 			if (type == 0) {
@@ -567,7 +570,7 @@ void gokuHealth(int x, int y)
 	Rect r;
 	unsigned int c = 0x00ffff44;
 	r.bot = y+20;
-	r.left = x+200;
+	r.left = x+300;
 	r.center = 0;
 	ggprint16(&r, 16, c,"Goku Health: %d", goku.health);
 }

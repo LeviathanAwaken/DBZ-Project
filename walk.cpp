@@ -54,7 +54,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
-	"images/deathTexture.gif"};
+	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
+	"images/gokurose.png"};
 
 
 //-----------------------------------------------------------------------------
@@ -516,16 +517,56 @@ void initOpengl(void)
 
 	//--------------------------------------------------------------------------
 
+	//------------------------Norm Form texture---------------------------------
+	w = img[20].width;
+	h = img[20].height;
+	glGenTextures(1, &g.normTexture);
+	glBindTexture(GL_TEXTURE_2D, g.normTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[20]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
+	//--------------------------------------------------------------------------
+
+	//------------------------SS4 texture----------------------------------
+	w = img[21].width;
+	h = img[21].height;
+	glGenTextures(1, &g.ss4Texture);
+	glBindTexture(GL_TEXTURE_2D, g.ss4Texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[21]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
+	//--------------------------------------------------------------------------
+
+	//------------------------SS Rose texture----------------------------------
+	w = img[22].width;
+	h = img[22].height;
+	glGenTextures(1, &g.ssrTexture);
+	glBindTexture(GL_TEXTURE_2D, g.ssrTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[22]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
+	//--------------------------------------------------------------------------
+
 
 }
 
-extern void sInit(GLuint, GLuint, GLuint);
+extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
-	sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
+	sInit(g.normTexture, g.walkTexture, g.ss3Texture,
+		g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
 	img[13].rows = 9;
@@ -819,6 +860,7 @@ void render(void)
 			break;
 		case PAUSEMENU:
 			renderPauseMenu();
+			break;
 		case DEATH:
 			renderDeath();
 		//need to develop death screen
