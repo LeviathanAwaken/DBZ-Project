@@ -5,13 +5,11 @@
 
 /*
  * Description:
- * File currently holds the main logic for firing projectiles from the
- * character's position using the 'k' key logic from the main file. All
- * logic for graphics, positionally, and limitting-wise, is handled by
- * functions called from this file. The file also features a handler
- * function that calls the correct functions within the file depending
- * on the value passed from the walk file.
+ * File controls the bulk of the collision detection for the game. It
+ * also controls the character, including movement and blasts, as well
+ * as the projectiles for the boss.
  */
+
 #include <GL/glx.h>
 #include "fonts.h"
 #include <cstdio>
@@ -40,7 +38,7 @@ int elimiter;
 int plimiter;
 extern int gameState;
 
-//Prototypes and extern function calls
+//Prototypes and extern function declarations
 void kiCollision(int);
 void kiHandler(int);
 void braceHandler(int);
@@ -74,6 +72,7 @@ class kiBlast {
 		int kiVel;
 } ki;
 
+//Class to track x and y positions of boss's blasts
 class bossProjectile {
 	public:
 		GLuint image;
@@ -126,6 +125,7 @@ void gokuInit()
 	goku.currentPic = 0;
 }
 
+//Initializes the projectiles for the boss.
 void braceInit()
 {
 	brace.bossXVel = -6;
@@ -181,24 +181,7 @@ void showSean(int x, int y, GLuint textInt)
 	showText(x+100, y+100);
 }
 
-/*void velUpd(int key)
-{
-	switch (key) {
-		case 0:
-			goku.vel[0] -= .5;
-			break;
-		case 1:
-			goku.vel[0] += .5;
-			break;
-		case 2:
-			goku.vel[1] += .5;
-			break;
-		case 3:
-			goku.vel[1] -= .5;
-			break;
-	}
-}*/
-
+//Goku's movement logic to be called from the main file.
 void gokuIMove(int key)
 {
 	bool bounds = gokuBounds(key);
@@ -230,6 +213,7 @@ void gokuIMove(int key)
 	}
 }
 
+//Logic handling for the bounds on character's movement.
 bool gokuBounds(int dir)
 {
 	if (dir == 0) {
@@ -247,21 +231,7 @@ bool gokuBounds(int dir)
 	}
 }
 
-/*void gokuMove()
-{
-	if ((goku.pos[0] > 0 && goku.vel[0] < 0)
-	|| (goku.pos[0] < (g.xres - goku.width) && goku.vel[0] > 0))
-		goku.pos[0] += goku.vel[0];
-	else
-		goku.vel[0] = 0;
-	if ((goku.pos[1] > 0 && goku.vel[1] < 0)
-	|| (goku.pos[1] < (g.yres - goku.height) && goku.vel[1] > 0))
-		goku.pos[1] += goku.vel[1];
-	else
-		goku.vel[1] = 0;
-	gokuCollision();
-}*/
-
+//Generalized render function.
 void sRender()
 {
 	gokuRender();
@@ -269,6 +239,7 @@ void sRender()
 	braceHandler(1);
 }
 
+//Main character render handler.
 void gokuRender()
 {
 	glPushMatrix();
@@ -390,6 +361,7 @@ void braceMove(int braceID)
 	}
 }
 
+//Renders boss's projectiles.
 void braceRender(int braceID)
 {
 	float h = 40.0;
@@ -525,6 +497,7 @@ void powerCollision()
 	}
 }
 
+//Basic health check, calls death screen.
 void healthCheck()
 {
 	if (goku.health <= 0) {
@@ -547,6 +520,7 @@ void kiHandler(int type)
 	}
 }
 
+//Handler function for movement and rendering.
 void braceHandler(int type)
 {
 	if (finBoss->pos[0] < g.xres) {
@@ -565,6 +539,7 @@ void braceHandler(int type)
 	}
 }
 
+//Prints character's health on screen.
 void gokuHealth(int x, int y)
 {
 	Rect r;

@@ -55,7 +55,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
-	"images/gokurose.png"};
+	"images/gokurose.png", "images/blastPowerup.gif"};
+
 
 
 //-----------------------------------------------------------------------------
@@ -556,12 +557,25 @@ void initOpengl(void)
 
 	//--------------------------------------------------------------------------
 
+	//----------------------BlastPowerup texture--------------------------------
+	w = img[23].width;
+	h = img[23].height;
+	glGenTextures(1, &g.blastPowerupTexture);
+	glBindTexture(GL_TEXTURE_2D, g.blastPowerupTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[23]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+ 	//--------------------------------------------------------------------------
+
 
 }
 
 extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
+extern void blastPowerup_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
@@ -762,6 +776,7 @@ extern void kiHandler(int);
 extern void saibaPhysics();
 extern void bossPhysics();
 extern void powerupsPhysics();
+extern void blastPowerupPhysics();
 //extern void velUpd(int);
 //extern void gokuMove();
 extern void gokuIMove(int);
@@ -850,6 +865,7 @@ extern void renderPauseMenu();
 extern void explosionRender();
 extern void cleanExplosions();
 extern void renderDeath();
+extern void blastPowerupRender(GLuint);
 void render(void)
 {
 	switch(gameState)
@@ -930,6 +946,8 @@ void render(void)
 			enemyHandler(g.saibaTexture, g.bossTexture);
 
 			powerupsRender(g.powerupTexture);
+
+			blastPowerupRender(g.blastPowerupTexture);
 
 			explosionRender();
 			cleanExplosions();

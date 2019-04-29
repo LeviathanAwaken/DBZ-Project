@@ -126,6 +126,7 @@ void saibaPhysics ()
 
 void bossPhysics ()
 {
+
 	if (g.score >= 5000) {
 		if (boss.pos[0] > g.xres/2) {
 			boss.pos[0] -= 0.7;
