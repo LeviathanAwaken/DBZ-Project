@@ -37,7 +37,8 @@ int speed_Randomizer(void);
 int freq_Randomizer(void);
 int amp_Randomizer(void);
 void detection();
-
+void difficulty(Enemy&);
+//int healthMod = 0;
 class Explosion {
 public:
 	float centerX;
@@ -95,7 +96,7 @@ void Enemy_init ()
 		enemy[i].wavefreq = freq_Randomizer();
 		enemy[i].waveamp = amp_Randomizer();
 		enemy[i].pattern = choice;
-		enemy[i].pos[0] = g.xres + (rand() % 100);
+		enemy[i].pos[0] = g.xres + ((rand() % 100) + 100);
 		enemy[i].pos[1] = (rand() % (g.yres));
 		enemyReference(&enemy[i]);
 	}
@@ -125,7 +126,8 @@ void saibaPhysics ()
 
 void bossPhysics ()
 {
-	if (g.score == 2000) {
+
+	if (g.score >= 5000) {
 		if (boss.pos[0] > g.xres/2) {
 			boss.pos[0] -= 0.7;
 			if (boss.pos[0] < g.xres + 100) {
@@ -137,7 +139,7 @@ void bossPhysics ()
 		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
 		bossCollision();
 	}
-}	
+}
 
 
 //----------------------------Drawing the enemies-------------------------------------------------
@@ -224,7 +226,7 @@ void explosionRender ()
 	}
 }
 
-Explosion::Explosion(float x, float y)
+Explosion::Explosion (float x, float y)
 {
 	centerX = x;
 	centerY = y;
@@ -392,19 +394,18 @@ void pattern_3 (Enemy &e)
 void pattern_4 (Enemy &e)
 {
 
+	nticks+= 0.3;
 	e.pos[0] -= e.xSpeed;
-	e.pos[1] += 2.0;
-
-	if (e.pos[1] == g.yres/2) {
-		e.pos[1] -= 2.0;
-	}
-
+	e.pos[1] = (e.waveamp * cos(nticks/e.wavefreq) + (e.wavepos));
 
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
+		e.wavepos = ((rand() % (g.yres/2)) + 100);
 		e.xSpeed = speed_Randomizer();
-		e.pos[1] = (rand() % (g.yres));
+		e.wavefreq = freq_Randomizer();
+		e.waveamp = amp_Randomizer();
 	}
+
 }
 
 //------------------variable randomization------------------------------
@@ -434,13 +435,16 @@ int amp_Randomizer (void)
 	return amp;
 }
 
-void createExplosion(float x, float y)
+
+//--------------------------Explosion Logic-------------------------------
+
+void createExplosion (float x, float y)
 {
 	Explosion temp(x,y);
 	explosions.push_back(temp);
 }
 
-void cleanExplosions()
+void cleanExplosions ()
 {
 	for (int i = explosions.size()-1; i >= 0; i--) {
 		if (explosions[i].done) {
@@ -449,6 +453,21 @@ void cleanExplosions()
 	}
 }
 
+//------------------------difficulty increase logic----------------------------
+
+void difficulty(Enemy &e)
+{
+	if (g.score >= 3000) {
+		e.eHealth = 3;
+	}
+	if (g.score >= 4000) {
+		e.eHealth = 4;
+	}
+	if (g.score >= 5000) {
+		e.eHealth = 5;
+	}
+
+}
 //-------------------collision detection---------------------------------------
 
 /*Enemy collision detection for whenever an enemy is hit by a ki blast
@@ -460,19 +479,13 @@ void detection (int Eindices, bool type)
 	if (type == false) {
 		if (enemy[Eindices].isRendered) {
 			enemy[Eindices].eHealth --;
-			/*boss.eHealth --;
-			if (boss.eHealth == 0) {
-				createExplosion(boss.pos[0], boss.pos[1]);
-				boss.pos[0] = 10000;
-			}*/
-
 		}
 	} else {
 		if (enemy[Eindices].isRendered) {
 			enemy[Eindices].eHealth -=2 ;
-		}	
+		}
 	}
-		if (enemy[Eindices].eHealth == 0) {
+		if (enemy[Eindices].eHealth <= 0) {
 			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
 			enemy[Eindices].pos[0] = g.xres;
 			enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
@@ -480,10 +493,10 @@ void detection (int Eindices, bool type)
 			enemy[Eindices].xSpeed = speed_Randomizer();
 			enemy[Eindices].wavefreq = freq_Randomizer();
 			enemy[Eindices].waveamp = amp_Randomizer();
-			enemy[Eindices].eHealth = 2;
+			difficulty(enemy[Eindices]);
 			score_update(100);
 		}
-	
+
 
 }
 
@@ -492,7 +505,7 @@ void bossDetection ()
 
 	boss.eHealth --;
 	createExplosion(boss.pos[0], boss.pos[1]);
-	if (boss.eHealth == 0) {
+	if (boss.eHealth <= 0) {
 		createExplosion(boss.pos[0], boss.pos[1]);
 		createExplosion(boss.pos[0] + 50, boss.pos[1]);
 		createExplosion(boss.pos[0] + 50, boss.pos[1] + 50);

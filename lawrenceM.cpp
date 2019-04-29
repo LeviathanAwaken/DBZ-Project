@@ -37,36 +37,56 @@ using namespace std;
 
 void showLawrenceText(int x, int y)
 {
-    Rect r;
-    unsigned int c = 0x00ffff44;
-    r.bot = y-20;
-    r.left = x;
-    r.center = 0;
-    ggprint8b(&r, 16, c, "lawrence marquez");
+	Rect r;
+	unsigned int c = 0x00ffff44;
+	r.bot = y-20;
+	r.left = x;
+	r.center = 0;
+	ggprint8b(&r, 16, c, "lawrence marquez");
 }
 
 void showLawrencePicture (int x, int y, GLuint textid)
 {
-    glBindTexture(GL_TEXTURE_2D, textid);
-    glColor4f(1, 1, 1, 1); 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(x+500,y+50);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(x+500,y+200);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(x+650,y+200);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(x+650,y+50);
-    glEnd();
+	glBindTexture(GL_TEXTURE_2D, textid);
+	glColor4f(1, 1, 1, 1);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 1.0f); glVertex2i(x+500,y+50);
+		glTexCoord2f(0.0f, 0.0f); glVertex2i(x+500,y+200);
+		glTexCoord2f(1.0f, 0.0f); glVertex2i(x+650,y+200);
+		glTexCoord2f(1.0f, 1.0f); glVertex2i(x+650,y+50);
+	glEnd();
 }
 
 void showLawrence(int x, int y,  GLuint textint)
 {
-    showLawrencePicture(0,0,textint);
-    showLawrenceText(x+500, y-400);
+	showLawrencePicture(0,0,textint);
+	showLawrenceText(x+500, y-400);
 }
-
-void newGame() 
+void setBackground(int x,int y, GLuint textInt)
 {
-  g.score = score_reset();
-  sInit(g.walkTexture, g.ss3Texture, g.ssbTexture);
+	glBindTexture(GL_TEXTURE_2D, textInt);
+	glColor4f(1, 1, 1, 1);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex2i(0, 35); //bottom left
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex2i(0, y); //top left
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex2i(x, y); //top right
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex2i(x, 35);
+	glEnd();
+}
+extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
+extern void Enemy_init();
+extern void Powerups_init();
+extern int score_reset();
+
+void newGame()
+{
+	g.score = score_reset();
+	sInit(g.normTexture, g.walkTexture, g.ss3Texture,
+	  g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
 }
@@ -96,6 +116,7 @@ int acceptGameState(int selectedOption)
             _exit(1);
     }
     return 0;
+
 }
 // void checkMouseMenu(XEvent *e)
 // {
@@ -123,38 +144,38 @@ int acceptGameState(int selectedOption)
 // }
 void checkKeysLost()
 {
-    if (g.keys[XK_Up]) {
+	if (g.keys[XK_Up]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
 	if (timeSpan > menuSelectionDelay) {
 	    selectedOption = (((selectedOption-1)+4)%4);
 	    timers.recordTime(&timers.menuSelectionTime);
-	}
-    }
 
-    if (g.keys[XK_Down]) {
+	}
+  }
+	if (g.keys[XK_Down]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
 	if (timeSpan > menuSelectionDelay) {
 	    selectedOption = (((selectedOption+1)+4)%4);
 	    timers.recordTime(&timers.menuSelectionTime);
-	}
-    }
 
-    if (g.keys[XK_Return]) {
+	}
+  }
+	if (g.keys[XK_Return]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
 	if (timeSpan > menuSelectionDelay) {
-	    acceptGameState(selectedOption);
-	    timers.recordTime(&timers.menuSelectionTime);
+		acceptGameState(selectedOption);
+		timers.recordTime(&timers.menuSelectionTime);
 	}
-    }
+	}
 }
 
-void checkKeysMainMenu() 
+void checkKeysMainMenu()
 {
   if(g.keys[XK_Up]) {
     timers.recordTime(&timers.timeCurrent);
@@ -171,14 +192,15 @@ void checkKeysMainMenu()
       selectedOption = (((selectedOption + 1) +4) % 4);
       timers.recordTime(&timers.menuSelectionTime);
     }
+
   }
   if(g.keys[XK_Return]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if (timeSpan > menuSelectionDelay) {
-          acceptGameState(selectedOption);
-          timers.recordTime(&timers.menuSelectionTime);
-    }
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+		  acceptGameState(selectedOption);
+		  timers.recordTime(&timers.menuSelectionTime);
+	}
   }
 }
 
@@ -199,34 +221,35 @@ void checkKeysPauseMenu()
       selectedOption = (((selectedOption + 1) +5) % 5);
       timers.recordTime(&timers.menuSelectionTime);
     }
+
   }
   if(g.keys[XK_Return]) {
-    timers.recordTime(&timers.timeCurrent);
-    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-    if (timeSpan > menuSelectionDelay) {
-          acceptGameState(selectedOption);
-          timers.recordTime(&timers.menuSelectionTime);
-    }
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+		  acceptGameState(selectedOption);
+		  timers.recordTime(&timers.menuSelectionTime);
+	}
   }
 }
 
-void renderMainMenuBackground(int x, int y, GLuint textInt) 
+void renderMainMenuBackground(int x, int y, GLuint textInt)
 {
 	glBindTexture(GL_TEXTURE_2D, textInt);
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	glBegin(GL_QUADS);
-	
-  glTexCoord2f(0.0f, 1.0f); 
+
+  glTexCoord2f(0.0f, 1.0f);
 	glVertex2i(0, 35); //bottom left
-	
-  glTexCoord2f(0.0f, 0.0f); 
+
+  glTexCoord2f(0.0f, 0.0f);
 	glVertex2i(0, y); //top left
 
-	glTexCoord2f(1.0f, 0.0f); 
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex2i(x, y); //top right
-	
-  glTexCoord2f(1.0f, 1.0f); 
+
+  glTexCoord2f(1.0f, 1.0f);
 	glVertex2i(x, 35);
 
 	glEnd();
@@ -247,7 +270,7 @@ void renderMainMenu() {
   float textureY = 0;
 
   float centerX = g.xres/2;
-  float centerY = g.yres*2/3; 
+  float centerY = g.yres*2/3;
 
   float width = floor(((float)g.xres/2200)*img[11].width);
   float height = floor(((float)g.yres/1200)*img[11].height);
@@ -304,12 +327,12 @@ case 3:
 default:
   break;
 }
- 
+
 }
 
 void renderPauseMenu()
 {
-  //draw final form logo 
+  //draw final form logo
   glPushMatrix();
   glColor4f(1.0, 1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.finalFormLogoTexture);
@@ -324,7 +347,7 @@ void renderPauseMenu()
   float textureY = 0;
 
   float centerX = g.xres/2;
-  float centerY = g.yres*2/3; 
+  float centerY = g.yres*2/3;
 
   float width = (((float)g.xres/2200)*img[11].width);
   float height = (((float)g.yres/1200)*img[11].height);
@@ -393,14 +416,15 @@ void renderPauseMenu()
       default:
           printf("FATAL GAME ERROR\n\n");
           break;
+
   }
 }
 
 void renderDeath()
-{ 
-  glClearColor(1.0, 1.0, 1.0, 1.0);
+{
+  glClearColor(0.1, 0.1, 0.1, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
-  //thinking of using an image for the death screen but i can just put you are dead 
+  //thinking of using an image for the death screen but i can just put you are dead
   glPushMatrix();
   glColor3f(1.0, 1.0, 1.0);
   glBindTexture(GL_TEXTURE_2D, g.deathTexture);
@@ -415,7 +439,7 @@ void renderDeath()
   float textureY = 0;
 
   float centerX = g.xres/2;
-  float centerY = g.yres*2/3; 
+  float centerY = g.yres*2/3;
 
   float width = (((float)g.xres/400)*img[14].width);
   float height = (((float)g.yres/257)*img[14].height);
