@@ -17,7 +17,7 @@
  * my own personal picture in the credits.
  *
  */
-//extern Global g;
+extern Global g;
 extern void powerReference(Powerups*);
 extern void powerCollision();
 Powerups powerups;
@@ -108,11 +108,11 @@ void powerupsRender (GLuint image)
     glTexCoord2f(tx+1, ty+1);
     glVertex2i(0, 0);
     glTexCoord2f(tx+1, ty);
-    glVertex2i(0, 50);
+    glVertex2i(0, 75);
     glTexCoord2f(tx, ty);
-    glVertex2i(70, 50);
+    glVertex2i(100, 75);
     glTexCoord2f(tx, ty+1);
-    glVertex2i(70, 0);
+    glVertex2i(100, 0);
     glEnd();
 
     glPopMatrix();
@@ -139,7 +139,7 @@ void blastPowerupPhysics()
 void blastPowerupRender (GLuint image)
 {
     glPushMatrix();
-    glTranslated(powerups.pos[0], powerups.pos[1], powerups.pos[2]);
+    glTranslated(blastPowerup.pos[0], blastPowerup.pos[1], blastPowerup.pos[2]);
     glColor3f(1.0, 1.0, 1.0);
 
     glBindTexture(GL_TEXTURE_2D, image);
@@ -194,6 +194,7 @@ NamekBackground::NamekBackground()
 NamekBackground::NamekBackground(float xc1, float xc2, int a)
 {
     a = 5;
+    xc[0] = a;
     xc[0] = xc1;
     xc[1] = xc2;
 }

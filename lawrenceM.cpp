@@ -1,5 +1,10 @@
-//3350
-// Lawrence Marquez
+/*
+Software Engineering - 3350 
+lawrenceM.cpp - source code for DBZ: The Final Form
+Lawrence Marquez
+Working on since: Februrary.
+
+*/
 #include "math.h"
 #include <GL/glx.h>
 #include "fonts.h"
@@ -12,18 +17,23 @@
 #include "Global.h"
 #include "Timers.h"
 #include "Image.h"
-#include <X11/keysym.h>
-extern void init();
-extern Global g; // global declaration
-// extern Timers timers; //timer class
+#include <iostream>
+/* extern variables that are needed within my source code */
+extern void sInit(GLuint,GLuint, GLuint);
+extern void Enemy_init();
+extern void Powerups_init();
+extern int score_reset();
+extern Global g; 
 extern int gameState;
-extern Global done;
+extern int done; 
 extern int selectedOption;
 extern Global walkTexture;
 extern Timers timers;
-extern double menuSelectionDelay = 0.15;
-extern Image img[];
+double menuSelectionDelay = 0.15;
+extern Image img[]; 
+void renderControls();
 
+using namespace std;
 
 void showLawrenceText(int x, int y)
 {
@@ -46,6 +56,7 @@ void showLawrencePicture (int x, int y, GLuint textid)
 		glTexCoord2f(1.0f, 1.0f); glVertex2i(x+650,y+50);
 	glEnd();
 }
+
 void showLawrence(int x, int y,  GLuint textint)
 {
 	showLawrencePicture(0,0,textint);
@@ -81,52 +92,56 @@ void newGame()
 }
 int acceptGameState(int selectedOption)
 {
-	//update game state to selected option in main menu
-	switch (selectedOption) {
-		case 0:
-			gameState = INGAME;
-			newGame();
-			break;
-		case 1:
-			printf("score");
-			//make leaderboard function
-			break;
-		case 2:
-			g.done = 1;
-			return 1;
-		case 3:
-			g.done = 0;
-			break;
-		default:
-			printf("FATAL ERROR IN GAME STATE\n\n");
-			_exit(1);
-	}
-	return 0;
+    //update game state to selected option in main menu
+    switch (selectedOption) {
+        case 0:
+            gameState = INGAME;
+            newGame();
+            break;
+        case 1:
+            cout << "score" << endl;
+            //make leaderboard function           
+            break;
+        case 2:
+            renderControls();
+            break;
+        case 3:
+            done = 1;
+            return 1;
+        case 4:
+            gameState = INGAME;
+            break;
+        default:
+            printf("FATAL ERROR IN GAME STATE\n\n");
+            _exit(1);
+    }
+    return 0;
+
 }
-void checkMouseMenu(XEvent *e)
-{
-	//Did the mouse move?
-	//Was a mouse button clicked?
-	static int savex = -100;
-	static int savey = -100;
-	//
-	if (e->type == ButtonRelease) {
-		return;
-	}
-	if (e->type == ButtonPress) {
-		if (e->xbutton.button==1) {
-			//Left button is down
-		}
-		if (e->xbutton.button==3) {
-			//Right button is down
-		}
-	}
-	if (savex != e->xbutton.x || savey != e->xbutton.y) {
-		//Mouse moved
-		savex = e->xbutton.x;
-		savey = e->xbutton.y;
-	}
-}
+// void checkMouseMenu(XEvent *e)
+// {
+// 	//Did the mouse move?
+// 	//Was a mouse button clicked?
+// 	static int savex = -100;
+// 	static int savey = -100;
+// 	//
+// 	if (e->type == ButtonRelease) {
+// 		return;
+// 	}
+// 	if (e->type == ButtonPress) {
+// 		if (e->xbutton.button==1) {
+// 			//Left button is down
+// 		}
+// 		if (e->xbutton.button==3) {
+// 			//Right button is down
+// 		}
+// 	}
+// 	if (savex != e->xbutton.x || savey != e->xbutton.y) {
+// 		//Mouse moved
+// 		savex = e->xbutton.x;
+// 		savey = e->xbutton.y;
+// 	}
+// }
 void checkKeysLost()
 {
 	if (g.keys[XK_Up]) {
@@ -134,21 +149,21 @@ void checkKeysLost()
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
 	if (timeSpan > menuSelectionDelay) {
-		selectedOption = ((selectedOption-1)+3)%3;
-		timers.recordTime(&timers.menuSelectionTime);
-	}
-	}
+	    selectedOption = (((selectedOption-1)+4)%4);
+	    timers.recordTime(&timers.menuSelectionTime);
 
+	}
+  }
 	if (g.keys[XK_Down]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
 		&timers.timeCurrent);
 	if (timeSpan > menuSelectionDelay) {
-		selectedOption = ((selectedOption+1)+3)%3;
-		timers.recordTime(&timers.menuSelectionTime);
-	}
-	}
+	    selectedOption = (((selectedOption+1)+4)%4);
+	    timers.recordTime(&timers.menuSelectionTime);
 
+	}
+  }
 	if (g.keys[XK_Return]) {
 	timers.recordTime(&timers.timeCurrent);
 	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
@@ -163,20 +178,21 @@ void checkKeysLost()
 void checkKeysMainMenu()
 {
   if(g.keys[XK_Up]) {
-	timers.recordTime(&timers.timeCurrent);
-	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-	if (timeSpan > menuSelectionDelay) {
-	  selectedOption = (((selectedOption - 1) + 3) % 3);
-	  timers.recordTime(&timers.menuSelectionTime);
-	}
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if (timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption - 1) + 4) % 4);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
   }
   if(g.keys[XK_Down]) {
-	timers.recordTime(&timers.timeCurrent);
-	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-	if(timeSpan > menuSelectionDelay) {
-	  selectedOption = (((selectedOption + 1) +3) % 3);
-	  timers.recordTime(&timers.menuSelectionTime);
-	}
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if(timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption + 1) +4) % 4);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
+
   }
   if(g.keys[XK_Return]) {
 	timers.recordTime(&timers.timeCurrent);
@@ -191,20 +207,21 @@ void checkKeysMainMenu()
 void checkKeysPauseMenu()
 {
   if(g.keys[XK_Up]) {
-	timers.recordTime(&timers.timeCurrent);
-	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-	if (timeSpan > menuSelectionDelay) {
-	  selectedOption = (((selectedOption - 1) + 4) % 4);
-	  timers.recordTime(&timers.menuSelectionTime);
-	}
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if (timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption - 1) + 5) % 5);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
   }
   if(g.keys[XK_Down]) {
-	timers.recordTime(&timers.timeCurrent);
-	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
-	if(timeSpan > menuSelectionDelay) {
-	  selectedOption = (((selectedOption + 1) +4) % 4);
-	  timers.recordTime(&timers.menuSelectionTime);
-	}
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if(timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption + 1) +5) % 5);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
+
   }
   if(g.keys[XK_Return]) {
 	timers.recordTime(&timers.timeCurrent);
@@ -215,12 +232,11 @@ void checkKeysPauseMenu()
 	}
   }
 }
-// extern void setBackgroundNamek(int, int, GLuint);
 
 void renderMainMenuBackground(int x, int y, GLuint textInt)
 {
 	glBindTexture(GL_TEXTURE_2D, textInt);
-	glColor4f(1, 1, 1, 1);
+	glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	glBegin(GL_QUADS);
 
@@ -287,16 +303,25 @@ switch (selectedOption) {
 case 0:
   ggprint8b(&r, 16, 0x123fff, "NEW GAME");
   ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 1:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
   ggprint8b(&r, 16, 0x123fff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 2:
-  ggprint8b(&r, 16, 0xffffff,"NEW GAME");
+  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
   ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0x123fff, "CONTROLS");
+  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+  break;
+case 3:
+  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "CONTROLS");
   ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
   break;
 default:
@@ -353,33 +378,45 @@ void renderPauseMenu()
   r.center = 2;
 
   switch (selectedOption) {
-	  case 0:
-		  ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
-		  ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-		  ggprint8b(&r, 16, 0xffffff, "SCORES");
-		  ggprint8b(&r, 16, 0xffffff, "EXIT");
-		  break;
-	  case 1:
-		  ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
-		  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-		  ggprint8b(&r, 16, 0x123fff, "SCORES");
-		  ggprint8b(&r, 16, 0xffffff, "EXIT");
-		  break;
-	  case 2:
-		  ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
-		  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-		  ggprint8b(&r, 16, 0xffffff, "SCORES");
-		  ggprint8b(&r, 16, 0x123fff, "EXIT");
-		  break;
-	  case 3:
-		  ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
-		  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-		  ggprint8b(&r, 16, 0xffffff,"SCORES");
-		  ggprint8b(&r, 16, 0xffffff, "EXIT");
-		  break;
-	  default:
-		  // printf("FATAL GAME ERROR\n\n");
-		  break;
+      case 0:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+          break;
+      case 1:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0x123fff, "CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+          break;
+      case 2:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+          ggprint8b(&r, 16, 0x123fff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+          break;
+      case 3:
+          ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+          break;
+      case 4:
+          ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
+          ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+          break;
+      default:
+          printf("FATAL GAME ERROR\n\n");
+          break;
+
   }
 }
 
@@ -429,25 +466,52 @@ void renderDeath()
 Rect r;
 r.bot = g.yres/3;
 r.left = g.xres/2;
-r.center = 2;
+r.center = 1;
 
 switch (selectedOption) {
-case 0:
-  ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-  ggprint8b(&r,16, 0xffffff, "SCORES");
-  ggprint8b(&r, 16, 0xffffff, "EXIT");
-  break;
-case 1:
-  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0x123fff, "SCORES");
-  ggprint8b(&r, 16, 0xffffff, "EXIT");
-  break;
-case 2:
-  ggprint8b(&r, 16, 0xffffff,"NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "SCORES");
-  ggprint8b(&r, 16, 0x123fff, "EXIT");
-  break;
-default:
-  break;
+  case 0:
+    ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "SCORES");
+    ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 1: 
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0x123fff, "SCORES");
+    ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 2:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "SCORES");
+    ggprint8b(&r, 16, 0x123fff, "CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 3:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "SCORES");
+    ggprint8b(&r, 16, 0xffffff, "CONTROLS");
+    ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+    break;
+  default:
+    break;
 }
+}
+
+void renderControls() {
+  Rect r;
+
+  unsigned int c = 0xffd700;
+	r.bot = g.yres - 20;
+	r.left = 10;
+	r.center = 0;
+ 			
+  ggprint8b(&r, 16, c, "K  Ki Blast");
+  ggprint8b(&r, 16, c, "right arrow/d -> fly right");
+  ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
+  ggprint8b(&r, 16, c, "up arrow/w -> fly up");
+  ggprint8b(&r, 16, c, "down arrow/s -> fly down");
+  ggprint8b(&r, 16, c, "esc - pause menu");
+  ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+
 }

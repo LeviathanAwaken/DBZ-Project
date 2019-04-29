@@ -379,11 +379,6 @@ void pattern_3 (Enemy &e)
 	e.pos[0] -= e.xSpeed;
 	e.pos[1] -= 2.0;
 
-	if (e.pos[1] == g.yres/2) {
-		e.pos[1] += 2.0;
-	}
-
-
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
 		e.xSpeed = speed_Randomizer();
@@ -416,8 +411,17 @@ void pattern_4 (Enemy &e)
 
 int speed_Randomizer (void)
 {
-
-	int speed = (rand() % 3 + 2);
+	int mod = 2;
+	if (g.score >= 4000) {
+		mod = 3;
+	}
+	if (g.score >= 5000) {
+		mod = 4;
+	}
+	if (g.score >= 6000) {
+		mod = 5;
+	}
+	int speed = (rand() % 3 + mod);
 	return speed;
 }
 

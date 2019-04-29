@@ -34,8 +34,8 @@ typedef Flt Matrix[4][4];
 				 (c)[1]=(a)[1]-(b)[1]; \
 (c)[2]=(a)[2]-(b)[2]
 //constants
-const float timeslice = 1.0f;
-const float gravity = -0.2f;
+// const float timeslice = 1.0f;
+// const float gravity = -0.2f;
 #define ALPHA 1
 
 //global declarations
@@ -183,7 +183,6 @@ int main(void)
 	#endif
 	initOpengl();
 	init();
-	int done = 0;
 	while (!done) {
 		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
@@ -191,9 +190,7 @@ int main(void)
 			checkMouse(&e);
 			done = checkKeys(&e);
 		}
-		// if (g.paused == false || g.startFlag == 1) {
-			physics();
-		// }
+		physics();
 		render();
 		x11.swapBuffers();
 		#ifdef PROFILE
@@ -590,13 +587,13 @@ void init()
 	img[17].rows = 9;
 	img[17].columns = 8;
 }
-extern void checkMouseMenu(XEvent*);
+// extern void checkMouseMenu(XEvent*);
 
 void checkMouse(XEvent *e)
 {
 	switch(gameState) {
 		case MAINMENU:
-			checkMouseMenu(e);
+			// checkMouseMenu(e);
 			break;
 		case PAUSEMENU:
 			break;
@@ -799,11 +796,6 @@ void physics(void)
 		checkKeysLost();
 		break;
 	case INGAME:
-		// if (g.pauseFlag)
-		// {
-		// 	return;
-		// }
-
 		if (g.walk) {
 			//man is walking...
 			//when time is up, advance the frame.
@@ -832,7 +824,6 @@ void physics(void)
 			powerupsPhysics();
 
 			//------------------check for movement keys-----------------------------
-			// if (g.startFlag == 1 && g.pauseFlag == 0) {
 				if (g.keys[XK_a] || g.keys[XK_Left]) {
 					gokuIMove(0);
 				}
@@ -848,7 +839,6 @@ void physics(void)
 			}
 		}
 	}
-// }
 
 extern void showSean(int, int, GLuint);
 extern void showJoshua(int, int, GLuint);
@@ -865,16 +855,20 @@ extern void renderPauseMenu();
 extern void explosionRender();
 extern void cleanExplosions();
 extern void renderDeath();
+extern void renderControls();
 extern void blastPowerupRender(GLuint);
+
 void render(void)
 {
 	switch(gameState)
 	{
 		case MAINMENU:
 			renderMainMenuBackground(g.xres, g.yres, g.namekTexture);
+			renderControls();
 			renderMainMenu();
 			break;
 		case PAUSEMENU:
+			renderControls();
 			renderPauseMenu();
 			break;
 		case DEATH:
@@ -882,7 +876,6 @@ void render(void)
 		//need to develop death screen
 			break;
 		case INGAME: {
-	// if (g.creditFlag && !g.pauseFlag) {
 		//Put picture functions here
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -892,13 +885,12 @@ void render(void)
 		showJoshua(40, img[3].height, g.joshTexture);
 		showDrake(70, img[5].height, g.drakeTexture);
 		showJuan(40, img[4].height, g.juanTexture);
-	// } else {
+	
 		// if (g.pauseFlag) {
 		// 	extern void showPause(int, int);
 		// 	showPause(350, 100);
-		// }
-		// else {
-			Rect r;
+		
+			// Rect r;
 			//Clear the screen
 			glClearColor(0.1, 0.1, 0.1, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -954,21 +946,19 @@ void render(void)
 			sRender();
 
 			//
-			unsigned int c = 0x000000;
-			r.bot = g.yres - 20;
-			r.left = 10;
-			r.center = 0;
+			// unsigned int c = 0x000000;
+			// r.bot = g.yres - 20;
+			// r.left = 10;
+			// r.center = 0;
 
-			ggprint8b(&r, 16, c, "Spacebar   Walk cycle");
-			ggprint8b(&r, 16, c, "+   faster");
-			ggprint8b(&r, 16, c, "-   slower");
-			ggprint8b(&r, 16, c, "right arrow/d -> fly right");
-			ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
-			ggprint8b(&r, 16, c, "up arrow/w -> fly up");
-			ggprint8b(&r, 16, c, "down arrow/s -> fly down");
-			ggprint8b(&r, 16, c, "j -> test temp score update");
-			ggprint8b(&r, 16, c, "p -> test pause screen");
-			ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
+			// ggprint8b(&r, 16, c, "K   Ki Blast");
+			// ggprint8b(&r, 16, c, "right arrow/d -> fly right");
+			// ggprint8b(&r, 16, c, "left arrow/a  <- fly left");
+			// ggprint8b(&r, 16, c, "up arrow/w -> fly up");
+			// ggprint8b(&r, 16, c, "down arrow/s -> fly down");
+			// ggprint8b(&r, 16, c, "j -> test temp score update");
+			// ggprint8b(&r, 16, c, "p -> test pause screen");
+			// ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
 			extern void showScore(int, int, int);
 			extern int score_receive();
 			g.score += score_receive();
