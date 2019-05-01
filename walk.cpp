@@ -782,6 +782,7 @@ extern void checkKeysMainMenu();
 extern void checkKeysPauseMenu();
 extern void checkKeysLost();
 extern void braceHandler(int);
+extern void namekPhysics();
 
 void physics(void)
 {
@@ -823,6 +824,8 @@ void physics(void)
 			saibaPhysics();
 			bossPhysics();
 			powerupsPhysics();
+			namekPhysics();
+
 
 			//------------------check for movement keys-----------------------------
 				if (g.keys[XK_a] || g.keys[XK_Left]) {
