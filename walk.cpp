@@ -580,6 +580,7 @@ void init()
 		g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	//blastPowerup_init();
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
@@ -864,21 +865,14 @@ void render(void)
 	{
 		case MAINMENU:
 			renderMainMenuBackground(g.xres, g.yres, g.namekTexture);
-			if (g.controlFlag == 1) {
-				renderControls();
-			}
+			renderControls();
 			renderMainMenu();
 			break;
 		case PAUSEMENU:
-			if (g.controlFlag == 1) {
-				renderControls();
-			}
+			renderControls();
 			renderPauseMenu();
 			break;
 		case DEATH:
-			if(g.controlFlag == 1) {
-				renderControls();
-			}
 			renderDeath();
 		//need to develop death screen
 			break;
@@ -974,9 +968,6 @@ void render(void)
 			// 	extern void showStart(int, int);
 			// 	showStart(g.xres/3, g.yres/7);
 			// }
-			if (g.controlFlag == 1) {
-				renderControls();
-			}
 			extern void showTimes(int, int, double);
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 			extern void gokuHealth(int, int);

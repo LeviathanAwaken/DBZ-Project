@@ -24,7 +24,7 @@ public:
     
     Enemy () {
      
-     srand(time(NULL));
+     //srand(time(NULL));
      isRendered = false;
      pattern = 1;
      eHealth = 2;
