@@ -876,7 +876,7 @@ void render(void)
 			renderPauseMenu();
 			break;
 		case DEATH:
-			if(g.controlFlat == 1) {
+			if(g.controlFlag == 1) {
 				renderControls();
 			}
 			renderDeath();
