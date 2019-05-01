@@ -25,6 +25,7 @@ class Global {
 		int score;
 		int walk;
 		int walkFrame;
+		int controlFlag;
 		// int creditFlag;
 		// int startFlag;
 		// int pauseFlag;
@@ -62,6 +63,7 @@ class Global {
 			xres=1920;
 			yres=1080;
 			score = 0;
+			controlFlag = 0;
 			memset(keys, 0, 65536);
 			//CHANGED - back scroll starts on launch now
 			walk=1;

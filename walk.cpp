@@ -864,14 +864,21 @@ void render(void)
 	{
 		case MAINMENU:
 			renderMainMenuBackground(g.xres, g.yres, g.namekTexture);
-			renderControls();
+			if (g.controlFlag == 1) {
+				renderControls();
+			}
 			renderMainMenu();
 			break;
 		case PAUSEMENU:
-			renderControls();
+			if (g.controlFlag == 1) {
+				renderControls();
+			}
 			renderPauseMenu();
 			break;
 		case DEATH:
+			if(g.controlFlag == 1) {
+				renderControls();
+			}
 			renderDeath();
 		//need to develop death screen
 			break;
@@ -967,6 +974,9 @@ void render(void)
 			// 	extern void showStart(int, int);
 			// 	showStart(g.xres/3, g.yres/7);
 			// }
+			if (g.controlFlag == 1) {
+				renderControls();
+			}
 			extern void showTimes(int, int, double);
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 			extern void gokuHealth(int, int);
