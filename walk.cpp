@@ -580,6 +580,7 @@ void init()
 		g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	//blastPowerup_init();
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
