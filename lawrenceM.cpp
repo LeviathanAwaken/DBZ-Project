@@ -25,7 +25,6 @@ extern void Powerups_init();
 extern int score_reset();
 extern Global g; 
 extern int gameState;
-extern int controlFlag;
 extern int done; 
 extern int selectedOption;
 extern Global walkTexture;
@@ -104,7 +103,7 @@ int acceptGameState(int selectedOption)
             //make leaderboard function           
             break;
         case 2:
-            g.controlFlag = ((g.controlFlag + 1) % 2);
+            renderControls();
             break;
         case 3:
             done = 1;
@@ -119,7 +118,30 @@ int acceptGameState(int selectedOption)
     return 0;
 
 }
-
+// void checkMouseMenu(XEvent *e)
+// {
+// 	//Did the mouse move?
+// 	//Was a mouse button clicked?
+// 	static int savex = -100;
+// 	static int savey = -100;
+// 	//
+// 	if (e->type == ButtonRelease) {
+// 		return;
+// 	}
+// 	if (e->type == ButtonPress) {
+// 		if (e->xbutton.button==1) {
+// 			//Left button is down
+// 		}
+// 		if (e->xbutton.button==3) {
+// 			//Right button is down
+// 		}
+// 	}
+// 	if (savex != e->xbutton.x || savey != e->xbutton.y) {
+// 		//Mouse moved
+// 		savex = e->xbutton.x;
+// 		savey = e->xbutton.y;
+// 	}
+// }
 void checkKeysLost()
 {
 	if (g.keys[XK_Up]) {
@@ -281,25 +303,25 @@ switch (selectedOption) {
 case 0:
   ggprint8b(&r, 16, 0x123fff, "NEW GAME");
   ggprint8b(&r, 16, 0xffffff, "SCORES");
-  ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+  ggprint8b(&r, 16, 0xffffff, "CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 1:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
   ggprint8b(&r, 16, 0x123fff, "SCORES");
-  ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+  ggprint8b(&r, 16, 0xffffff, "CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 2:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
   ggprint8b(&r, 16, 0xffffff, "SCORES");
-  ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+  ggprint8b(&r, 16, 0x123fff, "CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 3:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
   ggprint8b(&r, 16, 0xffffff, "SCORES");
-  ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+  ggprint8b(&r, 16, 0xffffff, "CONTROLS");
   ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
   break;
 default:
@@ -359,35 +381,35 @@ void renderPauseMenu()
       case 0:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 1:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+          ggprint8b(&r, 16, 0x123fff, "CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 2:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
           ggprint8b(&r, 16, 0x123fff, "SCORES");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 3:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
           break;
       case 4:
           ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+          ggprint8b(&r, 16, 0xffffff, "CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
@@ -450,25 +472,25 @@ switch (selectedOption) {
   case 0:
     ggprint8b(&r, 16, 0x123fff, "NEW GAME");
     ggprint8b(&r, 16, 0xffffff, "SCORES");
-    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "CONTROLS");
     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
     break;
   case 1: 
     ggprint8b(&r, 16, 0xffffff, "NEW GAME");
     ggprint8b(&r, 16, 0x123fff, "SCORES");
-    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "CONTROLS");
     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
     break;
   case 2:
     ggprint8b(&r, 16, 0xffffff, "NEW GAME");
     ggprint8b(&r, 16, 0xffffff, "SCORES");
-    ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0x123fff, "CONTROLS");
     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
     break;
   case 3:
     ggprint8b(&r, 16, 0xffffff, "NEW GAME");
     ggprint8b(&r, 16, 0xffffff, "SCORES");
-    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "CONTROLS");
     ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
     break;
   default:
@@ -490,5 +512,6 @@ void renderControls() {
   ggprint8b(&r, 16, c, "up arrow/w -> fly up");
   ggprint8b(&r, 16, c, "down arrow/s -> fly down");
   ggprint8b(&r, 16, c, "esc - pause menu");
+  ggprint8b(&r, 16, c, "frame: %i", g.walkFrame);
 
 }

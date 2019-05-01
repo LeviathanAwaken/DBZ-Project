@@ -98,6 +98,7 @@ void Enemy_init ()
 		enemy[i].pattern = choice;
 		enemy[i].pos[0] = g.xres + ((rand() % 100) + 100);
 		enemy[i].pos[1] = (rand() % (g.yres));
+		enemy[i].eHealth = 2;
 		enemyReference(&enemy[i]);
 	}
 
@@ -461,10 +462,10 @@ void cleanExplosions ()
 
 void difficulty(Enemy &e)
 {
-	if (g.score >= 3000) {
+	if (g.score >= 3000 && g.score < 4000) {
 		e.eHealth = 3;
 	}
-	if (g.score >= 4000) {
+	if (g.score >= 4000 && g.score < 5000) {
 		e.eHealth = 4;
 	}
 	if (g.score >= 5000) {
@@ -486,7 +487,7 @@ void detection (int Eindices, bool type)
 		}
 	} else {
 		if (enemy[Eindices].isRendered) {
-			enemy[Eindices].eHealth -=2 ;
+			enemy[Eindices].eHealth = 0;
 		}
 	}
 		if (enemy[Eindices].eHealth <= 0) {
