@@ -22,6 +22,7 @@
 #include "Powerups.h"
 #include "Boss.h"
 #include "Image.h"
+#include "lawrenceM.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -39,6 +40,7 @@ int elimiter;
 int plimiter;
 extern int gameState;
 extern Image img[];
+extern healthSSD healthBar;
 
 //Prototypes and extern function declarations
 void kiCollision(int);
@@ -53,7 +55,6 @@ extern void detection(int, bool);
 extern void bossDetection();
 extern int score_update(int);
 extern void energyRender();
-//extern void healthReference(int *);
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -139,7 +140,6 @@ void gokuInit()
 	goku.health = 3;
 	goku.moveS = 3.5;
 	goku.currentPic = 0;
-	//healthReference(&goku.health);
 }
 
 void outlineInit()
@@ -461,6 +461,7 @@ void braceCollision(int braceID)
 		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
 	if (xColl && yColl) {
 		goku.health--;
+		healthBar.updateDisplay(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -479,6 +480,7 @@ void bossCollision()
 		&& goku.pos[1] + goku.height >= finBoss->pos[1];
 	if (xColl && yColl) {
 		goku.health--;
+		healthBar.updateDisplay(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -497,6 +499,7 @@ void saibaCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
+			healthBar.updateDisplay(goku.health);
 			if (goku.currentPic > 0 && goku.health < 8) {
 				goku.moveS -= 2;
 				goku.currentPic--;
@@ -517,6 +520,7 @@ void powerCollision()
 			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health++;
+			healthBar.updateDisplay(goku.health);
 			if (goku.currentPic < 5 && goku.health > 3) {
 				goku.currentPic++;
 				goku.moveS += 2;
