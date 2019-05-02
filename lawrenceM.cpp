@@ -19,12 +19,13 @@ Working on since: Februrary.
 #include "Image.h"
 #include "lawrenceM.h"
 #include <iostream>
-Health healthBar;
+#include <bitset>
+healthSSD healthBar;
 /* extern variables that are needed within my source code */
 extern void sInit(GLuint,GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
-extern void healthReference(Health *);
+// extern void healthReference(Health *);
 extern int score_reset();
 extern Global g; 
 extern int gameState;
@@ -36,7 +37,6 @@ extern Timers timers;
 double menuSelectionDelay = 0.15;
 extern Image img[]; 
 
-using namespace std;
 
 
 void showLawrenceText(int x, int y)
@@ -482,10 +482,13 @@ void renderControls() {
   ggprint8b(&r, 16, c, "esc - pause menu");
 
 }
-// reference pointer to use health within my file
+//reference pointer to use health within my file
  
-// void renderHealthBar() 
-// {
-//   healthReference(&health);
-//   glColor3f(health.colors[0],health.colors[1], health.colors[2]);
-// }
+void renderHealthBar() 
+{
+  // healthReference(&health);
+glPushMatrix();
+glTranslated(280.0f, 600.0f, 0.0f);
+healthBar.renderHealthSSD();
+glPopMatrix();
+}

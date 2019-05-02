@@ -875,6 +875,7 @@ extern void cleanExplosions();
 extern void renderDeath();
 extern void renderControls();
 extern void blastPowerupRender(GLuint);
+extern void renderHealthBar();
 
 void render(void)
 {
@@ -999,8 +1000,7 @@ void render(void)
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 			extern void gokuHealth(int, int);
 			gokuHealth(g.xres/5, -15);
-	
-		
+			renderHealthBar();
 	}
 	}
 }
