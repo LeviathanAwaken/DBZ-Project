@@ -18,6 +18,7 @@
 #include "fonts.h"
 #include "Global.h"
 #include "Image.h"
+#include "lawrenceM.h"
 //defined types
 typedef double Flt;
 typedef double Vec[3];
@@ -985,8 +986,9 @@ void render(void)
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 			extern void gokuHealth(int, int);
 			gokuHealth(g.xres/5, -15);
-		//}
+	
+		
 	}
 	}
 }
-// }
+

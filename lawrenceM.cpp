@@ -17,11 +17,14 @@ Working on since: Februrary.
 #include "Global.h"
 #include "Timers.h"
 #include "Image.h"
+#include "lawrenceM.h"
 #include <iostream>
+Health healthBar;
 /* extern variables that are needed within my source code */
 extern void sInit(GLuint,GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
+extern void healthReference(Health *);
 extern int score_reset();
 extern Global g; 
 extern int gameState;
@@ -32,9 +35,9 @@ extern Global walkTexture;
 extern Timers timers;
 double menuSelectionDelay = 0.15;
 extern Image img[]; 
-void renderControls();
 
 using namespace std;
+
 
 void showLawrenceText(int x, int y)
 {
@@ -63,21 +66,7 @@ void showLawrence(int x, int y,  GLuint textint)
 	showLawrencePicture(0,0,textint);
 	showLawrenceText(x+500, y-400);
 }
-void setBackground(int x,int y, GLuint textInt)
-{
-	glBindTexture(GL_TEXTURE_2D, textInt);
-	glColor4f(1, 1, 1, 1);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex2i(0, 35); //bottom left
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex2i(0, y); //top left
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex2i(x, y); //top right
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex2i(x, 35);
-	glEnd();
-}
+
 extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
@@ -360,36 +349,36 @@ void renderPauseMenu()
       case 0:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 1:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0x123fff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 2:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0x123fff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 3:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
           break;
       case 4:
           ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       default:
@@ -493,3 +482,10 @@ void renderControls() {
   ggprint8b(&r, 16, c, "esc - pause menu");
 
 }
+// reference pointer to use health within my file
+ 
+// void renderHealthBar() 
+// {
+//   healthReference(&health);
+//   glColor3f(health.colors[0],health.colors[1], health.colors[2]);
+// }
