@@ -53,6 +53,7 @@ extern void detection(int, bool);
 extern void bossDetection();
 extern int score_update(int);
 extern void energyRender();
+//extern void healthReference(int *);
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -138,6 +139,7 @@ void gokuInit()
 	goku.health = 3;
 	goku.moveS = 3.5;
 	goku.currentPic = 0;
+	//healthReference(&goku.health);
 }
 
 void outlineInit()
