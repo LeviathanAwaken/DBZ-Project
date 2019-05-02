@@ -56,7 +56,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
-	"images/gokurose.png", "images/blastPowerup.gif"};
+	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png"};
 
 
 
@@ -201,8 +201,8 @@ int main(void)
 	cleanup_fonts();
 	// server-side scores
 	extern int score_show();
-        extern int score_add(int);
-        score_add(g.score);
+		extern int score_add(int);
+		score_add(g.score);
 	score_show();
 	return 0;
 }
@@ -568,8 +568,19 @@ void initOpengl(void)
 	walkData = buildAlphaData(&img[23]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
- 	//--------------------------------------------------------------------------
+	 //--------------------------------------------------------------------------
 
+	//----------------------BlastPowerup texture--------------------------------
+	w = img[24].width;
+	h = img[24].height;
+	glGenTextures(1, &g.outlineTexture);
+	glBindTexture(GL_TEXTURE_2D, g.outlineTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[24]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	 //--------------------------------------------------------------------------
 
 }
 
@@ -590,6 +601,8 @@ void init()
 	img[16].columns = 5;
 	img[17].rows = 9;
 	img[17].columns = 8;
+	img[24].rows = 1;
+	img[24].columns = 4;
 }
 // extern void checkMouseMenu(XEvent*);
 
@@ -897,11 +910,11 @@ void render(void)
 		showJoshua(40, img[3].height, g.joshTexture);
 		showDrake(70, img[5].height, g.drakeTexture);
 		showJuan(40, img[4].height, g.juanTexture);
-	
+
 		// if (g.pauseFlag) {
 		// 	extern void showPause(int, int);
 		// 	showPause(350, 100);
-		
+
 			// Rect r;
 			//Clear the screen
 			glClearColor(0.1, 0.1, 0.1, 1.0);
