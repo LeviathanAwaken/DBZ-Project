@@ -198,8 +198,11 @@ int main(void)
 		#endif
 	}
 	cleanup_fonts();
-	//extern void score_get();
-	//score_get();
+	// server-side scores
+	extern int score_show();
+        extern int score_add(int);
+        score_add(g.score);
+	score_show();
 	return 0;
 }
 
@@ -715,11 +718,9 @@ int checkKeys(XEvent *e)
 			gameState = PAUSEMENU;
 			selectedOption = RESUMEGAME;
 			break;
-		case XK_j:
-			g.score++;
-			extern int score_add(int); //temporary spot
-			score_add(g.score);
-			break;
+		//case XK_j:
+		//	g.score++;
+		//	break;
 		// case XK_z:
 		// 	// if (g.paused == true && g.startFlag == 0)
 		// 	{
