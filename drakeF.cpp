@@ -98,10 +98,11 @@ void Enemy_init ()
 		enemy[i].pattern = choice;
 		enemy[i].pos[0] = g.xres + ((rand() % 100) + 100);
 		enemy[i].pos[1] = (rand() % (g.yres));
+		enemy[i].eHealth = 2;
 		enemyReference(&enemy[i]);
 	}
 
-	boss.pos[0] = (g.xres + 100);
+	boss.pos[0] = (g.xres + 200);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
 
@@ -348,7 +349,7 @@ void enemyHandler (GLuint image1, GLuint image2) {
 void pattern_1 (Enemy &e)
 {
 
-	e.pos[0] -= e.xSpeed;
+	e.pos[0] -= e.xSpeed+1;
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
 		e.pos[1] = (rand() % (g.yres - 100) + 1);
@@ -376,8 +377,8 @@ void pattern_2 (Enemy &e)
 void pattern_3 (Enemy &e)
 {
 
-	e.pos[0] -= e.xSpeed;
-	e.pos[1] -= 2.0;
+	e.pos[0] -= (e.xSpeed+2);
+	e.pos[1] -= 3.0;
 
 	if (e.pos[0] < -50){
 		e.pos[0] = g.xres;
@@ -411,7 +412,7 @@ void pattern_4 (Enemy &e)
 
 int speed_Randomizer (void)
 {
-	int mod = 2;
+	float mod = 2.5;
 	if (g.score >= 4000) {
 		mod = 3;
 	}
@@ -461,10 +462,10 @@ void cleanExplosions ()
 
 void difficulty(Enemy &e)
 {
-	if (g.score >= 3000) {
+	if (g.score >= 3000 && g.score < 4000) {
 		e.eHealth = 3;
 	}
-	if (g.score >= 4000) {
+	if (g.score >= 4000 && g.score < 5000) {
 		e.eHealth = 4;
 	}
 	if (g.score >= 5000) {
@@ -486,14 +487,14 @@ void detection (int Eindices, bool type)
 		}
 	} else {
 		if (enemy[Eindices].isRendered) {
-			enemy[Eindices].eHealth -=2 ;
+			enemy[Eindices].eHealth = 0;
 		}
 	}
 		if (enemy[Eindices].eHealth <= 0) {
 			createExplosion(enemy[Eindices].pos[0], enemy[Eindices].pos[1]);
 			enemy[Eindices].pos[0] = g.xres;
 			enemy[Eindices].pos[1] = (rand() % (g.yres - 100) + 1);
-			enemy[Eindices].wavepos = (rand() % (g.yres) + 1);
+			enemy[Eindices].wavepos = (rand() % (g.yres - 100) + 1);
 			enemy[Eindices].xSpeed = speed_Randomizer();
 			enemy[Eindices].wavefreq = freq_Randomizer();
 			enemy[Eindices].waveamp = amp_Randomizer();
@@ -514,7 +515,7 @@ void bossDetection ()
 		createExplosion(boss.pos[0] + 50, boss.pos[1]);
 		createExplosion(boss.pos[0] + 50, boss.pos[1] + 50);
 		createExplosion(boss.pos[0], boss.pos[1] + 50);
-		boss.pos[0] = 10000;
+		boss.pos[0] = 5000;
 		boss.eHealth = 100;
 		score_update(10000);
 	}

@@ -24,10 +24,10 @@ public:
     
     Enemy () {
      
-     srand(time(NULL));
+     //srand(time(NULL));
      isRendered = false;
-     pattern = 1;
-     eHealth = 2;
+     pattern = 0;
+     eHealth = 0;
      wavepos = 0.0;
      xSpeed = 0;
      wavefreq = 0;
