@@ -12,11 +12,10 @@ class BlastPowerup {
 
 		BlastPowerup () {
 
-			srand(time(NULL));
+			//srand(time(NULL));
 			pos[0] = 0.0;
 			pos[1] = 0.0;
 		}
 };
 
 #endif
- 
