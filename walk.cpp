@@ -51,7 +51,7 @@ int done = 0;
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
+	"images/lawrencePic.gif", "images/kiBlastAlt.png", "images/namek.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
@@ -184,24 +184,24 @@ int main(void)
 		timers.recordTime(&tstart);
 	#endif
 	// asks for initials for scoreboard
-        char p_name[50];
-        printf("Enter 3 Initials to record score (letters only!): ");
-        int pc = 0;
+		char p_name[50];
+		printf("Enter 3 Initials to record score (letters only!): ");
+		int pc = 0;
 	scanf("%[^\n]%*c", p_name);
-        while (pc < 3) {
-	    if (p_name[3] != '\0') {
+		while (pc < 3) {
+		if (p_name[3] != '\0') {
 		printf("Enter only 3 Initials!\n");
 		scanf("%[^\n]%*c", p_name);
 		pc = -1;
-                pc++;
-	    }
-            if (!isalpha(p_name[pc]) && p_name[3] == '\0') {
-                printf("Enter only letters!\n");
+				pc++;
+		}
+			if (!isalpha(p_name[pc]) && p_name[3] == '\0') {
+				printf("Enter only letters!\n");
 		scanf("%[^\n]%*c", p_name);
 		pc = -1;
-            }
-                pc++;
-        }
+			}
+				pc++;
+		}
 
 	initOpengl();
 	init();
@@ -643,6 +643,8 @@ void init()
 	Enemy_init();
 	Powerups_init();
 	blastPowerup_init();
+	img[7].rows = 1;
+	img[7].columns = 9;
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
