@@ -57,6 +57,8 @@ class Global {
 		GLuint explosion3Texture;
 		GLuint blastPowerupTexture;
 		GLuint outlineTexture;
+		GLuint blueTexture;
+		GLuint redTexture;
 
 		Vec box[20];
 		Global() {

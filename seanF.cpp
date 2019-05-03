@@ -615,9 +615,16 @@ void energyRender()
 
 void Energy::draw()
 {
+	GLuint text;
+	if (goku.currentPic > 3 && goku.currentPic < 5)
+		text = g.redTexture;
+	else if (goku.currentPic == 5)
+		text = g.blueTexture;
+	else
+		text = g.outlineTexture;
 	glPushMatrix();
 	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, g.outlineTexture);
+	glBindTexture(GL_TEXTURE_2D, text);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255, 255, 255, 255);
