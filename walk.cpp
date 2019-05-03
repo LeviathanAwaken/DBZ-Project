@@ -184,17 +184,24 @@ int main(void)
 		timers.recordTime(&tstart);
 	#endif
 	// asks for initials for scoreboard
-		char p_name[3];
-		printf("Enter 3 Initials to record score (letters only!): ");
-		int pc = 0;
-		while (pc < 3) {
-			p_name[pc] = getchar();
-			if (!isalpha(p_name[pc])) {
-				printf("Enter only a letter!\n");
-				p_name[pc] = getchar();
-			}
-			pc++;
-		}
+        char p_name[50];
+        printf("Enter 3 Initials to record score (letters only!): ");
+        int pc = 0;
+	scanf("%[^\n]%*c", p_name);
+        while (pc < 3) {
+	    if (p_name[3] != '\0') {
+		printf("Enter only 3 Initials!\n");
+		scanf("%[^\n]%*c", p_name);
+		pc = -1;
+                pc++;
+	    }
+            if (!isalpha(p_name[pc]) && p_name[3] == '\0') {
+                printf("Enter only letters!\n");
+		scanf("%[^\n]%*c", p_name);
+		pc = -1;
+            }
+                pc++;
+        }
 
 	extern int score_add2(char p_name[]);
 		score_add2(p_name);
