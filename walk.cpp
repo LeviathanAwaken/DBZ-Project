@@ -11,6 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <ctype.h>
 #include <math.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
@@ -175,12 +176,26 @@ void render(void);
 
 struct timespec tstart, tend;
 
-
 int main(void)
 {
 	#ifdef PROFILE
 		timers.recordTime(&tstart);
 	#endif
+	// asks for initials for scoreboard
+        char p_name[3];
+        printf("Enter 3 Initials to record score (letters only!): ");
+        int pc = 0;
+        while (pc < 3) {
+            p_name[pc] = getchar();
+            if (!isalpha(p_name[pc])) {
+                printf("Enter only a letter!\n");
+                p_name[pc] = getchar();
+            }
+            pc++;
+        }
+
+	extern int score_add2(char p_name[]);
+        score_add2(p_name);
 	initOpengl();
 	init();
 	while (!done) {
@@ -198,11 +213,11 @@ int main(void)
 		#endif
 	}
 	cleanup_fonts();
-	// server-side scores
-	extern int score_show();
+        // server side scores
+        extern int score_show();
         extern int score_add(int);
         score_add(g.score);
-	score_show();
+        score_show();
 	return 0;
 }
 

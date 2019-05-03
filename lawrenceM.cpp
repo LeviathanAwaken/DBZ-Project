@@ -108,8 +108,7 @@ int acceptGameState(int selectedOption)
             break;
         case 3:
             done = 1;
-            return 1;
-	    // add score show here-------------------------------------------
+	    return 1;
         case 4:
             gameState = INGAME;
             break;

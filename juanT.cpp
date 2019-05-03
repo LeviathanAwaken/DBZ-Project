@@ -1,7 +1,8 @@
 // Created By: Juan Trigueros
 // Date: 02-14-19
 //
-//Shows credit pic, shows temporary start/pause screens and score keeper
+//Shows credit pic, shows temporary start/pause screens, score keeper, server
+//side functionality
 
 #include <GL/glx.h>
 #include "fonts.h"
@@ -10,6 +11,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
+#include <ctype.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
@@ -207,6 +209,58 @@ int score_add (int score)
     return 0;
 }
 
+int score_add2 (char p_name[])
+{
+    int sd;
+    struct hostent *host;
+    struct sockaddr_in addr;
+    BIO *outbio = NULL;
+
+    const SSL_METHOD *method;
+    SSL_CTX *ctx;
+    SSL *ssl;
+    char hostname[256] = "odin.cs.csub.edu";
+    char pagename[256] = "/~jtrigueros/3350/project/scores.php?test=";
+    strcat(pagename, p_name);
+    int port = PORT;
+
+    //Setup the SSL BIO
+    outbio = ssl_setup_bio();
+    //Initialize the SSL library
+    if (SSL_library_init() < 0)
+        BIO_printf(outbio, "Could not initialize the OpenSSL library !\n");
+    method = SSLv23_client_method();
+    ctx = SSL_CTX_new(method);
+    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+
+    //Setup the socket used for connection.
+    host = gethostbyname(hostname);
+    sd = socket(AF_INET, SOCK_STREAM, 0);
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = *(long*)(host->h_addr);
+    if (connect(sd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
+        BIO_printf(outbio, "Cannot connect to host %s [%s] on port %d.\n",
+                hostname, inet_ntoa(addr.sin_addr), port);
+    }
+//Connect using the SSL certificate.
+    ssl = SSL_new(ctx);
+    SSL_set_fd(ssl, sd);
+    SSL_connect(ssl);
+    //A non-blocking socket will make the ssl_read() not block.
+    set_non_blocking(sd);
+
+    get_a_page(ssl, hostname, pagename);
+
+    //Cleanup.
+    SSL_free(ssl);
+    close(sd);
+    SSL_CTX_free(ctx);
+
+    return 0;
+}
+
 void score_get ()
 {
     int sd;
@@ -218,7 +272,7 @@ void score_get ()
     SSL_CTX *ctx;
     SSL *ssl;
     char hostname[256] = "odin.cs.csub.edu";
-    char pagename[256] = "/~jtrigueros/3350/project/scores.html";
+    char pagename[256] = "/~jtrigueros/3350/project/scores.txt";
     int port = PORT;
 
     //Setup the SSL BIO
@@ -387,9 +441,16 @@ void get_a_page2(SSL *ssl, char *hostname, char *pagename)
             scrs[kl] = buf[ij] - '0';
             printf("%d",scrs[kl]);
             kl++;
+        } else if (isalpha(buf[ij])) {
+            scrs[kl] = -110;
+            printf("%c", buf[ij]);
+            kl++;
         } else if (buf[ij] == '\n') {
             scrs[kl] = -111;
-            printf("\n");
+	    if (scrs[kl-1] == -110)
+		printf(" ");
+	    else
+                printf("\n");
             kl++;
         }
         ij++;
