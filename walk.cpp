@@ -57,7 +57,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
-	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png"};
+	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
+	"images/blueOutline.png", "images/redOutline.png"};
 
 
 
@@ -183,20 +184,25 @@ int main(void)
 		timers.recordTime(&tstart);
 	#endif
 	// asks for initials for scoreboard
-        char p_name[3];
+        char p_name[50];
         printf("Enter 3 Initials to record score (letters only!): ");
         int pc = 0;
+	scanf("%[^\n]%*c", p_name);
         while (pc < 3) {
-            p_name[pc] = getchar();
-            if (!isalpha(p_name[pc])) {
-                printf("Enter only a letter!\n");
-                p_name[pc] = getchar();
+	    if (p_name[3] != '\0') {
+		printf("Enter only 3 Initials!\n");
+		scanf("%[^\n]%*c", p_name);
+		pc = -1;
+                pc++;
+	    }
+            if (!isalpha(p_name[pc]) && p_name[3] == '\0') {
+                printf("Enter only letters!\n");
+		scanf("%[^\n]%*c", p_name);
+		pc = -1;
             }
-            pc++;
+                pc++;
         }
 
-	extern int score_add2(char p_name[]);
-        score_add2(p_name);
 	initOpengl();
 	init();
 	while (!done) {
@@ -214,11 +220,13 @@ int main(void)
 		#endif
 	}
 	cleanup_fonts();
-        // server side scores
-        extern int score_show();
-        extern int score_add(int);
-        score_add(g.score);
-        score_show();
+		// server side scores
+		extern int score_show();
+		extern int score_add(int);
+		extern int score_add2(char p_name[]);
+		score_add2(p_name);
+		score_add(g.score);
+		score_show();
 	return 0;
 }
 
@@ -595,7 +603,31 @@ void initOpengl(void)
 	walkData = buildAlphaData(&img[24]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-	 //--------------------------------------------------------------------------
+	 //-------------------------------------------------------------------------
+
+	 //----------------------BlastPowerup texture--------------------------------
+	 w = img[25].width;
+	 h = img[25].height;
+	 glGenTextures(1, &g.blueTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.blueTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[25]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
+
+	 //----------------------BlastPowerup texture--------------------------------
+	 w = img[26].width;
+	 h = img[26].height;
+	 glGenTextures(1, &g.redTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.redTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[26]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
 
 }
 
@@ -610,6 +642,7 @@ void init()
 		g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	blastPowerup_init();
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
@@ -858,6 +891,7 @@ void physics(void)
 			saibaPhysics();
 			bossPhysics();
 			powerupsPhysics();
+			blastPowerupPhysics();
 			namekPhysics();
 
 
@@ -1017,4 +1051,3 @@ void render(void)
 	}
 	}
 }
-

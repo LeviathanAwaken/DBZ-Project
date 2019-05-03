@@ -23,6 +23,7 @@
 #include "Boss.h"
 #include "Image.h"
 #include "lawrenceM.h"
+#include "BlastPowerup.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -36,6 +37,7 @@ const int MAX_ENEM = 15;
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
 Powerups *powRef[2];
+BlastPowerup *blastPower;
 int elimiter;
 int plimiter;
 extern int gameState;
@@ -65,6 +67,7 @@ class Protag {
 		int height;
 		int width;
 		int health;
+		int dballs;
 		float moveS;
 } goku;
 
@@ -117,6 +120,11 @@ void powerReference(Powerups* power)
 	plimiter++;
 }
 
+void blastPowerReference(BlastPowerup* blast)
+{
+	blastPower = blast;
+}
+
 //Initializes the kiClass for use.
 void kiInit()
 {
@@ -138,6 +146,7 @@ void gokuInit()
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 	goku.health = 3;
 	goku.moveS = 3.5;
+	goku.dballs = 0;
 	goku.currentPic = 0;
 }
 
@@ -532,6 +541,19 @@ void powerCollision()
 	}
 }
 
+void blastCollision()
+{
+	bool xColl = blastPower->pos[0] + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= blastPower->pos[0];
+	bool yColl = blastPower->pos[1] + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= blastPower->pos[1];
+	if (xColl && yColl) {
+		goku.dballs++;
+		blastPower->pos[0] = g.xres;
+		blastPower->pos[1] = (rand() % (g.yres - 100) + 1);
+	}
+}
+
 //Basic health check, calls death screen.
 void healthCheck()
 {
@@ -592,9 +614,16 @@ void energyRender()
 
 void Energy::draw()
 {
+	GLuint text;
+	if (goku.currentPic > 3 && goku.currentPic < 5)
+		text = g.redTexture;
+	else if (goku.currentPic == 5)
+		text = g.blueTexture;
+	else
+		text = g.outlineTexture;
 	glPushMatrix();
 	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, g.outlineTexture);
+	glBindTexture(GL_TEXTURE_2D, text);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glColor4ub(255, 255, 255, 255);

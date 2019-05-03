@@ -7,14 +7,14 @@
 extern Global g;
 
 class Powerups {
-    public:
+	public:
 	float pos[2];
 
 	Powerups () {
 
-	    srand(time(NULL));
-	    pos[0] = 0.0;
-	    pos[1] = 0.0;
+		//srand(time(NULL));
+		pos[0] = 0.0;
+		pos[1] = 0.0;
 	}
 };
 
