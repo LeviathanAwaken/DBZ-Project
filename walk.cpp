@@ -57,7 +57,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
-	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png"};
+	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
+	"images/blueOutline.png", "images/redOutline.png"};
 
 
 
@@ -595,7 +596,31 @@ void initOpengl(void)
 	walkData = buildAlphaData(&img[24]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-	 //--------------------------------------------------------------------------
+	 //-------------------------------------------------------------------------
+
+	 //----------------------BlastPowerup texture--------------------------------
+	 w = img[25].width;
+	 h = img[25].height;
+	 glGenTextures(1, &g.blueTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.blueTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[25]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
+
+	 //----------------------BlastPowerup texture--------------------------------
+	 w = img[26].width;
+	 h = img[26].height;
+	 glGenTextures(1, &g.redTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.redTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[26]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
 
 }
 
