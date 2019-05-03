@@ -202,8 +202,6 @@ int main(void)
                 pc++;
         }
 
-	extern int score_add2(char p_name[]);
-		score_add2(p_name);
 	initOpengl();
 	init();
 	while (!done) {
@@ -224,6 +222,8 @@ int main(void)
 		// server side scores
 		extern int score_show();
 		extern int score_add(int);
+		extern int score_add2(char p_name[]);
+		score_add2(p_name);
 		score_add(g.score);
 		score_show();
 	return 0;
