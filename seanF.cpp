@@ -23,6 +23,7 @@
 #include "Boss.h"
 #include "Image.h"
 #include "lawrenceM.h"
+#include "BlastPowerup.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -36,6 +37,7 @@ const int MAX_ENEM = 15;
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
 Powerups *powRef[2];
+BlastPowerup *blastPower;
 int elimiter;
 int plimiter;
 extern int gameState;
@@ -66,6 +68,7 @@ class Protag {
 		int height;
 		int width;
 		int health;
+		int dballs;
 		float moveS;
 } goku;
 
@@ -118,6 +121,11 @@ void powerReference(Powerups* power)
 	plimiter++;
 }
 
+void blastPowerReference(BlastPowerup* blast)
+{
+	blastPower = blast;
+}
+
 //Initializes the kiClass for use.
 void kiInit()
 {
@@ -139,6 +147,7 @@ void gokuInit()
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 	goku.health = 3;
 	goku.moveS = 3.5;
+	goku.dballs = 0;
 	goku.currentPic = 0;
 }
 
@@ -530,6 +539,19 @@ void powerCollision()
 			score_update(25);
 			break;
 		}
+	}
+}
+
+void blastCollision()
+{
+	bool xColl = blastPower->pos[0] + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= blastPower->pos[0];
+	bool yColl = blastPower->pos[1] + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= blastPower->pos[1];
+	if (xColl && yColl) {
+		goku.dballs++;
+		blastPower->pos[0] = g.xres;
+		blastPower->pos[1] = (rand() % (g.yres - 100) + 1);
 	}
 }
 

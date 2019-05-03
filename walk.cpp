@@ -203,7 +203,7 @@ int main(void)
         }
 
 	extern int score_add2(char p_name[]);
-        score_add2(p_name);
+		score_add2(p_name);
 	initOpengl();
 	init();
 	while (!done) {
@@ -221,11 +221,11 @@ int main(void)
 		#endif
 	}
 	cleanup_fonts();
-        // server side scores
-        extern int score_show();
-        extern int score_add(int);
-        score_add(g.score);
-        score_show();
+		// server side scores
+		extern int score_show();
+		extern int score_add(int);
+		score_add(g.score);
+		score_show();
 	return 0;
 }
 
@@ -617,6 +617,7 @@ void init()
 		g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	blastPowerup_init();
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
@@ -860,6 +861,7 @@ void physics(void)
 			saibaPhysics();
 			bossPhysics();
 			powerupsPhysics();
+			blastPowerupPhysics();
 			namekPhysics();
 
 
@@ -1026,4 +1028,3 @@ void render(void)
 	}
 	}
 }
-
