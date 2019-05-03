@@ -101,7 +101,7 @@ void Enemy_init ()
 		enemy[i].pattern = choice;
 		enemy[i].pos[0] = g.xres + ((rand() % 100) + 100);
 		enemy[i].pos[1] = (rand() % (g.yres));
-		enemy[i].eHealth = 2;
+		enemy[i].eHealth = 1;
 		enemy[i].image = g.saibaTexture;
 		enemyReference(&enemy[i]);
 	}
@@ -474,13 +474,13 @@ void cleanExplosions ()
 void difficulty(Enemy &e)
 {
 	if (g.score >= 3000 && g.score < 4000) {
-		e.eHealth = 3;
+		e.eHealth = 2;
 	}
 	if (g.score >= 4000 && g.score < 5000) {
-		e.eHealth = 4;
+		e.eHealth = 3;
 	}
 	if (g.score >= 5000) {
-		e.eHealth = 5;
+		e.eHealth = 4;
 	}
 
 }
