@@ -468,9 +468,9 @@ void kiCollision(int kiRef)
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
-			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
+			&& ki.kiTracker[kiRef][0] + ki.width >= enemyRef[i]->pos[0];
 		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]
-			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
+			&& ki.kiTracker[kiRef][1] + ki.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
 			detection(i, false);
