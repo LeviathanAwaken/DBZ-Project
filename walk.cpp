@@ -846,6 +846,7 @@ extern void gokuIMove(int);
 extern void checkKeysMainMenu();
 extern void checkKeysPauseMenu();
 extern void checkKeysLost();
+extern void checkKeysCreditMenu();
 extern void braceHandler(int);
 extern void namekPhysics();
 
@@ -863,6 +864,7 @@ void physics(void)
 		checkKeysLost();
 		break;
 	case CREDITS:
+		checkKeysCreditMenu();
 		break;
 	case INGAME:
 		if (g.walk) {
@@ -936,17 +938,11 @@ void render(void)
 			if (g.controlFlag == 1) {
 				renderControls();
 			}
-			else if(g.creditFlag == 1) {
-				renderCredit();
-			}
 			renderMainMenu();
 			break;
 		case PAUSEMENU:
 			if (g.controlFlag == 1) {
 				renderControls();
-			}
-			else if(g.creditFlag == 1) {
-				renderCredit();
 			}
 			renderPauseMenu();
 			break;

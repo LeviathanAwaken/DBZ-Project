@@ -41,14 +41,50 @@ double menuSelectionDelay = 0.15;
 extern Image img[]; 
 
 void renderCredit() {
-  	glClearColor(0.1, 0.1, 0.1, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0.1, 0.1, 0.1, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
 
-		showSean(20, img[2].height, g.seanTexture);
-		showLawrence(40, img[6].height,g.lawrenceTexture);
-		showJoshua(40, img[3].height, g.joshTexture);
-		showDrake(70, img[5].height, g.drakeTexture);
-		showJuan(40, img[4].height, g.juanTexture);
+  showSean(20, img[2].height, g.seanTexture);
+  showLawrence(40, img[6].height,g.lawrenceTexture);
+  showJoshua(40, img[3].height, g.joshTexture);
+  showDrake(70, img[5].height, g.drakeTexture);
+  showJuan(40, img[4].height, g.juanTexture);
+
+  // display menu on credit screen
+
+  Rect r;
+  r.bot = g.yres/2;
+  r.left = g.xres/1.2;
+  r.center = 01;
+
+switch (selectedOption) {
+  case 0:
+    ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 1:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0x123fff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 2:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 3:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+    break;
+  default:
+    break;
+  }
 }
 void showLawrenceText(int x, int y)
 {
@@ -103,7 +139,7 @@ int acceptGameState(int selectedOption)
         case 1:
             // cout << "score" << endl;
             gameState = CREDITS;
-            g.creditFlag = ((g.creditFlag + 1) % 2);
+            // g.creditFlag = ((g.creditFlag + 1) % 2);
             //make leaderboard function           
             break;
         case 2:
@@ -155,7 +191,34 @@ void checkKeysLost()
 	}
 	}
 }
+void checkKeysCreditMenu()
+{
+  if(g.keys[XK_Up]) {
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if (timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption - 1) + 4) % 4);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
+  }
+  if(g.keys[XK_Down]) {
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if(timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption + 1) +4) % 4);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
 
+  }
+  if(g.keys[XK_Return]) {
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+		  acceptGameState(selectedOption);
+		  timers.recordTime(&timers.menuSelectionTime);
+	}
+  }
+}
 void checkKeysMainMenu()
 {
   if(g.keys[XK_Up]) {
