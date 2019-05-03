@@ -187,21 +187,22 @@ int main(void)
         char p_name[50];
         printf("Enter 3 Initials to record score (letters only!): ");
         int pc = 0;
-	scanf("%[^\n]%*c", p_name);
+	fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
         while (pc < 3) {
-	    if (p_name[3] != '\0') {
+	    if (p_name[4] != '\0') {
 		printf("Enter only 3 Initials!\n");
-		scanf("%[^\n]%*c", p_name);
+		fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
 		pc = -1;
                 pc++;
 	    }
-            if (!isalpha(p_name[pc]) && p_name[3] == '\0') {
+            if (!isalpha(p_name[pc]) && p_name[4] == '\0') {
                 printf("Enter only letters!\n");
-		scanf("%[^\n]%*c", p_name);
+		fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
 		pc = -1;
             }
                 pc++;
         }
+	p_name[3] = '\0';
 
 	initOpengl();
 	init();
