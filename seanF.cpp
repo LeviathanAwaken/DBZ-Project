@@ -21,6 +21,8 @@
 #include "Enemy.h"
 #include "Powerups.h"
 #include "Boss.h"
+#include "Image.h"
+#include "lawrenceM.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -37,6 +39,8 @@ Powerups *powRef[2];
 int elimiter;
 int plimiter;
 extern int gameState;
+extern Image img[];
+extern healthSSD healthBar;
 
 //Prototypes and extern function declarations
 void kiCollision(int);
@@ -50,6 +54,7 @@ bool gokuBounds(int);
 extern void detection(int, bool);
 extern void bossDetection();
 extern int score_update(int);
+extern void energyRender();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -63,6 +68,18 @@ class Protag {
 		int health;
 		float moveS;
 } goku;
+
+class Energy {
+	public:
+		float *centerX;
+		float *centerY;
+		float height;
+		float width;
+		int spriteSheetIndex;
+		int frame;
+		bool done;
+		void draw();
+} outline;
 
 //Class to track x and y positions of the blasts being sent by the character.
 class kiBlast {
@@ -125,6 +142,17 @@ void gokuInit()
 	goku.currentPic = 0;
 }
 
+void outlineInit()
+{
+	outline.centerX = &goku.pos[0];
+	outline.centerY = &goku.pos[1];
+	outline.height = img[24].height / 1.5;
+	outline.width = img[24].width / (4 * 1.5);
+	outline.spriteSheetIndex = 24;
+	outline.frame = 0;
+	outline.done = false;
+}
+
 //Initializes the projectiles for the boss.
 void braceInit()
 {
@@ -151,6 +179,7 @@ void sInit(GLuint gok, GLuint gok2, GLuint gok3, GLuint gok4, GLuint gok5,
 	gokuInit();
 	kiInit();
 	braceInit();
+	outlineInit();
 }
 
 void showText(int x, int y)
@@ -234,6 +263,9 @@ bool gokuBounds(int dir)
 //Generalized render function.
 void sRender()
 {
+	if (goku.currentPic > 0) {
+		energyRender();
+	}
 	gokuRender();
 	kiHandler(1);
 	braceHandler(1);
@@ -429,6 +461,7 @@ void braceCollision(int braceID)
 		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
 	if (xColl && yColl) {
 		goku.health--;
+		healthBar.updateDisplay(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -447,6 +480,7 @@ void bossCollision()
 		&& goku.pos[1] + goku.height >= finBoss->pos[1];
 	if (xColl && yColl) {
 		goku.health--;
+		healthBar.updateDisplay(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -465,6 +499,7 @@ void saibaCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
+			healthBar.updateDisplay(goku.health);
 			if (goku.currentPic > 0 && goku.health < 8) {
 				goku.moveS -= 2;
 				goku.currentPic--;
@@ -485,6 +520,7 @@ void powerCollision()
 			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health++;
+			healthBar.updateDisplay(goku.health);
 			if (goku.currentPic < 5 && goku.health > 3) {
 				goku.currentPic++;
 				goku.moveS += 2;
@@ -508,7 +544,7 @@ void healthCheck()
 //Handler function to prevent repetitive code of parsing through the kiBlasts.
 void kiHandler(int type)
 {
-	for (int i = 0; i < MAX_KI - (10 - (2 * goku.currentPic)); i++) {
+	for (int i = 0; i < MAX_KI; i++) {
 		if (ki.kiTracker[i][0] != UNASSIGN &&
 			ki.kiTracker[i][1] != UNASSIGN) {
 			if (type == 0) {
@@ -550,6 +586,63 @@ void gokuHealth(int x, int y)
 	ggprint16(&r, 16, c,"Goku Health: %d", goku.health);
 }
 
+void energyRender()
+{
+	outline.draw();
+}
+
+void Energy::draw()
+{
+	glPushMatrix();
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, g.outlineTexture);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255, 255, 255, 255);
+
+	float ssWidth = (float) 1.0 / img[spriteSheetIndex].columns;
+	float ssHeight = (float) 1.0 / img[spriteSheetIndex].rows;
+
+	int ix = this->frame % img[spriteSheetIndex].columns;
+	int iy = 0;
+
+	for (int i = 1; i < 9; i++) {
+		if (frame >= img[spriteSheetIndex].columns * i) {
+			iy = i;
+		}
+	}
+
+	float textureX = (float) ix / img[spriteSheetIndex].columns;
+	float textureY = (float) iy / img[spriteSheetIndex].rows;
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(textureX, textureY+ssHeight);
+	glVertex2i((*centerX + (goku.width/2))-width,
+		(*centerY + 30 + (goku.height/2))-height);
+
+	glTexCoord2f(textureX, textureY);
+	glVertex2i((*centerX + (goku.width/2))-width,
+		(*centerY + 30 + (goku.height/2))+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY);
+	glVertex2i((*centerX + (goku.width/2))+width,
+		(*centerY + 30 + (goku.height/2))+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+	glVertex2i((*centerX + (goku.width/2))+width,
+		(*centerY + 30 + (goku.height/2))-height);
+	glEnd();
+
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
+
+	frame++;
+	if (frame >= img[spriteSheetIndex].columns * 8) {
+		frame = 0;
+	}
+}
+
 //Sound handler, not functioning yet.
 void soundHandle()
 {
@@ -565,7 +658,7 @@ void soundHandle()
 		alListenerfv(AL_ORIENTATION, vec);
 		alListenerf(AL_GAIN, 1.0f);
 		ALuint albuffer;
-		albuffer = alutCreateBufferFromFile("./sounds/supa sayain.mp3");
+		albuffer = alutCreateBufferFromFile("./sounds/SuperSaiyan.mp3");
 
 		ALuint alSource;
 
