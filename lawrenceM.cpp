@@ -17,9 +17,16 @@ Working on since: Februrary.
 #include "Global.h"
 #include "Timers.h"
 #include "Image.h"
+#include "lawrenceM.h"
 #include <iostream>
-/* extern variables that are needed within my source code */
+#include <bitset>
+healthSSD healthBar; //structure object 
+/* extern variables and functions that are needed within my source code */
 extern void sInit(GLuint,GLuint, GLuint);
+extern void showSean(int, int, GLuint);
+extern void showJoshua(int, int, GLuint);
+extern void showDrake(int, int, GLuint);
+extern void showJuan(int, int, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 extern int score_reset();
@@ -32,10 +39,53 @@ extern Global walkTexture;
 extern Timers timers;
 double menuSelectionDelay = 0.15;
 extern Image img[]; 
-void renderControls();
 
-using namespace std;
+void renderCredit() {
+  glClearColor(0.1, 0.1, 0.1, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
 
+  showSean(20, img[2].height, g.seanTexture);
+  showLawrence(40, img[6].height,g.lawrenceTexture);
+  showJoshua(40, img[3].height, g.joshTexture);
+  showDrake(70, img[5].height, g.drakeTexture);
+  showJuan(40, img[4].height, g.juanTexture);
+
+  // display menu on credit screen
+
+  Rect r;
+  r.bot = g.yres/2;
+  r.left = g.xres/1.2;
+  r.center = 01;
+
+switch (selectedOption) {
+  case 0:
+    ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 1:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0x123fff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 2:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 3:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+    break;
+  default:
+    break;
+  }
+}
 void showLawrenceText(int x, int y)
 {
 	Rect r;
@@ -63,26 +113,13 @@ void showLawrence(int x, int y,  GLuint textint)
 	showLawrencePicture(0,0,textint);
 	showLawrenceText(x+500, y-400);
 }
-void setBackground(int x,int y, GLuint textInt)
-{
-	glBindTexture(GL_TEXTURE_2D, textInt);
-	glColor4f(1, 1, 1, 1);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex2i(0, 35); //bottom left
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex2i(0, y); //top left
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex2i(x, y); //top right
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex2i(x, 35);
-	glEnd();
-}
+
 extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
 extern int score_reset();
 
+//resets everything to start a new game
 void newGame()
 {
 	g.score = score_reset();
@@ -100,7 +137,9 @@ int acceptGameState(int selectedOption)
             newGame();
             break;
         case 1:
-            cout << "score" << endl;
+            // cout << "score" << endl;
+            gameState = CREDITS;
+            // g.creditFlag = ((g.creditFlag + 1) % 2);
             //make leaderboard function           
             break;
         case 2:
@@ -108,7 +147,7 @@ int acceptGameState(int selectedOption)
             break;
         case 3:
             done = 1;
-            return 1;
+	          return 1;
         case 4:
             gameState = INGAME;
             break;
@@ -152,7 +191,34 @@ void checkKeysLost()
 	}
 	}
 }
+void checkKeysCreditMenu()
+{
+  if(g.keys[XK_Up]) {
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if (timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption - 1) + 4) % 4);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
+  }
+  if(g.keys[XK_Down]) {
+    timers.recordTime(&timers.timeCurrent);
+    double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+    if(timeSpan > menuSelectionDelay) {
+      selectedOption = (((selectedOption + 1) +4) % 4);
+      timers.recordTime(&timers.menuSelectionTime);
+    }
 
+  }
+  if(g.keys[XK_Return]) {
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime, &timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+		  acceptGameState(selectedOption);
+		  timers.recordTime(&timers.menuSelectionTime);
+	}
+  }
+}
 void checkKeysMainMenu()
 {
   if(g.keys[XK_Up]) {
@@ -255,10 +321,13 @@ void renderMainMenu() {
 
   glBegin(GL_QUADS);
   glTexCoord2f(textureX, textureY+ssHeight);
-  glVertex2i(centerX-width, centerY-height);
+  glVertex2i(centerX-width,
+  centerY-height);
 
-  glTexCoord2f(textureX, textureY);
-  glVertex2i(centerX-width, centerY+height);
+  glTexCoord2f(textureX,
+  textureY);
+  glVertex2i(centerX-width, 
+  centerY+height);
 
   glTexCoord2f(textureX+ssWidth, textureY);
   glVertex2i(centerX+width, centerY+height);
@@ -280,25 +349,25 @@ r.center = 1;
 switch (selectedOption) {
 case 0:
   ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "CREDITS");
   ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 1:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0x123fff, "SCORES");
+  ggprint8b(&r, 16, 0x123fff, "CREDITS");
   ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 2:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "CREDITS");
   ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
   ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
   break;
 case 3:
   ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "SCORES");
+  ggprint8b(&r, 16, 0xffffff, "CREDITS");
   ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
   ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
   break;
@@ -359,36 +428,36 @@ void renderPauseMenu()
       case 0:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CREDITS");
           ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 1:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0xffffff, "SCORES");
+          ggprint8b(&r, 16, 0x123fff, "CREDITS");
+          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 2:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-          ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0x123fff, "SCORES");
+          ggprint8b(&r, 16, 0xffffff, "CREDITS");
+          ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       case 3:
           ggprint8b(&r, 16, 0xffffff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CREDITS");
           ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
           break;
       case 4:
           ggprint8b(&r, 16, 0x123fff, "RESUME GAME");
           ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+          ggprint8b(&r, 16, 0xffffff, "CREDITS");
           ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-          ggprint8b(&r, 16, 0xffffff, "SCORES");
           ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
           break;
       default:
@@ -401,7 +470,7 @@ void renderPauseMenu()
 void renderDeath()
 {
   glClearColor(0.1, 0.1, 0.1, 1.0);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT); // clear the screen first
   //thinking of using an image for the death screen but i can just put you are dead
   glPushMatrix();
   glColor3f(1.0, 1.0, 1.0);
@@ -449,25 +518,25 @@ r.center = 1;
 switch (selectedOption) {
   case 0:
     ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "SCORES");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
     ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
     break;
   case 1: 
     ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-    ggprint8b(&r, 16, 0x123fff, "SCORES");
+    ggprint8b(&r, 16, 0x123fff, "CREDITS");
     ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
     break;
   case 2:
     ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "SCORES");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
     ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
     ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
     break;
   case 3:
     ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-    ggprint8b(&r, 16, 0xffffff, "SCORES");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
     ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
     ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
     break;
@@ -492,3 +561,17 @@ void renderControls() {
   ggprint8b(&r, 16, c, "esc - pause menu");
 
 }
+ 
+void renderHealthBar() 
+{
+glPushMatrix();
+glTranslated(g.xres/5, -15, 10);
+healthBar.renderHealthSSD();
+glPopMatrix();
+}
+
+// void renderCounter()
+// {
+// glPushMatrix();
+// glTranslated()
+// }

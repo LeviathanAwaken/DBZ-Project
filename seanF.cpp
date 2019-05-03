@@ -21,6 +21,9 @@
 #include "Enemy.h"
 #include "Powerups.h"
 #include "Boss.h"
+#include "Image.h"
+#include "lawrenceM.h"
+#include "BlastPowerup.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -34,10 +37,12 @@ const int MAX_ENEM = 15;
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
 Powerups *powRef[2];
+BlastPowerup *blastPower;
 int elimiter;
 int plimiter;
 extern int gameState;
-
+extern Image img[];
+extern healthSSD healthBar;
 //Prototypes and extern function declarations
 void kiCollision(int);
 void kiHandler(int);
@@ -50,6 +55,7 @@ bool gokuBounds(int);
 extern void detection(int, bool);
 extern void bossDetection();
 extern int score_update(int);
+extern void energyRender();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -61,15 +67,32 @@ class Protag {
 		int height;
 		int width;
 		int health;
+		int dballs;
 		float moveS;
 } goku;
+
+class Energy {
+	public:
+		float *centerX;
+		float *centerY;
+		float height;
+		float width;
+		int spriteSheetIndex;
+		int frame;
+		void draw();
+} outline;
 
 //Class to track x and y positions of the blasts being sent by the character.
 class kiBlast {
 	public:
 		GLuint image;
-		int kiTracker[MAX_KI][2];
-		int kiVel;
+		float kiTracker[MAX_KI][2];
+		float kiVel;
+		float height;
+		float width;
+		int spriteSheetIndex;
+		int frame[MAX_KI];
+		void draw(int);
 } ki;
 
 //Class to track x and y positions of boss's blasts
@@ -101,6 +124,11 @@ void powerReference(Powerups* power)
 	plimiter++;
 }
 
+void blastPowerReference(BlastPowerup* blast)
+{
+	blastPower = blast;
+}
+
 //Initializes the kiClass for use.
 void kiInit()
 {
@@ -108,7 +136,11 @@ void kiInit()
 	for (int i = 0; i < MAX_KI; i++) {
 		ki.kiTracker[i][0] = UNASSIGN;
 		ki.kiTracker[i][1] = UNASSIGN;
+		ki.frame[i] = 0;
 	}
+	ki.height = img[7].height / 1.5;
+	ki.width = img[7].width / (9 * 1.5);
+	ki.spriteSheetIndex = 7;
 }
 
 //Sets up the starting values for the main character.
@@ -122,7 +154,19 @@ void gokuInit()
 	goku.pos[1] = g.yres / 2 - (goku.height / 2);
 	goku.health = 3;
 	goku.moveS = 3.5;
+	goku.dballs = 0;
 	goku.currentPic = 0;
+	healthBar.updateDisplay(goku.health);
+}
+
+void outlineInit()
+{
+	outline.centerX = &goku.pos[0];
+	outline.centerY = &goku.pos[1];
+	outline.height = img[24].height / 1.5;
+	outline.width = img[24].width / (4 * 1.5);
+	outline.spriteSheetIndex = 24;
+	outline.frame = 0;
 }
 
 //Initializes the projectiles for the boss.
@@ -151,6 +195,7 @@ void sInit(GLuint gok, GLuint gok2, GLuint gok3, GLuint gok4, GLuint gok5,
 	gokuInit();
 	kiInit();
 	braceInit();
+	outlineInit();
 }
 
 void showText(int x, int y)
@@ -234,6 +279,9 @@ bool gokuBounds(int dir)
 //Generalized render function.
 void sRender()
 {
+	if (goku.currentPic > 0) {
+		energyRender();
+	}
 	gokuRender();
 	kiHandler(1);
 	braceHandler(1);
@@ -305,31 +353,56 @@ void kiMove(int kiID)
 }
 
 //Handles graphics for the kiBlasts.
-void kiRender(int kiID)
+void kiBlast::draw(int kiID)
 {
-	float h = 40.0;
-	float w = h*2;
 	glPushMatrix();
-
-	glTranslatef(ki.kiTracker[kiID][0], ki.kiTracker[kiID][1], 0);
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, g.kiTexture);
-
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
-	glColor4ub(255,255,255,255);
+	glColor4ub(255, 255, 255, 255);
 
-	float tx = 0.0;
-	float ty = 0.0;
+	float ssWidth = (float) 1.0 / img[spriteSheetIndex].columns;
+	float ssHeight = (float) 1.0 / img[spriteSheetIndex].rows;
+
+	int ix = this->frame[kiID] % img[spriteSheetIndex].columns;
+	int iy = 0;
+
+	for (int i = 1; i < 9; i++) {
+		if (frame[kiID] >= img[spriteSheetIndex].columns * i) {
+			iy = i;
+		}
+	}
+
+	float textureX = (float) ix / img[spriteSheetIndex].columns;
+	float textureY = (float) iy / img[spriteSheetIndex].rows;
+
 	glBegin(GL_QUADS);
-	glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
-	glTexCoord2f(tx+1, ty);    	glVertex2i(0, h);
-	glTexCoord2f(tx, ty);    	glVertex2i(w, h);
-	glTexCoord2f(tx, ty+1); 	glVertex2i(w, 0);
+	glTexCoord2f(textureX, textureY+ssHeight);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)-width,
+		(kiTracker[kiID][1] + goku.height/2)-height);
+
+	glTexCoord2f(textureX, textureY);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)-width,
+		(kiTracker[kiID][1] + goku.height/2)+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)+width,
+		(kiTracker[kiID][1] + goku.height/2)+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)+width,
+		(kiTracker[kiID][1] + goku.height/2)-height);
 	glEnd();
+
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_ALPHA_TEST);
+
+	frame[kiID]++;
+	if (frame[kiID] >= img[spriteSheetIndex].columns * 8) {
+		frame[kiID] = 0;
+	}
 }
 
 //Creates a kiBlast, if it's not at max.
@@ -395,9 +468,9 @@ void kiCollision(int kiRef)
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
-			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
+			&& ki.kiTracker[kiRef][0] + ki.width >= enemyRef[i]->pos[0];
 		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]
-			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
+			&& ki.kiTracker[kiRef][1] + ki.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
 			detection(i, false);
@@ -429,6 +502,7 @@ void braceCollision(int braceID)
 		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
 	if (xColl && yColl) {
 		goku.health--;
+		healthBar.updateDisplay(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -447,6 +521,7 @@ void bossCollision()
 		&& goku.pos[1] + goku.height >= finBoss->pos[1];
 	if (xColl && yColl) {
 		goku.health--;
+		healthBar.updateDisplay(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -465,6 +540,7 @@ void saibaCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
+			healthBar.updateDisplay(goku.health);
 			if (goku.currentPic > 0 && goku.health < 8) {
 				goku.moveS -= 2;
 				goku.currentPic--;
@@ -485,6 +561,7 @@ void powerCollision()
 			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health++;
+			healthBar.updateDisplay(goku.health);
 			if (goku.currentPic < 5 && goku.health > 3) {
 				goku.currentPic++;
 				goku.moveS += 2;
@@ -494,6 +571,19 @@ void powerCollision()
 			score_update(25);
 			break;
 		}
+	}
+}
+
+void blastCollision()
+{
+	bool xColl = blastPower->pos[0] + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= blastPower->pos[0];
+	bool yColl = blastPower->pos[1] + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= blastPower->pos[1];
+	if (xColl && yColl) {
+		goku.dballs++;
+		blastPower->pos[0] = g.xres;
+		blastPower->pos[1] = (rand() % (g.yres - 100) + 1);
 	}
 }
 
@@ -508,13 +598,13 @@ void healthCheck()
 //Handler function to prevent repetitive code of parsing through the kiBlasts.
 void kiHandler(int type)
 {
-	for (int i = 0; i < MAX_KI - (10 - (2 * goku.currentPic)); i++) {
+	for (int i = 0; i < MAX_KI; i++) {
 		if (ki.kiTracker[i][0] != UNASSIGN &&
 			ki.kiTracker[i][1] != UNASSIGN) {
 			if (type == 0) {
 				kiMove(i);
 			} else if (type == 1) {
-				kiRender(i);
+				ki.draw(i);
 			}
 		}
 	}
@@ -550,6 +640,70 @@ void gokuHealth(int x, int y)
 	ggprint16(&r, 16, c,"Goku Health: %d", goku.health);
 }
 
+void energyRender()
+{
+	outline.draw();
+}
+
+void Energy::draw()
+{
+	GLuint text;
+	if (goku.currentPic > 3 && goku.currentPic < 5)
+		text = g.redTexture;
+	else if (goku.currentPic == 5)
+		text = g.blueTexture;
+	else
+		text = g.outlineTexture;
+	glPushMatrix();
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, text);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255, 255, 255, 255);
+
+	float ssWidth = (float) 1.0 / img[spriteSheetIndex].columns;
+	float ssHeight = (float) 1.0 / img[spriteSheetIndex].rows;
+
+	int ix = this->frame % img[spriteSheetIndex].columns;
+	int iy = 0;
+
+	for (int i = 1; i < 9; i++) {
+		if (frame >= img[spriteSheetIndex].columns * i) {
+			iy = i;
+		}
+	}
+
+	float textureX = (float) ix / img[spriteSheetIndex].columns;
+	float textureY = (float) iy / img[spriteSheetIndex].rows;
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(textureX, textureY+ssHeight);
+	glVertex2i((*centerX + (goku.width/2))-width,
+		(*centerY + 30 + (goku.height/2))-height);
+
+	glTexCoord2f(textureX, textureY);
+	glVertex2i((*centerX + (goku.width/2))-width,
+		(*centerY + 30 + (goku.height/2))+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY);
+	glVertex2i((*centerX + (goku.width/2))+width,
+		(*centerY + 30 + (goku.height/2))+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+	glVertex2i((*centerX + (goku.width/2))+width,
+		(*centerY + 30 + (goku.height/2))-height);
+	glEnd();
+
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
+
+	frame++;
+	if (frame >= img[spriteSheetIndex].columns * 8) {
+		frame = 0;
+	}
+}
+
 //Sound handler, not functioning yet.
 void soundHandle()
 {
@@ -565,7 +719,7 @@ void soundHandle()
 		alListenerfv(AL_ORIENTATION, vec);
 		alListenerf(AL_GAIN, 1.0f);
 		ALuint albuffer;
-		albuffer = alutCreateBufferFromFile("./sounds/supa sayain.mp3");
+		albuffer = alutCreateBufferFromFile("./sounds/SuperSaiyan.mp3");
 
 		ALuint alSource;
 

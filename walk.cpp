@@ -11,6 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <ctype.h>
 #include <math.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
@@ -18,6 +19,7 @@
 #include "fonts.h"
 #include "Global.h"
 #include "Image.h"
+#include "lawrenceM.h"
 //defined types
 typedef double Flt;
 typedef double Vec[3];
@@ -49,13 +51,14 @@ int done = 0;
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
+	"images/lawrencePic.gif", "images/kiBlastAlt.png", "images/namek.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
-	"images/gokurose.png", "images/blastPowerup.gif"};
+	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
+	"images/blueOutline.png", "images/redOutline.png"};
 
 
 
@@ -175,12 +178,32 @@ void render(void);
 
 struct timespec tstart, tend;
 
-
 int main(void)
 {
 	#ifdef PROFILE
 		timers.recordTime(&tstart);
 	#endif
+	// asks for initials for scoreboard
+		char p_name[50];
+		printf("Enter 3 Initials to record score (letters only!): ");
+		int pc = 0;
+	fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
+		while (pc < 3) {
+		if (p_name[4] != '\0') {
+		printf("Enter only 3 Initials!\n");
+		fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
+		pc = -1;
+				pc++;
+		}
+			if (!isalpha(p_name[pc]) && p_name[4] == '\0') {
+				printf("Enter only letters!\n");
+		fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
+		pc = -1;
+			}
+				pc++;
+		}
+	p_name[3] = '\0';
+
 	initOpengl();
 	init();
 	while (!done) {
@@ -198,8 +221,13 @@ int main(void)
 		#endif
 	}
 	cleanup_fonts();
-	//extern void score_get();
-	//score_get();
+		// server side scores
+		extern int score_show();
+		extern int score_add(int);
+		extern int score_add2(char p_name[]);
+		score_add2(p_name);
+		score_add(g.score);
+		score_show();
 	return 0;
 }
 
@@ -564,8 +592,43 @@ void initOpengl(void)
 	walkData = buildAlphaData(&img[23]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
- 	//--------------------------------------------------------------------------
+	 //--------------------------------------------------------------------------
 
+	//----------------------BlastPowerup texture--------------------------------
+	w = img[24].width;
+	h = img[24].height;
+	glGenTextures(1, &g.outlineTexture);
+	glBindTexture(GL_TEXTURE_2D, g.outlineTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	walkData = buildAlphaData(&img[24]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	 //-------------------------------------------------------------------------
+
+	 //----------------------BlastPowerup texture--------------------------------
+	 w = img[25].width;
+	 h = img[25].height;
+	 glGenTextures(1, &g.blueTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.blueTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[25]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
+
+	 //----------------------BlastPowerup texture--------------------------------
+	 w = img[26].width;
+	 h = img[26].height;
+	 glGenTextures(1, &g.redTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.redTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[26]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
 
 }
 
@@ -580,12 +643,17 @@ void init()
 		g.ss4Texture, g.ssrTexture, g.ssbTexture);
 	Enemy_init();
 	Powerups_init();
+	blastPowerup_init();
+	img[7].rows = 1;
+	img[7].columns = 9;
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
 	img[16].columns = 5;
 	img[17].rows = 9;
 	img[17].columns = 8;
+	img[24].rows = 1;
+	img[24].columns = 4;
 }
 // extern void checkMouseMenu(XEvent*);
 
@@ -684,15 +752,18 @@ int checkKeys(XEvent *e)
 		break;
 	case DEATH:
 		break;
+	case CREDITS:
+		break;
 	case INGAME:
 		g.delay = 0.01; // Sets speed to max at start of game
 		switch (key)
 		{
-		// case XK_c:
-		// 	g.creditFlag ^= 1;
-		// 	timers.recordTime(&timers.walkTime);
-		// 	g.walk ^= 1;
-		// 	break;
+		case XK_c:
+			gameState = CREDITS;
+			g.creditFlag ^= 1;
+			// timers.recordTime(&timers.walkTime);
+			// g.walk ^= 1;
+			break;
 		case XK_space:
 			timers.recordTime(&timers.walkTime);
 			g.walk ^= 1;
@@ -715,11 +786,9 @@ int checkKeys(XEvent *e)
 			gameState = PAUSEMENU;
 			selectedOption = RESUMEGAME;
 			break;
-		case XK_j:
-			g.score++;
-			extern int score_add(int); //temporary spot
-			score_add(g.score);
-			break;
+		//case XK_j:
+		//	g.score++;
+		//	break;
 		// case XK_z:
 		// 	// if (g.paused == true && g.startFlag == 0)
 		// 	{
@@ -780,6 +849,7 @@ extern void gokuIMove(int);
 extern void checkKeysMainMenu();
 extern void checkKeysPauseMenu();
 extern void checkKeysLost();
+extern void checkKeysCreditMenu();
 extern void braceHandler(int);
 extern void namekPhysics();
 
@@ -795,6 +865,9 @@ void physics(void)
 		break;
 	case DEATH:
 		checkKeysLost();
+		break;
+	case CREDITS:
+		checkKeysCreditMenu();
 		break;
 	case INGAME:
 		if (g.walk) {
@@ -823,6 +896,7 @@ void physics(void)
 			saibaPhysics();
 			bossPhysics();
 			powerupsPhysics();
+			blastPowerupPhysics();
 			namekPhysics();
 
 
@@ -843,11 +917,6 @@ void physics(void)
 		}
 	}
 
-extern void showSean(int, int, GLuint);
-extern void showJoshua(int, int, GLuint);
-extern void showDrake(int, int, GLuint);
-extern void showJuan(int, int, GLuint);
-extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint, GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
@@ -859,7 +928,9 @@ extern void explosionRender();
 extern void cleanExplosions();
 extern void renderDeath();
 extern void renderControls();
+extern void renderCredit();
 extern void blastPowerupRender(GLuint);
+extern void renderHealthBar();
 
 void render(void)
 {
@@ -881,25 +952,16 @@ void render(void)
 		case DEATH:
 			if(g.controlFlag == 1) {
 				renderControls();
-			}
+				}
 			renderDeath();
 		//need to develop death screen
 			break;
+		case CREDITS:
+			renderCredit();
+			break;
 		case INGAME: {
 		//Put picture functions here
-		glClearColor(0.1, 0.1, 0.1, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
 
-		showSean(20, img[2].height, g.seanTexture);
-		showLawrence(40, img[6].height,g.lawrenceTexture);
-		showJoshua(40, img[3].height, g.joshTexture);
-		showDrake(70, img[5].height, g.drakeTexture);
-		showJuan(40, img[4].height, g.juanTexture);
-	
-		// if (g.pauseFlag) {
-		// 	extern void showPause(int, int);
-		// 	showPause(350, 100);
-		
 			// Rect r;
 			//Clear the screen
 			glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -984,8 +1046,7 @@ void render(void)
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
 			extern void gokuHealth(int, int);
 			gokuHealth(g.xres/5, -15);
-		//}
+			renderHealthBar();
 	}
 	}
 }
-// }

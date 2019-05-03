@@ -9,6 +9,7 @@ typedef double Vec[3];
 #define INGAME 1
 #define PAUSEMENU 2
 #define DEATH 3
+#define CREDITS 4
 
 //menu options
 #define NEWGAME 0
@@ -26,7 +27,7 @@ class Global {
 		int walk;
 		int walkFrame;
 		int controlFlag;
-		// int creditFlag;
+		int creditFlag;
 		// int startFlag;
 		// int pauseFlag;
 		// bool paused;
@@ -56,6 +57,9 @@ class Global {
 		GLuint explosion2Texture;
 		GLuint explosion3Texture;
 		GLuint blastPowerupTexture;
+		GLuint outlineTexture;
+		GLuint blueTexture;
+		GLuint redTexture;
 
 		Vec box[20];
 		Global() {
@@ -68,7 +72,7 @@ class Global {
 			//CHANGED - back scroll starts on launch now
 			walk=1;
 			walkFrame=0;
-			// creditFlag = 0;
+			creditFlag = 0;
 			// startFlag = 0;
 			// pauseFlag = 0;
 			// paused = true;
