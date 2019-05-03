@@ -58,7 +58,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
 	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
-	"images/blueOutline.png", "images/redOutline.png"};
+	"images/blueOutline.png", "images/redOutline.png", "images/redSaiba.gif"};
 
 
 
@@ -630,6 +630,18 @@ void initOpengl(void)
 	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	  //-------------------------------------------------------------------------
 
+	 //----------------------red saiba texture--------------------------------
+	 w = img[27].width;
+	 h = img[27].height;
+	 glGenTextures(1, &g.redSaibaTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.redSaibaTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[27]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
+
 }
 
 extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
@@ -917,7 +929,7 @@ void physics(void)
 		}
 	}
 
-extern void enemyHandler(GLuint, GLuint);
+extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
@@ -1007,7 +1019,7 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 
-			enemyHandler(g.saibaTexture, g.bossTexture);
+			enemyHandler(g.bossTexture);
 
 			powerupsRender(g.powerupTexture);
 

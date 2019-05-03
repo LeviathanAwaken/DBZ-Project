@@ -39,6 +39,9 @@ int amp_Randomizer(void);
 void detection();
 void difficulty(Enemy&);
 //int healthMod = 0;
+
+
+//-----------------explosion class------------------------------------------------
 class Explosion {
 public:
 	float centerX;
@@ -99,9 +102,10 @@ void Enemy_init ()
 		enemy[i].pos[0] = g.xres + ((rand() % 100) + 100);
 		enemy[i].pos[1] = (rand() % (g.yres));
 		enemy[i].eHealth = 2;
+		enemy[i].image = g.saibaTexture;
 		enemyReference(&enemy[i]);
 	}
-
+	boss.eHealth = 20;
 	boss.pos[0] = (g.xres + 200);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
@@ -129,12 +133,19 @@ void bossPhysics ()
 {
 
 	if (g.score >= 5000) {
-		if (boss.pos[0] > g.xres/2) {
-			boss.pos[0] -= 0.7;
-			if (boss.pos[0] < g.xres + 100) {
-				boss.isRendered = true;
-			}
+		if (boss.eHealth > 0) {	
+			if (boss.pos[0] > g.xres/2) {
+				boss.pos[0] -= 1.0;
+				if (boss.pos[0] < g.xres + 100) {
+					boss.isRendered = true;
+				}
 
+			}
+		} else if (boss.eHealth <= 0){
+			boss.pos[0] +=2.5;
+			if (boss.pos[0] > g.xres + 1000) {
+				boss.eHealth = 50;
+			}
 		}
 		nticks+= 0.3;
 		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
@@ -146,14 +157,14 @@ void bossPhysics ()
 //----------------------------Drawing the enemies-------------------------------------------------
 
 //render the saibamen
-void saibaRender (GLuint image)
+void saibaRender ()
 {
 	for (int i = 0; i < count; i++) {
 		enemy[i].isRendered = true;
 		glPushMatrix();
 		glTranslated(enemy[i].pos[0], enemy[i].pos[1], enemy[i].pos[2]);
 		glColor3f(1.0, 1.0, 1.0);
-		glBindTexture(GL_TEXTURE_2D, image);
+		glBindTexture(GL_TEXTURE_2D, enemy[i].image);
 		//
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.0f);
@@ -335,11 +346,11 @@ void Explosion::draw()
 
 //------------------------Draw the enemies-----------------------------------------
 
-void enemyHandler (GLuint image1, GLuint image2) {
+void enemyHandler (GLuint image1) {
 
-	saibaRender(image1);
+	saibaRender();
 	if (boss.isRendered) {
-		bossRender(image2);
+		bossRender(image1);
 	}
 
 }
@@ -498,6 +509,9 @@ void detection (int Eindices, bool type)
 			enemy[Eindices].xSpeed = speed_Randomizer();
 			enemy[Eindices].wavefreq = freq_Randomizer();
 			enemy[Eindices].waveamp = amp_Randomizer();
+			if (g.score >= 5000) {
+				enemy[Eindices].image = g.redSaibaTexture;
+			}
 			difficulty(enemy[Eindices]);
 			score_update(100);
 		}
@@ -515,8 +529,8 @@ void bossDetection ()
 		createExplosion(boss.pos[0] + 50, boss.pos[1]);
 		createExplosion(boss.pos[0] + 50, boss.pos[1] + 50);
 		createExplosion(boss.pos[0], boss.pos[1] + 50);
-		boss.pos[0] = 5000;
-		boss.eHealth = 100;
+		//boss.pos[0] = 5000;
+		//boss.eHealth = 120;
 		score_update(10000);
 	}
 

@@ -60,6 +60,7 @@ class Global {
 		GLuint outlineTexture;
 		GLuint blueTexture;
 		GLuint redTexture;
+		GLuint redSaibaTexture;
 
 		Vec box[20];
 		Global() {
