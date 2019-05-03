@@ -41,7 +41,6 @@ int plimiter;
 extern int gameState;
 extern Image img[];
 extern healthSSD healthBar;
-
 //Prototypes and extern function declarations
 void kiCollision(int);
 void kiHandler(int);

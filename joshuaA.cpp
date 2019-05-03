@@ -192,7 +192,7 @@ void blastPowerupPhysics()
 void blastPowerupRender(GLuint image)
 {
     glPushMatrix();
-    glTranslated(blastPowerup.pos[0], blastPowerup.pos[1], blastPowerup.pos[2]);
+    glTranslatef(blastPowerup.pos[0], blastPowerup.pos[1], blastPowerup.pos[2]);
     glColor3f(1.0, 1.0, 1.0);
 
     glBindTexture(GL_TEXTURE_2D, image);

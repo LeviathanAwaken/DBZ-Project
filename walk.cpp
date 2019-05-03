@@ -716,15 +716,18 @@ int checkKeys(XEvent *e)
 		break;
 	case DEATH:
 		break;
+	case CREDITS:
+		break;
 	case INGAME:
 		g.delay = 0.01; // Sets speed to max at start of game
 		switch (key)
 		{
-		// case XK_c:
-		// 	g.creditFlag ^= 1;
-		// 	timers.recordTime(&timers.walkTime);
-		// 	g.walk ^= 1;
-		// 	break;
+		case XK_c:
+			gameState = CREDITS;
+			g.creditFlag ^= 1;
+			// timers.recordTime(&timers.walkTime);
+			// g.walk ^= 1;
+			break;
 		case XK_space:
 			timers.recordTime(&timers.walkTime);
 			g.walk ^= 1;
@@ -826,6 +829,8 @@ void physics(void)
 	case DEATH:
 		checkKeysLost();
 		break;
+	case CREDITS:
+		break;
 	case INGAME:
 		if (g.walk) {
 			//man is walking...
@@ -873,11 +878,6 @@ void physics(void)
 		}
 	}
 
-extern void showSean(int, int, GLuint);
-extern void showJoshua(int, int, GLuint);
-extern void showDrake(int, int, GLuint);
-extern void showJuan(int, int, GLuint);
-extern void showLawrence(int,int,GLuint);
 extern void enemyHandler(GLuint, GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
@@ -889,6 +889,7 @@ extern void explosionRender();
 extern void cleanExplosions();
 extern void renderDeath();
 extern void renderControls();
+extern void renderCredit();
 extern void blastPowerupRender(GLuint);
 extern void renderHealthBar();
 
@@ -901,35 +902,32 @@ void render(void)
 			if (g.controlFlag == 1) {
 				renderControls();
 			}
+			else if(g.creditFlag == 1) {
+				renderCredit();
+			}
 			renderMainMenu();
 			break;
 		case PAUSEMENU:
 			if (g.controlFlag == 1) {
 				renderControls();
 			}
+			else if(g.creditFlag == 1) {
+				renderCredit();
+			}
 			renderPauseMenu();
 			break;
 		case DEATH:
 			if(g.controlFlag == 1) {
 				renderControls();
-			}
+				}
 			renderDeath();
 		//need to develop death screen
 			break;
+		case CREDITS:
+			renderCredit();
+			break;
 		case INGAME: {
 		//Put picture functions here
-		glClearColor(0.1, 0.1, 0.1, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		showSean(20, img[2].height, g.seanTexture);
-		showLawrence(40, img[6].height,g.lawrenceTexture);
-		showJoshua(40, img[3].height, g.joshTexture);
-		showDrake(70, img[5].height, g.drakeTexture);
-		showJuan(40, img[4].height, g.juanTexture);
-
-		// if (g.pauseFlag) {
-		// 	extern void showPause(int, int);
-		// 	showPause(350, 100);
 
 			// Rect r;
 			//Clear the screen

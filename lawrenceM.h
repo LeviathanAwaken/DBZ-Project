@@ -14,6 +14,7 @@ bitset<7> screen;
 
 healthSSD() {
     screen = bitset<7>("1111001");
+
 }
 void updateDisplay(int health) {
     switch(health) {
@@ -109,6 +110,7 @@ void renderHealthSSD() {
 }
 
 };
+
 
 void renderControls();
 void showLawrenceText(int, int);
