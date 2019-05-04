@@ -20,7 +20,8 @@ Working on since: Februrary.
 #include "lawrenceM.h"
 #include <iostream>
 #include <bitset>
-healthSSD healthBar; //structure object 
+healthSSD healthBar;
+healthSSD dBallCounter; //structure object 
 /* extern variables and functions that are needed within my source code */
 extern void sInit(GLuint,GLuint, GLuint);
 extern void showSean(int, int, GLuint);
@@ -565,13 +566,15 @@ void renderControls() {
 void renderHealthBar() 
 {
 glPushMatrix();
-glTranslated(g.xres/5, -15, 10);
+glTranslated(g.xres/2, 0, 1);
 healthBar.renderHealthSSD();
 glPopMatrix();
 }
 
-// void renderCounter()
-// {
-// glPushMatrix();
-// glTranslated()
-// }
+void renderCounter()
+{
+glPushMatrix();
+glTranslated(g.xres-50,0,1);
+dBallCounter.renderDBallCounterSSD();
+glPopMatrix();
+}

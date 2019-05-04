@@ -43,6 +43,7 @@ int plimiter;
 extern int gameState;
 extern Image img[];
 extern healthSSD healthBar;
+extern healthSSD dBallCounter;
 //Prototypes and extern function declarations
 void kiCollision(int);
 void kiHandler(int);
@@ -469,7 +470,7 @@ void braceCollision(int braceID)
 		&& goku.pos[1] + goku.height >= brace.bossTracker[braceID][1];
 	if (xColl && yColl) {
 		goku.health--;
-		healthBar.updateDisplay(goku.health);
+		healthBar.updateHealthCounter(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -488,7 +489,7 @@ void bossCollision()
 		&& goku.pos[1] + goku.height >= finBoss->pos[1];
 	if (xColl && yColl) {
 		goku.health--;
-		healthBar.updateDisplay(goku.health);
+		healthBar.updateHealthCounter(goku.health);
 		if (goku.currentPic > 0 && goku.health < 8) {
 			goku.moveS -= 2;
 			goku.currentPic--;
@@ -507,7 +508,7 @@ void saibaCollision()
 			&& goku.pos[1] + goku.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health--;
-			healthBar.updateDisplay(goku.health);
+			healthBar.updateHealthCounter(goku.health);
 			if (goku.currentPic > 0 && goku.health < 8) {
 				goku.moveS -= 2;
 				goku.currentPic--;
@@ -528,7 +529,7 @@ void powerCollision()
 			&& goku.pos[1] + goku.height >= powRef[i]->pos[1];
 		if (xColl && yColl) {
 			goku.health++;
-			healthBar.updateDisplay(goku.health);
+			healthBar.updateHealthCounter(goku.health);
 			if (goku.currentPic < 5 && goku.health > 3) {
 				goku.currentPic++;
 				goku.moveS += 2;
@@ -549,6 +550,7 @@ void blastCollision()
 		&& goku.pos[1] + goku.height >= blastPower->pos[1];
 	if (xColl && yColl) {
 		goku.dballs++;
+		dBallCounter.updateDBallCounter(goku.dballs);
 		blastPower->pos[0] = g.xres;
 		blastPower->pos[1] = (rand() % (g.yres - 100) + 1);
 	}

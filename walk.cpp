@@ -928,6 +928,7 @@ extern void renderControls();
 extern void renderCredit();
 extern void blastPowerupRender(GLuint);
 extern void renderHealthBar();
+extern void renderCounter();
 
 void render(void)
 {
@@ -1041,9 +1042,10 @@ void render(void)
 			}
 			extern void showTimes(int, int, double);
 			showTimes(g.xres/5, -15, timers.timeDiff(&tstart, &tend));
-			extern void gokuHealth(int, int);
-			gokuHealth(g.xres/5, -15);
+			// extern void gokuHealth(int, int);
+			// gokuHealth(g.xres/5, -15);
 			renderHealthBar();
+			renderCounter();
 	}
 	}
 }
