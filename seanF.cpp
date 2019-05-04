@@ -80,7 +80,6 @@ class Energy {
 		float width;
 		int spriteSheetIndex;
 		int frame;
-		bool done;
 		void draw();
 } outline;
 
@@ -88,8 +87,13 @@ class Energy {
 class kiBlast {
 	public:
 		GLuint image;
-		int kiTracker[MAX_KI][2];
-		int kiVel;
+		float kiTracker[MAX_KI][2];
+		float kiVel;
+		float height;
+		float width;
+		int spriteSheetIndex;
+		int frame[MAX_KI];
+		void draw(int);
 } ki;
 
 //Class to track x and y positions of boss's blasts
@@ -133,7 +137,11 @@ void kiInit()
 	for (int i = 0; i < MAX_KI; i++) {
 		ki.kiTracker[i][0] = UNASSIGN;
 		ki.kiTracker[i][1] = UNASSIGN;
+		ki.frame[i] = 0;
 	}
+	ki.height = img[7].height / 1.5;
+	ki.width = img[7].width / (9 * 1.5);
+	ki.spriteSheetIndex = 7;
 }
 
 //Sets up the starting values for the main character.
@@ -149,6 +157,7 @@ void gokuInit()
 	goku.moveS = 3.5;
 	goku.dballs = 0;
 	goku.currentPic = 0;
+	healthBar.updateDisplay(goku.health);
 }
 
 void outlineInit()
@@ -159,7 +168,6 @@ void outlineInit()
 	outline.width = img[24].width / (4 * 1.5);
 	outline.spriteSheetIndex = 24;
 	outline.frame = 0;
-	outline.done = false;
 }
 
 //Initializes the projectiles for the boss.
@@ -346,31 +354,56 @@ void kiMove(int kiID)
 }
 
 //Handles graphics for the kiBlasts.
-void kiRender(int kiID)
+void kiBlast::draw(int kiID)
 {
-	float h = 40.0;
-	float w = h*2;
 	glPushMatrix();
-
-	glTranslatef(ki.kiTracker[kiID][0], ki.kiTracker[kiID][1], 0);
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, g.kiTexture);
-
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.0f);
-	glColor4ub(255,255,255,255);
+	glColor4ub(255, 255, 255, 255);
 
-	float tx = 0.0;
-	float ty = 0.0;
+	float ssWidth = (float) 1.0 / img[spriteSheetIndex].columns;
+	float ssHeight = (float) 1.0 / img[spriteSheetIndex].rows;
+
+	int ix = this->frame[kiID] % img[spriteSheetIndex].columns;
+	int iy = 0;
+
+	for (int i = 1; i < 9; i++) {
+		if (frame[kiID] >= img[spriteSheetIndex].columns * i) {
+			iy = i;
+		}
+	}
+
+	float textureX = (float) ix / img[spriteSheetIndex].columns;
+	float textureY = (float) iy / img[spriteSheetIndex].rows;
+
 	glBegin(GL_QUADS);
-	glTexCoord2f(tx+1, ty+1); 	glVertex2i(0, 0);
-	glTexCoord2f(tx+1, ty);    	glVertex2i(0, h);
-	glTexCoord2f(tx, ty);    	glVertex2i(w, h);
-	glTexCoord2f(tx, ty+1); 	glVertex2i(w, 0);
+	glTexCoord2f(textureX, textureY+ssHeight);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)-width,
+		(kiTracker[kiID][1] + goku.height/2)-height);
+
+	glTexCoord2f(textureX, textureY);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)-width,
+		(kiTracker[kiID][1] + goku.height/2)+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)+width,
+		(kiTracker[kiID][1] + goku.height/2)+height);
+
+	glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+	glVertex2i((kiTracker[kiID][0] + goku.width + 2)+width,
+		(kiTracker[kiID][1] + goku.height/2)-height);
 	glEnd();
+
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_ALPHA_TEST);
+
+	frame[kiID]++;
+	if (frame[kiID] >= img[spriteSheetIndex].columns * 8) {
+		frame[kiID] = 0;
+	}
 }
 
 //Creates a kiBlast, if it's not at max.
@@ -436,9 +469,9 @@ void kiCollision(int kiRef)
 {
 	for (int i = 0; i < MAX_ENEM; i++) {
 		bool xColl = enemyRef[i]->pos[0] + 70 >= ki.kiTracker[kiRef][0]
-			&& ki.kiTracker[kiRef][0] + 15 >= enemyRef[i]->pos[0];
+			&& ki.kiTracker[kiRef][0] + ki.width >= enemyRef[i]->pos[0];
 		bool yColl = enemyRef[i]->pos[1] + 50 >= ki.kiTracker[kiRef][1]
-			&& ki.kiTracker[kiRef][1] + 30 >= enemyRef[i]->pos[1];
+			&& ki.kiTracker[kiRef][1] + ki.height >= enemyRef[i]->pos[1];
 		if (xColl && yColl) {
 			kiFree(kiRef);
 			detection(i, false);
@@ -573,7 +606,7 @@ void kiHandler(int type)
 			if (type == 0) {
 				kiMove(i);
 			} else if (type == 1) {
-				kiRender(i);
+				ki.draw(i);
 			}
 		}
 	}

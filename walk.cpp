@@ -51,14 +51,14 @@ int done = 0;
 
 Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/joshPic.gif", "images/juanPic.gif", "images/Drakepic.gif",
-	"images/lawrencePic.gif", "images/kiBlast.png", "images/namek.gif",
+	"images/lawrencePic.gif", "images/kiBlastAlt.png", "images/namek.gif",
 	"images/Saibaman.gif", "images/powerup.gif",
 	"images/finalFormLogoTexture.gif","images/gordon1.png",
 	"images/explosion.gif", "images/gokuss3.png", "images/gokussb.png",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
 	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
-	"images/blueOutline.png", "images/redOutline.png"};
+	"images/blueOutline.png", "images/redOutline.png", "images/redSaiba.gif"};
 
 
 
@@ -184,24 +184,25 @@ int main(void)
 		timers.recordTime(&tstart);
 	#endif
 	// asks for initials for scoreboard
-        char p_name[50];
-        printf("Enter 3 Initials to record score (letters only!): ");
-        int pc = 0;
-	scanf("%[^\n]%*c", p_name);
-        while (pc < 3) {
-	    if (p_name[3] != '\0') {
+		char p_name[50];
+		printf("Enter 3 Initials to record score (letters only!): ");
+		int pc = 0;
+	fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
+		while (pc < 3) {
+		if (p_name[4] != '\0') {
 		printf("Enter only 3 Initials!\n");
-		scanf("%[^\n]%*c", p_name);
+		fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
 		pc = -1;
-                pc++;
-	    }
-            if (!isalpha(p_name[pc]) && p_name[3] == '\0') {
-                printf("Enter only letters!\n");
-		scanf("%[^\n]%*c", p_name);
+				pc++;
+		}
+			if (!isalpha(p_name[pc]) && p_name[4] == '\0') {
+				printf("Enter only letters!\n");
+		fgets(p_name, 50, stdin);//scanf("%[^\n]%*c", p_name);
 		pc = -1;
-            }
-                pc++;
-        }
+			}
+				pc++;
+		}
+	p_name[3] = '\0';
 
 	initOpengl();
 	init();
@@ -629,6 +630,18 @@ void initOpengl(void)
 	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	  //-------------------------------------------------------------------------
 
+	 //----------------------red saiba texture--------------------------------
+	 w = img[27].width;
+	 h = img[27].height;
+	 glGenTextures(1, &g.redSaibaTexture);
+	 glBindTexture(GL_TEXTURE_2D, g.redSaibaTexture);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	 walkData = buildAlphaData(&img[27]);
+	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  //-------------------------------------------------------------------------
+
 }
 
 extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
@@ -643,6 +656,8 @@ void init()
 	Enemy_init();
 	Powerups_init();
 	blastPowerup_init();
+	img[7].rows = 1;
+	img[7].columns = 9;
 	img[13].rows = 9;
 	img[13].columns = 9;
 	img[16].rows = 6;
@@ -914,7 +929,7 @@ void physics(void)
 		}
 	}
 
-extern void enemyHandler(GLuint, GLuint);
+extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
@@ -1005,7 +1020,7 @@ void render(void)
 				glDisable(GL_ALPHA_TEST);
 			}
 
-			enemyHandler(g.saibaTexture, g.bossTexture);
+			enemyHandler(g.bossTexture);
 
 			powerupsRender(g.powerupTexture);
 

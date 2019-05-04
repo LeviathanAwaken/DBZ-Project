@@ -19,6 +19,7 @@ public:
     int waveamp;
     int xSpeed;
     int eHealth;
+    GLuint image;
     
 
     
@@ -35,6 +36,7 @@ public:
      pos[0] = 0.0;	
      pos[1] = 0.0;	
      pos[2] = 0.0;
+     image = g.saibaTexture;
     }
 };
 

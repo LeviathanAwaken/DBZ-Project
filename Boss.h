@@ -27,7 +27,7 @@ public:
      srand(time(NULL));
      //pattern = 1;
      isRendered = false;
-     eHealth = 100;
+     eHealth = 0;
      wavepos = 0.0;
      xSpeed = 0;
      wavefreq = 0;
