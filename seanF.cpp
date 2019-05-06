@@ -1,8 +1,7 @@
 //3350
-//Program:  		seanF.cpp
-//Author:   		Sean Fontes
-//Date:     		2-14-19
-//Last Modified:	5-6-19
+//Program:  seanF.cpp
+//Author:   Sean Fontes
+//Date:     2-14-19
 
 /*
  * Description:
@@ -126,7 +125,6 @@ void powerReference(Powerups* power)
 	plimiter++;
 }
 
-//Establishes a pointer to dragon balls being handled in Josh's file.
 void blastPowerReference(BlastPowerup* blast)
 {
 	blastPower = blast;
@@ -656,10 +654,6 @@ void Energy::draw()
 		text = g.redTexture;
 	else if (goku.currentPic == 5)
 		text = g.blueTexture;
-	else if (goku.currentPic == 2)
-		text = g.ss3Outline;
-	else if (goku.currentPic == 3)
-		text = g.ss4Outline;
 	else
 		text = g.outlineTexture;
 	glPushMatrix();
