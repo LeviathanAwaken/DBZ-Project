@@ -158,6 +158,7 @@ void gokuInit()
 	goku.dballs = 0;
 	goku.currentPic = 0;
 	healthBar.updateHealthCounter(goku.health);
+	healthBar.updateDBallCounter(goku.dballs);
 }
 
 void outlineInit()
