@@ -665,19 +665,89 @@ void initOpengl(void)
 	   walkData = buildAlphaData(&img[29]);
 	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-		//-------------------------------------------------------------------------
+   	   //-------------------------------------------------------------------------
+	   
+	  /* //----------------------DragonBall 1---------------------------------------
+	   w = img[29].width;
+	   h = img[29].height;
+	   glGenTextures(1, &g.ss4Outline);
+	   glBindTexture(GL_TEXTURE_2D, g.ss4Outline);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[29]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	   //-------------------------------------------------------------------------
 
+	   //---------------------DragonBall 2----------------------------------------
+	   w = img[29].width;
+	   h = img[29].height;
+	   glGenTextures(1, &g.ss4Outline);
+	   glBindTexture(GL_TEXTURE_2D, g.ss4Outline);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[29]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+           
+           
+	   //-------------------------------------------------------------------------
+	   
+	   //--------------------DragonBall 3-----------------------------------------
+	   w = img[29].width;
+	   h = img[29].height;
+	   glGenTextures(1, &g.ss4Outline);
+	   glBindTexture(GL_TEXTURE_2D, g.ss4Outline);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[29]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	   //--------------------------------------------------------------------------
+	   
+	   //-------------------DragonBall 4-------------------------------------------
+	   
+	   w = img[29].width;
+	   h = img[29].height;
+	   glGenTextures(1, &g.ss4Outline);
+	   glBindTexture(GL_TEXTURE_2D, g.ss4Outline);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[29]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
+	   //--------------------------------------------------------------------------
+	   
+	   //-------------------DragonBall 5-------------------------------------------
+	   w = img[29].width;
+	   h = img[29].height;
+	   glGenTextures(1, &g.ss4Outline);
+	   glBindTexture(GL_TEXTURE_2D, g.ss4Outline);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[29]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	   //---------------------------------------------------------------------------
+	   
+	   //---------------------DragonBall 6------------------------------------------
+*/
 }
+
 
 extern void sInit(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint);
 extern void Enemy_init();
 extern void Powerups_init();
+//extern void dballInit();
 extern void blastPowerup_init();
 void init()
 {
 	//CHANGED - initializes character's position and velocity
 	sInit(g.normTexture, g.walkTexture, g.ss3Texture,
 		g.ss4Texture, g.ssrTexture, g.ssbTexture);
+	//dballInit(g.dball1Texture, g.dball2Texture, g.dball3Texture, g.dball4Texture,
+	//	g.dball5Texture, g.dball6Texture, g.dball7Texture);
 	Enemy_init();
 	Powerups_init();
 	blastPowerup_init();
@@ -879,6 +949,7 @@ extern void kiHandler(int);
 extern void saibaPhysics();
 extern void bossPhysics();
 extern void powerupsPhysics();
+//extern void dballPhysics();
 extern void blastPowerupPhysics();
 //extern void velUpd(int);
 //extern void gokuMove();
@@ -933,6 +1004,7 @@ void physics(void)
 			saibaPhysics();
 			bossPhysics();
 			powerupsPhysics();
+			//dballPhysics();
 			blastPowerupPhysics();
 			namekPhysics();
 
@@ -958,6 +1030,7 @@ extern void enemyHandler(GLuint);
 extern void setBackgroundNamek(int, int, GLuint);
 extern void powerupsRender(GLuint);
 extern void sRender();
+//extern void dballRender();
 extern void renderMainMenuBackground(int , int, GLuint);
 extern void renderMainMenu();
 extern void renderPauseMenu();
@@ -1048,12 +1121,13 @@ void render(void)
 			enemyHandler(g.bossTexture);
 
 			powerupsRender(g.powerupTexture);
-
+			//dballRender();
 			blastPowerupRender(g.blastPowerupTexture);
 
 			explosionRender();
 			cleanExplosions();
 			sRender();
+
 
 			//
 			// unsigned int c = 0x000000;
