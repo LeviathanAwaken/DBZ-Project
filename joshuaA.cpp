@@ -276,3 +276,16 @@ void namekPhysics()
 	background.xc[0] += 0.001;
 	background.xc[1] += 0.001;
 }
+/*void dballInit(GLuint ball1, GLuint ball2, GLuint ball3, GLuint ball4, GLuint5, GLuint ball6, GLuint ball7)
+{
+    elimiter = 0;
+    plimiter = 0;
+    ball.pics[0] = ball1;
+    ball.pics[1] = ball2;
+    ball.pics[2] = ball3;
+    ball.pics[3] = ball4;
+    ball.pics[4] = ball5;
+    ball.pics[5] = ball6;
+    ball.pics[6] = ball7;
+}
+*/
