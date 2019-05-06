@@ -58,7 +58,8 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/explosion2.gif", "images/explosion3.gif", "images/bracket.png",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
 	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
-	"images/blueOutline.png", "images/redOutline.png", "images/redSaiba.gif"};
+	"images/blueOutline.png", "images/redOutline.png", "images/redSaiba.gif",
+	"images/ss3Outline.png", "images/ss4Outline.png"};
 
 
 
@@ -641,6 +642,30 @@ void initOpengl(void)
 	 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	 GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	  //-------------------------------------------------------------------------
+
+	  //----------------------red saiba texture--------------------------------
+	  w = img[28].width;
+	  h = img[28].height;
+	  glGenTextures(1, &g.ss3Outline);
+	  glBindTexture(GL_TEXTURE_2D, g.ss3Outline);
+	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	  walkData = buildAlphaData(&img[28]);
+	  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	  GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	   //-------------------------------------------------------------------------
+
+	   //----------------------red saiba texture--------------------------------
+	   w = img[29].width;
+	   h = img[29].height;
+	   glGenTextures(1, &g.ss4Outline);
+	   glBindTexture(GL_TEXTURE_2D, g.ss4Outline);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[29]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+		//-------------------------------------------------------------------------
 
 }
 

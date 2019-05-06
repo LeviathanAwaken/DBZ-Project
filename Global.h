@@ -59,6 +59,8 @@ class Global {
 		GLuint blastPowerupTexture;
 		GLuint outlineTexture;
 		GLuint blueTexture;
+		GLuint ss3Outline;
+		GLuint ss4Outline;
 		GLuint redTexture;
 		GLuint redSaibaTexture;
 
