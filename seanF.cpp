@@ -2,7 +2,7 @@
 //Program:  		seanF.cpp
 //Author:   		Sean Fontes
 //Date:     		2-14-19
-//Last Modified:	5-6-19
+//Last Modified:	5-7-19
 
 /*
  * Description:
@@ -331,7 +331,7 @@ void launchKi()
 {
 	int kiNum = kiLimitCheck();
 	if (kiNum != -1) {
-		ki.kiTracker[kiNum][0] = goku.pos[0] + 50;
+		ki.kiTracker[kiNum][0] = goku.pos[0] + 20;
 		ki.kiTracker[kiNum][1] = goku.pos[1];
 	}
 }
