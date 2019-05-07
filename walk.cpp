@@ -1023,7 +1023,7 @@ void physics(void)
 			//dballPhysics();
 			blastPowerupPhysics();
 			namekPhysics();
-			//blastPhysics();
+			blastPhysics();
 
 
 			//------------------check for movement keys-----------------------------
@@ -1144,7 +1144,7 @@ void render(void)
 			explosionRender();
 			cleanExplosions();
 			sRender();
-			//blastRender();
+			blastRender();
 
 
 			//

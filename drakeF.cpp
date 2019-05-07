@@ -3,6 +3,11 @@
 //Author:   Drake Floyd
 //Date:     3/25/19
 
+/* This file handles logic for enemy physics and rendering
+ * as well as the logic for explosion animations and boss'
+ * fireball rain animation
+ */
+
 
 #include <X11/Xlib.h>
 #include <GL/glx.h>
@@ -100,8 +105,7 @@ void showDrake(int x, int y, GLuint textInt)
 
 }
 
-//-----------------------------movement for enemies-----------------------------
-
+//-----------------------------physics/movement initializers for all enemies-----------------------------
 void Enemy_init ()
 {
 	srand(time(NULL));
@@ -131,8 +135,8 @@ void blastInit() {
 	for (int i = 0; i < 4; i++) {
 		blastDwn[i].centerX = -20 + space;
 		blastDwn[i].centerY = (g.yres+20) + space; /*(rand() % 300 + 100)*/
-		blastDwn[i].height = img[28].height / 0.5;
-		blastDwn[i].width = img[28].width / (6 * 1.5);
+		blastDwn[i].height = img[30].height / 0.5;
+		blastDwn[i].width = img[30].width / (7 * 1.5);
 		blastDwn[i].spriteSheetIndex = 30;
 		blastDwn[i].frame = 0;
 		blastDwn[i].live = false;
@@ -140,6 +144,7 @@ void blastInit() {
 	}
 }
 
+//-----------------------------enemy/boss physics directions----------------------------------------
 void saibaPhysics ()
 {
 
@@ -162,22 +167,23 @@ void bossPhysics ()
 	if (g.score >= 5000) {
 		if (boss.eHealth > 0) {	
 			if (boss.pos[0] > g.xres/2) {
-				boss.pos[0] -= 1.0;
+				boss.pos[0] -= 2.0;
 				if (boss.pos[0] < g.xres + 100) {
 					boss.isRendered = true;
 				}
 
 			}
 		} else if (boss.eHealth <= 0){
-			boss.pos[0] +=3.5;
+			boss.pos[0] +=5.5;
 			if (boss.pos[0] > g.xres + 1000) {
 				boss.eHealth = 70;
+				boss.fire = true;
 			}
 		}
 		nticks+= 0.3;
 		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
 		bossCollision();
-		if ((boss.pos[0] == g.xres/2) && (boss.eHealth > 50)) {
+		if ((boss.pos[0] <= g.xres/2) && (boss.fire)) {
 			for (int i = 0; i < 4; i++) {
 				blastDwn[i].live = true;
 			}
@@ -262,7 +268,7 @@ void bossRender (GLuint image)
 
 }
 
-
+//-------------------------------explosion rendering-----------------------------
 void explosionRender ()
 {
 	for (unsigned int i = 0; i < explosions.size(); i++) {
@@ -376,6 +382,7 @@ void Explosion::draw()
 
 }
 
+//------------------------------------------blast rendering & physics------------------------------
 void blastRender ()
 {
 	for (int i = 0; i < 4; i++) {
@@ -383,19 +390,6 @@ void blastRender ()
 	}
 }
 
-/*BlastDwn::Bblast (float x, float y)
-{
-	centerX = x;
-	centerY = y;
-	height = .1* (float)g.yres;
-	width = height;
-	//BlastDwn.pos[0] = (g.xres/2);
-	//BlastDwn.pos[1] = g.yres - 100;
-	//BlastDwn.pos[2] = 0.0;
-	spriteSheetIndex = 28;
-	frame = 0;
-	done = false;
-}*/
 
 void BlastDwn::draw()
 {
@@ -480,7 +474,7 @@ void blastPhysics () {
 	for (int i = 0; i < 4; i++) {
 		if (blastDwn[i].live) {
 			blastDwn[i].centerX += 0.5;
-			blastDwn[i].centerY -= 1;
+			blastDwn[i].centerY -= 3;
 			if (blastDwn[3].centerY < 0) {
 				blastInit();
 			}
