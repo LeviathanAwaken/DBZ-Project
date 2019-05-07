@@ -59,7 +59,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/deathTexture.gif", "images/gokunorm.gif", "images/gokuss4.png",
 	"images/gokurose.png", "images/blastPowerup.gif", "images/outlines.png",
 	"images/blueOutline.png", "images/redOutline.png", "images/redSaiba.gif",
-	"images/ss3Outline.png", "images/ss4Outline.png"};
+	"images/ss3Outline.png", "images/ss4Outline.png", "images/energy_down.png"};
 
 
 
@@ -667,6 +667,19 @@ void initOpengl(void)
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
    	   //-------------------------------------------------------------------------
 	   
+
+	   //----------------------animated attack texture--------------------------------
+	   w = img[30].width;
+	   h = img[30].height;
+	   glGenTextures(1, &g.energy_downTexture);
+	   glBindTexture(GL_TEXTURE_2D, g.energy_downTexture);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	   walkData = buildAlphaData(&img[30]);
+	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+   	   //-------------------------------------------------------------------------
+
 	  /* //----------------------DragonBall 1---------------------------------------
 	   w = img[29].width;
 	   h = img[29].height;
@@ -761,6 +774,8 @@ void init()
 	img[17].columns = 8;
 	img[24].rows = 1;
 	img[24].columns = 4;
+	img[30].rows = 1;
+	img[30].columns = 4;
 }
 // extern void checkMouseMenu(XEvent*);
 
@@ -960,6 +975,7 @@ extern void checkKeysLost();
 extern void checkKeysCreditMenu();
 extern void braceHandler(int);
 extern void namekPhysics();
+extern void blastPhysics();
 
 void physics(void)
 {
@@ -1007,6 +1023,7 @@ void physics(void)
 			//dballPhysics();
 			blastPowerupPhysics();
 			namekPhysics();
+			//blastPhysics();
 
 
 			//------------------check for movement keys-----------------------------
@@ -1042,7 +1059,7 @@ extern void renderCredit();
 extern void blastPowerupRender(GLuint);
 extern void renderHealthBar();
 extern void renderCounter();
-
+extern void blastRender();
 void render(void)
 {
 	switch(gameState)
@@ -1127,6 +1144,7 @@ void render(void)
 			explosionRender();
 			cleanExplosions();
 			sRender();
+			//blastRender();
 
 
 			//

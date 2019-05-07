@@ -63,6 +63,7 @@ class Global {
 		GLuint ss4Outline;
 		GLuint redTexture;
 		GLuint redSaibaTexture;
+		GLuint energy_downTexture;
 
 		Vec box[20];
 		Global() {

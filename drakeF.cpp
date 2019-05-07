@@ -38,6 +38,7 @@ int freq_Randomizer(void);
 int amp_Randomizer(void);
 void detection();
 void difficulty(Enemy&);
+void blastInit();
 //int healthMod = 0;
 
 
@@ -56,6 +57,18 @@ public:
 };
 
 std::vector<Explosion> explosions;
+
+class BlastDwn {
+public:
+	float centerX;
+	float centerY;
+	float height;
+	float width;
+	int spriteSheetIndex;
+	int frame;
+	bool live;
+	void draw();
+}blastDwn[4];
 
 //-----------------------credit screen stuff-----------------------------------------
 
@@ -105,16 +118,30 @@ void Enemy_init ()
 		enemy[i].image = g.saibaTexture;
 		enemyReference(&enemy[i]);
 	}
-	boss.eHealth = 20;
+	boss.eHealth = 50;
 	boss.pos[0] = (g.xres + 200);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
+	blastInit();
 
+}
+
+void blastInit() {
+	int space = 0;
+	for (int i = 0; i < 4; i++) {
+		blastDwn[i].centerX = -20 + space;
+		blastDwn[i].centerY = (g.yres+20) + space; /*(rand() % 300 + 100)*/
+		blastDwn[i].height = img[28].height / 0.5;
+		blastDwn[i].width = img[28].width / (6 * 1.5);
+		blastDwn[i].spriteSheetIndex = 30;
+		blastDwn[i].frame = 0;
+		blastDwn[i].live = false;
+		space+= 200;
+	}
 }
 
 void saibaPhysics ()
 {
-
 
 	for (int i = 0; i < count; i++) {
 		if(enemy[i].pattern == 1)
@@ -142,14 +169,19 @@ void bossPhysics ()
 
 			}
 		} else if (boss.eHealth <= 0){
-			boss.pos[0] +=2.5;
+			boss.pos[0] +=3.5;
 			if (boss.pos[0] > g.xres + 1000) {
-				boss.eHealth = 50;
+				boss.eHealth = 70;
 			}
 		}
 		nticks+= 0.3;
 		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
 		bossCollision();
+		if ((boss.pos[0] == g.xres/2) && (boss.eHealth > 50)) {
+			for (int i = 0; i < 4; i++) {
+				blastDwn[i].live = true;
+			}
+		}
 	}
 }
 
@@ -342,6 +374,118 @@ void Explosion::draw()
 		done = true;
 	}
 
+}
+
+void blastRender ()
+{
+	for (int i = 0; i < 4; i++) {
+		blastDwn[i].draw();
+	}
+}
+
+/*BlastDwn::Bblast (float x, float y)
+{
+	centerX = x;
+	centerY = y;
+	height = .1* (float)g.yres;
+	width = height;
+	//BlastDwn.pos[0] = (g.xres/2);
+	//BlastDwn.pos[1] = g.yres - 100;
+	//BlastDwn.pos[2] = 0.0;
+	spriteSheetIndex = 28;
+	frame = 0;
+	done = false;
+}*/
+
+void BlastDwn::draw()
+{
+		glPushMatrix();
+		glColor3f(1.0, 1.0, 1.0);
+		glBindTexture(GL_TEXTURE_2D, g.energy_downTexture);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		glColor4ub(255,255,255,255);
+
+		float ssWidth = (float)1.0/img[spriteSheetIndex].columns;
+		float ssHeight = (float)1.0/img[spriteSheetIndex].rows;
+
+		int ix = this->frame % img[spriteSheetIndex].columns;
+		int iy = 0;
+
+		if (frame >= img[spriteSheetIndex].columns) {
+			iy = 1;
+		}
+
+
+		if (frame >= (img[spriteSheetIndex].columns*2)) {
+			iy = 2;
+		}
+
+		if (frame >= (img[spriteSheetIndex].columns*3)) {
+			iy = 3;
+		}
+
+		if (frame >= img[spriteSheetIndex].columns*4) {
+			iy = 4;
+		}
+
+		if (frame >= (img[spriteSheetIndex].columns*5)) {
+			iy = 5;
+		}
+
+		if (frame >= (img[spriteSheetIndex].columns*6)) {
+			iy = 6;
+		}
+
+		if (frame >= img[spriteSheetIndex].columns*7) {
+			iy = 7;
+		}
+
+		if (frame >= img[spriteSheetIndex].columns*8) {
+			iy = 8;
+		}
+
+		float textureX = (float)ix / img[spriteSheetIndex].columns;
+		float textureY = (float)iy / img[spriteSheetIndex].rows;
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(textureX, textureY+ssHeight);
+		glVertex2i(centerX-width, centerY-height);
+
+		glTexCoord2f(textureX, textureY);
+		glVertex2i(centerX-width, centerY+height);
+
+		glTexCoord2f(textureX+ssWidth, textureY);
+		glVertex2i(centerX+width, centerY+height);
+
+		glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+		glVertex2i(centerX+width, centerY-height);
+		glEnd();
+
+		glPopMatrix();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_ALPHA_TEST);
+
+		//advance frame
+		frame++;
+		if(frame >= img[spriteSheetIndex].columns*8){
+			frame = 0;
+			//done = true;
+		}
+
+}
+
+void blastPhysics () {
+	
+	for (int i = 0; i < 4; i++) {
+		if (blastDwn[i].live) {
+			blastDwn[i].centerX += 0.5;
+			blastDwn[i].centerY -= 1;
+			if (blastDwn[3].centerY < 0) {
+				blastInit();
+			}
+		}
+	}
 }
 
 //------------------------Draw the enemies-----------------------------------------
