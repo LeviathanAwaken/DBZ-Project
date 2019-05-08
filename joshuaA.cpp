@@ -301,21 +301,11 @@ void dballInit(GLuint dball1, GLuint dball2, GLuint dball3,
     dball.pics[4] = dball5;
     dball.pics[5] = dball6;
     dball.pics[6] = dball7;
+    dball.currentPic = 0;
 }
 
 void dballPhysics()
 {     
-    /*xticks += 0.3;
-      dball.pos[0] -= dball.xSpeed;
-      dball.pos[1] = (dball.waveamp * sin(xticks/dball.wavefreq) + (dball.wavepos));
-
-      if (dball.pos[0] < -50){
-      dball.pos[0] = g.xres;
-      dball.wavepos = ((rand() % (g.yres/2)) + 100);
-      dball.xSpeed = speed_Randomizer();
-      dball.wavefreq = freq_Randomizer();
-      dball.waveamp = amp_Randomizer();
-      }*/
     dball.pos[0] -= (dball.xSpeed+5);
     dball.pos[1] -= 3.0;
 
