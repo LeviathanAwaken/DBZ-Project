@@ -90,10 +90,8 @@ void setBackgroundNamek(int x, int y, GLuint textInt)
     glTexCoord2f(background.xc[1], background.yc[0]);
     glVertex2i(x, y);
 
-    // glVertex2i(background.xres, background.yres);
     glTexCoord2f(background.xc[1], background.yc[1]);
     glVertex2i(x, 35);
-    // glVertex2i(background.xres, 0);
 
     glEnd();
 }
@@ -293,35 +291,41 @@ class Dragonball{
 	int wavepos = 0;
 } dball;
 
-void dballInit(GLuint ball1, GLuint ball2, GLuint ball3, 
-	GLuint ball4, GLuint ball5, GLuint ball6, GLuint ball7)
+void dballInit(GLuint dball1, GLuint dball2, GLuint dball3, 
+	GLuint dball4, GLuint dball5, GLuint dball6, GLuint dball7)
 {
-    dball.pics[0] = ball1;
-    dball.pics[1] = ball2;
-    dball.pics[2] = ball3;
-    dball.pics[3] = ball4;
-    dball.pics[4] = ball5;
-    dball.pics[5] = ball6;
-    dball.pics[6] = ball7;
+    dball.pics[0] = dball1;
+    dball.pics[1] = dball2;
+    dball.pics[2] = dball3;
+    dball.pics[3] = dball4;
+    dball.pics[4] = dball5;
+    dball.pics[5] = dball6;
+    dball.pics[6] = dball7;
 }
 
 void dballPhysics()
 {     
-    xticks += 0.3;
-    dball.pos[0] -= dball.xSpeed;
-    dball.pos[1] = (dball.waveamp * sin(xticks/dball.wavefreq) + (dball.wavepos));
+    /*xticks += 0.3;
+      dball.pos[0] -= dball.xSpeed;
+      dball.pos[1] = (dball.waveamp * sin(xticks/dball.wavefreq) + (dball.wavepos));
+
+      if (dball.pos[0] < -50){
+      dball.pos[0] = g.xres;
+      dball.wavepos = ((rand() % (g.yres/2)) + 100);
+      dball.xSpeed = speed_Randomizer();
+      dball.wavefreq = freq_Randomizer();
+      dball.waveamp = amp_Randomizer();
+      }*/
+    dball.pos[0] -= (dball.xSpeed+5);
+    dball.pos[1] -= 3.0;
 
     if (dball.pos[0] < -50){
-	dball.pos[0] = g.xres;
-	dball.wavepos = ((rand() % (g.yres/2)) + 100);
+	dball.pos[0] = g.xres + 1000;
 	dball.xSpeed = speed_Randomizer();
-	dball.wavefreq = freq_Randomizer();
-	dball.waveamp = amp_Randomizer();
+	dball.pos[1] = (rand() % (g.yres));
     }
 
     blastCollision();
-
-
 }
 
 void dballRender()
