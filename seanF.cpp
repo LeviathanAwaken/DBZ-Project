@@ -24,7 +24,6 @@
 #include "Boss.h"
 #include "Image.h"
 #include "lawrenceM.h"
-#include "BlastPowerup.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -38,7 +37,8 @@ const int MAX_ENEM = 15;
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
 Powerups *powRef[2];
-BlastPowerup *blastPower;
+float *dballX;
+float *dballY;
 int elimiter;
 int plimiter;
 extern int gameState;
@@ -58,6 +58,7 @@ extern void detection(int, bool);
 extern void bossDetection();
 extern int score_update(int);
 extern void energyRender();
+extern void dballCollected();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -127,9 +128,10 @@ void powerReference(Powerups* power)
 }
 
 //Establishes a pointer to dragon balls being handled in Josh's file.
-void blastPowerReference(BlastPowerup* blast)
+void blastPowerReference(float* x, float* y)
 {
-	blastPower = blast;
+	dballX = x;
+	dballY = y;
 }
 
 //Initializes the kiClass for use.
@@ -579,15 +581,14 @@ void powerCollision()
 
 void blastCollision()
 {
-	bool xColl = blastPower->pos[0] + 70 >= goku.pos[0]
-		&& goku.pos[0] + goku.width >= blastPower->pos[0];
-	bool yColl = blastPower->pos[1] + 50 >= goku.pos[1]
-		&& goku.pos[1] + goku.height >= blastPower->pos[1];
+	bool xColl = *dballX + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= *dballX;
+	bool yColl = *dballY + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= *dballY;
 	if (xColl && yColl) {
 		goku.dballs++;
 		dBallCounter.updateDBallCounter(goku.dballs);
-		blastPower->pos[0] = g.xres;
-		blastPower->pos[1] = (rand() % (g.yres - 100) + 1);
+		dballCollected();
 	}
 }
 

@@ -669,8 +669,8 @@ void initOpengl(void)
 	   walkData = buildAlphaData(&img[29]);
 	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-   	   //-------------------------------------------------------------------------
-	   
+		  //-------------------------------------------------------------------------
+
 
 	   //----------------------animated attack texture--------------------------------
 	   w = img[30].width;
@@ -682,7 +682,7 @@ void initOpengl(void)
 	   walkData = buildAlphaData(&img[30]);
 	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-   	   //-------------------------------------------------------------------------
+		  //-------------------------------------------------------------------------
 
 	   //----------------------DragonBall 1---------------------------------------
 	   w = img[31].width;
@@ -706,10 +706,10 @@ void initOpengl(void)
 	   walkData = buildAlphaData(&img[32]);
 	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
-           
-           
+
+
 	   //-------------------------------------------------------------------------
-	   
+
 	   //--------------------DragonBall 3-----------------------------------------
 	   w = img[33].width;
 	   h = img[33].height;
@@ -721,9 +721,9 @@ void initOpengl(void)
 	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	   //--------------------------------------------------------------------------
-	   
+
 	   //-------------------DragonBall 4-------------------------------------------
-	   
+
 	   w = img[34].width;
 	   h = img[34].height;
 	   glGenTextures(1, &g.dball4Texture);
@@ -735,7 +735,7 @@ void initOpengl(void)
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 
 	   //--------------------------------------------------------------------------
-	   
+
 	   //-------------------DragonBall 5-------------------------------------------
 	   w = img[35].width;
 	   h = img[35].height;
@@ -747,29 +747,29 @@ void initOpengl(void)
 	   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
 	   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	   //---------------------------------------------------------------------------
-	   
+
 	   //---------------------DragonBall 6------------------------------------------
 	   w = img[36].width;
-           h = img[36].height;
-           glGenTextures(1, &g.dball6Texture);
-           glBindTexture(GL_TEXTURE_2D, g.dball6Texture);
-           glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-           glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-           walkData = buildAlphaData(&img[36]);
-           glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-           GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+		   h = img[36].height;
+		   glGenTextures(1, &g.dball6Texture);
+		   glBindTexture(GL_TEXTURE_2D, g.dball6Texture);
+		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		   walkData = buildAlphaData(&img[36]);
+		   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	   //----------------------------------------------------------------------------
 
 	   //---------------------DragonBall 7-------------------------------------------
-           w = img[37].width;
-           h = img[37].height;
-           glGenTextures(1, &g.dball7Texture);
-           glBindTexture(GL_TEXTURE_2D, g.dball7Texture);
-           glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-           glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-           walkData = buildAlphaData(&img[37]);
-           glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-           GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+		   w = img[37].width;
+		   h = img[37].height;
+		   glGenTextures(1, &g.dball7Texture);
+		   glBindTexture(GL_TEXTURE_2D, g.dball7Texture);
+		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		   walkData = buildAlphaData(&img[37]);
+		   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 
 
 }
@@ -789,7 +789,7 @@ void init()
 		g.dball5Texture, g.dball6Texture, g.dball7Texture);
 	Enemy_init();
 	Powerups_init();
-	blastPowerup_init();
+	//blastPowerup_init();
 	img[7].rows = 1;
 	img[7].columns = 9;
 	img[13].rows = 9;
@@ -1165,7 +1165,7 @@ void render(void)
 
 			powerupsRender(g.powerupTexture);
 			dballRender();
-			blastPowerupRender(g.blastPowerupTexture);
+			//blastPowerupRender(g.blastPowerupTexture);
 
 			explosionRender();
 			cleanExplosions();
