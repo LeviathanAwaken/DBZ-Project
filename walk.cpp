@@ -1047,7 +1047,7 @@ void physics(void)
 			bossPhysics();
 			powerupsPhysics();
 			dballPhysics();
-			blastPowerupPhysics();
+			//blastPowerupPhysics();
 			namekPhysics();
 			blastPhysics();
 
