@@ -510,7 +510,7 @@ void pattern_2 (Enemy &e)
 {
 
 	nticks+= 0.3;
-	e.pos[0] -= e.xSpeed;
+	e.pos[0] -= (e.xSpeed+2);
 	e.pos[1] = (e.waveamp * sin(nticks/e.wavefreq) + (e.wavepos));
 
 	if (e.pos[0] < -50){
@@ -540,7 +540,7 @@ void pattern_4 (Enemy &e)
 {
 
 	nticks+= 0.3;
-	e.pos[0] -= e.xSpeed;
+	e.pos[0] -= (e.xSpeed+2);
 	e.pos[1] = (e.waveamp * cos(nticks/e.wavefreq) + (e.wavepos));
 
 	if (e.pos[0] < -50){
