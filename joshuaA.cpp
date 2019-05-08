@@ -22,6 +22,11 @@ extern void powerReference(Powerups *);
 extern void blastPowerReference(BlastPowerup *);
 extern void powerCollision();
 extern void blastCollision();
+float xticks = 0.0;
+int speed_Randomizer(void);
+int freq_Randomizer(void);
+int amp_Randomizer(void);
+
 Powerups powerups;
 BlastPowerup blastPowerup;
 
@@ -277,34 +282,43 @@ void namekPhysics()
     background.xc[1] += 0.001;
 }
 //--------------------Dragon Balls--------------------------------------------------
-/*class Dragonball{
+class Dragonball{
     public:
 	GLuint pics[6];
 	int currentPic;
 	float pos[2];
-	float moveS;
-} dballs;
+	int xSpeed = 0;
+	int waveamp = 0;
+	int wavefreq = 0;
+	int wavepos = 0;
+} dball;
 
 void dballInit(GLuint ball1, GLuint ball2, GLuint ball3, 
-	GLuint ball4, GLuint5, GLuint ball6, GLuint ball7)
+	GLuint ball4, GLuint ball5, GLuint ball6, GLuint ball7)
 {
-    dballs.pics[0] = ball1;
-    dballs.pics[1] = ball2;
-    dballs.pics[2] = ball3;
-    dballs.pics[3] = ball4;
-    dballs.pics[4] = ball5;
-    dballs.pics[5] = ball6;
-    dballs.pics[6] = ball7;
+    dball.pics[0] = ball1;
+    dball.pics[1] = ball2;
+    dball.pics[2] = ball3;
+    dball.pics[3] = ball4;
+    dball.pics[4] = ball5;
+    dball.pics[5] = ball6;
+    dball.pics[6] = ball7;
 }
 
 void dballPhysics()
-{
-    dball.pos[0] -= 2;
-    if (dball.pos[0] < -50)
-    {
+{     
+    xticks += 0.3;
+    dball.pos[0] -= dball.xSpeed;
+    dball.pos[1] = (dball.waveamp * sin(xticks/dball.wavefreq) + (dball.wavepos));
+
+    if (dball.pos[0] < -50){
 	dball.pos[0] = g.xres;
-	dball.pos[1] = (rand() % (g.yres - 100) + 1);
+	dball.wavepos = ((rand() % (g.yres/2)) + 100);
+	dball.xSpeed = speed_Randomizer();
+	dball.wavefreq = freq_Randomizer();
+	dball.waveamp = amp_Randomizer();
     }
+
     blastCollision();
 
 
@@ -315,11 +329,13 @@ void dballRender()
     glPushMatrix();
     glTranslatef(dball.pos[0], dball.pos[1], 0);
     glColor3f(1.0, 1.0, 1.0);
-    glBindTexture(GL_TEXTURE_2D, dballs.pics[dballs.currentPic]);
+    glBindTexture(GL_TEXTURE_2D, dball.pics[dball.currentPic]);
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.0f);
     glColor4ub(255,255,255,255);
+    float tx = 0.0;
     float ty = 0.0;
+
     glBegin(GL_QUADS);
     glTexCoord2f(tx+1, ty+1);       
     glVertex2i(0, 0);
@@ -330,8 +346,9 @@ void dballRender()
     glTexCoord2f(tx, ty+1);         
     glVertex2i(70, 0);
     glEnd();
+
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_ALPHA_TEST);
 }
-*/
+
