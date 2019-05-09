@@ -230,8 +230,8 @@ int main(void)
 		// server side scores
 		extern int score_show();
 		extern int score_add(int);
-		extern int score_add2(char p_name[]);
-		score_add2(p_name);
+		extern int score_add_initials(char p_name[]);
+		score_add_initials(p_name);
 		score_add(g.score);
 		score_show();
 	return 0;

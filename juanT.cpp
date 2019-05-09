@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <ctype.h>
+#include <string>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
@@ -153,7 +154,7 @@ const int MAX_READ_ERRORS = 100;
 BIO *ssl_setup_bio(void);
 void set_non_blocking(const int sock);
 void get_a_page(SSL *ssl, char *hostname, char *pagename);
-void get_a_page2(SSL *ssl, char *hostname, char *pagename);
+void get_page_and_print(SSL *ssl, char *hostname, char *pagename);
 
 int score_add (int score)
 {
@@ -209,7 +210,7 @@ int score_add (int score)
     return 0;
 }
 
-int score_add2 (char p_name[])
+int score_add_initials (char p_name[])
 {
     int sd;
     struct hostent *host;
@@ -244,7 +245,7 @@ int score_add2 (char p_name[])
         BIO_printf(outbio, "Cannot connect to host %s [%s] on port %d.\n",
                 hostname, inet_ntoa(addr.sin_addr), port);
     }
-//Connect using the SSL certificate.
+    //Connect using the SSL certificate.
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sd);
     SSL_connect(ssl);
@@ -299,7 +300,7 @@ void score_get ()
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sd);
     SSL_connect(ssl);
- //A non-blocking socket will make the ssl_read() not block.
+    //A non-blocking socket will make the ssl_read() not block.
     set_non_blocking(sd);
 
     get_a_page(ssl, hostname, pagename);
@@ -347,7 +348,7 @@ int score_show ()
     addr.sin_addr.s_addr = *(long*)(host->h_addr);
     if (connect(sd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
         BIO_printf(outbio, "Cannot connect to host %s [%s] on port %d.\n",
-  hostname, inet_ntoa(addr.sin_addr), port);
+        hostname, inet_ntoa(addr.sin_addr), port);
     }
     //Connect using the SSL certificate.
     ssl = SSL_new(ctx);
@@ -357,7 +358,7 @@ int score_show ()
     //A non-blocking socket will make the ssl_read() not block.
     set_non_blocking(sd);
 
-    get_a_page2(ssl, hostname, pagename);
+    get_page_and_print(ssl, hostname, pagename);
 
     //Cleanup.
     SSL_free(ssl);
@@ -386,7 +387,7 @@ void get_a_page(SSL *ssl, char *hostname, char *pagename)
     }
 }
 
-void get_a_page2(SSL *ssl, char *hostname, char *pagename)
+void get_page_and_print(SSL *ssl, char *hostname, char *pagename)
 {
     char req[1000];
     int req_len;
@@ -423,12 +424,21 @@ void get_a_page2(SSL *ssl, char *hostname, char *pagename)
     nreads = 1;
     //Allow for some read errors to happen, while getting the complete data.
     nerrs = 0;
-    int scrs[10000];
-    for (int i = 0; i < 10000; i++)
-        scrs[i] = -222;
+    char tmp_scrs[10000];
+    int scrs[1000];
+    for (int i = 0; i < 10000; i++) {
+	scrs[i] = -222;
+    }
     int ij = 0;
-    int kl = 0;
-    printf ("\nAll scores recorded to server (your score is the bottom most recent score): ");
+    int ch = 0;
+    int bn = 0;
+    int bn2 = 0;
+    int op = 0;
+    char *inits[1000];
+    char tmp_inits[5];
+    string initss[1000];
+
+    printf ("\nHigh Scores recorded to server: ");
     while (buf[ij] != '\0') {
         if (buf[ij] == '%') {
             ij++;
@@ -437,24 +447,55 @@ void get_a_page2(SSL *ssl, char *hostname, char *pagename)
         ij++;
     }
     while (buf[ij] != '\0') {
-        if(isdigit(buf[ij])) {
-            scrs[kl] = buf[ij] - '0';
-            printf("%d",scrs[kl]);
-            kl++;
-        } else if (isalpha(buf[ij])) {
-            scrs[kl] = -110;
-            printf("%c", buf[ij]);
-            kl++;
-        } else if (buf[ij] == '\n') {
-            scrs[kl] = -111;
-	    if (scrs[kl-1] == -110)
-		printf(" ");
-	    else
-                printf("\n");
-            kl++;
-        }
+        if (isalpha(buf[ij])) {
+	    tmp_inits[op] = buf[ij];
+	    op++;
+	} else if (isdigit(buf[ij])) {
+	    tmp_scrs[ch] = buf[ij];
+	    ch++;
+         } else {  
+	    if (op > 0) {
+	    tmp_inits[op] = '\0';
+	    inits[bn2] = tmp_inits;
+	    initss[bn2] = inits[bn2];
+	    bn2++;
+	    tmp_inits[0] = '\0';
+	    op = 0;
+	    }
+	    if (ch > 0) {
+		tmp_scrs[ch] = '\0';
+		scrs[bn] = atoi(tmp_scrs);
+		tmp_scrs[0] = '\0';
+		ch = 0;
+		bn++;
+	    }
+	}
         ij++;
     }
+    int ii, jj, key, numLength = 1000;
+    string key2;
+     for(jj = 1; jj < numLength; jj++)
+    {
+           key = scrs[jj];
+	   key2 = initss[jj];
+           for(ii = jj - 1; (ii >= 0) && (scrs[ii] < key); ii--)
+          {
+                 scrs[ii+1] = scrs[ii];
+		 initss[ii+1] = initss[ii];
+          }
+         scrs[ii+1] = key;
+         initss[ii+1] = key2;
+     }
+    cout << "\n\n";
+    bn = 0;
+    while (bn < 1000) {
+	    if (scrs[bn] != -222) {
+	    cout <<  initss[bn];
+	    printf(" %d\n", scrs[bn]);
+	    }
+	    bn++;
+    }
+    cout << endl;
     //check from outside the above while loop
     while (bytes >= 0 && nerrs < MAX_READ_ERRORS) {
         //write(STDOUT_FILENO, buf, bytes);
@@ -503,7 +544,8 @@ void score_update (int score)
     score_glob += score;
 }
 
-int score_receive () {
+int score_receive () 
+{
     int score_tmp;
     score_tmp = score_glob;
     score_glob = 0;
