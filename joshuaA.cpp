@@ -354,9 +354,7 @@ void dballCollected()
 {
     dball.currentPic++;
 
-    dball.pos[0] = g.xres;
-    dball.pos[1] = (rand() % (g.yres - 100) + 1);
-    dball.pos[0] = g.xres;
+    dball.pos[0] = g.xres + 1500;
     dball.pos[1] = (rand() % (g.yres - 100) + 1);
     dballScore();
     dballWinCondition();
