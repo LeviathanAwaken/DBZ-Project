@@ -1168,11 +1168,11 @@ void render(void)
 			dballRender();
 			//blastPowerupRender(g.blastPowerupTexture);
 
-			explosionRender();
-			cleanExplosions();
+			
 			sRender();
 			blastRender();
-
+			explosionRender();
+			cleanExplosions();
 
 			//
 			// unsigned int c = 0x000000;

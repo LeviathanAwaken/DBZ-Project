@@ -59,9 +59,9 @@ extern void bossDetection();
 extern int score_update(int);
 extern void energyRender();
 extern void dballCollected();
-
 extern void createExplosion(float, float);
-extern void fireCollision(float *, float *);
+extern void fireReference(float *, float *);
+extern void fireCollision();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -165,7 +165,7 @@ void gokuInit()
 	goku.dballs = 0;
 	goku.currentPic = 0;
 	healthBar.updateHealthCounter(goku.health);
-	fireCollision(&goku.pos[0], &goku.pos[1]);
+	fireReference(&goku.pos[0], &goku.pos[1]);
 }
 
 void outlineInit()
@@ -265,6 +265,7 @@ void gokuIMove(int key)
 				goku.pos[1] = 0;
 			break;
 	}
+	fireCollision();
 	
 }
 

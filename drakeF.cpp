@@ -33,8 +33,8 @@ extern void bossCollision();
 extern void saibaCollision();
 extern void score_update(int);
 float nticks = 0.0;
-//float *gokuX;
-//float *gokuY;
+float *gokuX;
+float *gokuY;
 void Enemy_init();
 void pattern_1(Enemy&);
 void pattern_2(Enemy&);
@@ -46,7 +46,7 @@ int amp_Randomizer(void);
 void detection();
 void difficulty(Enemy&);
 void blastInit();
-void fireCollision(float, float);
+
 //int healthMod = 0;
 
 
@@ -677,13 +677,24 @@ void bossDetection ()
 
 }
 
-void fireCollision (float* x, float* y)
+void fireReference (float* x, float* y)
+{
+	 gokuX = x;
+	 gokuY = y;
+	
+}
+
+void fireCollision () 
 {
 
-	for (int i = 0; i < 4; i++) {
-		if ((blastDwn[i].centerX == *x) && (blastDwn[i].centerY == *y) ){
+for (int i = 0; i < 4; i++) {
+		bool xColl = blastDwn[i].centerX + blastDwn[i].width/2 >= *gokuX 
+		&& *gokuX + 100 >= blastDwn[i].centerX;
+		bool yColl = blastDwn[i].centerY + blastDwn[i].height/2 >= *gokuY 
+		&& *gokuY+100 >= blastDwn[i].centerY;
+		if (xColl && yColl) {
 			createExplosion(blastDwn[i].centerX, blastDwn[i].centerY);
-			
 		}
 	}
+
 }
