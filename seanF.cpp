@@ -59,6 +59,7 @@ extern void bossDetection();
 extern int score_update(int);
 extern void energyRender();
 extern void dballCollected();
+
 extern void createExplosion(float, float);
 extern void fireCollision(float *, float *);
 

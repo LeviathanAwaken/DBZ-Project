@@ -1,3 +1,4 @@
+
 //3350
 //program: walk.cpp
 //author:  Gordon Griesel
@@ -134,7 +135,7 @@ class X11_wrapper {
 		void setTitle() {
 			//Set the window title bar.
 			XMapWindow(dpy, win);
-			XStoreName(dpy, win, "Walk Cycle");
+			XStoreName(dpy, win, "The Final Form");
 		}
 		void setupScreenRes(const int w, const int h) {
 			g.xres = w;
@@ -1043,7 +1044,7 @@ void physics(void)
 				if (g.box[i][0] < -10.0)
 					g.box[i][0] += g.xres + 10.0;
 			}
-			//saibaPhysics();
+			saibaPhysics();
 			bossPhysics();
 			powerupsPhysics();
 			dballPhysics();
@@ -1167,11 +1168,10 @@ void render(void)
 			dballRender();
 			//blastPowerupRender(g.blastPowerupTexture);
 
-			
-			sRender();
-			blastRender();
 			explosionRender();
 			cleanExplosions();
+			sRender();
+			blastRender();
 
 
 			//
@@ -1208,3 +1208,4 @@ void render(void)
 	}
 	}
 }
+
