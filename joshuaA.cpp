@@ -12,16 +12,21 @@
 #include "Powerups.h"
 #include "BlastPowerup.h"
 #include <string>
+#include "Timers.h"
 /*
  * My file includes the background to the game and
  * my own personal picture in the credits.
  *
  */
 extern Global g;
+extern Timers timers;
 extern void powerReference(Powerups *);
 extern void blastPowerReference(float *, float *);
 extern void powerCollision();
 extern void blastCollision();
+extern void acceptGameState(int);
+extern int selectedOption;
+extern int gameState;
 float xticks = 0.0;
 int speed_Randomizer(void);
 int freq_Randomizer(void);
@@ -327,6 +332,7 @@ void dballWinCondition()
 {
 	if (dball.currentPic > 6) {
 		//INSERT WIN SCREEN CALL HERE
+		gameState = WIN;
 	}
 }
 
@@ -367,4 +373,102 @@ void dballRender()
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_ALPHA_TEST);
+}
+
+void renderWinScreen(int x, int y, GLuint textint) {
+	
+	glPushMatrix();
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, textint);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255,255,255,255);
+
+	float tx = 0, ty = 0;
+	glBegin(GL_QUADS);
+	
+	glTexCoord2f(tx, ty + 1);
+	glVertex2i(0,35);
+
+	glTexCoord2f(tx,ty);
+	glVertex2i(0, y);
+
+	glTexCoord2f(tx+1, ty);
+	glVertex2i(x, y);
+
+	glTexCoord2f(tx+1, ty+1);
+	glVertex2i(x, 35);
+	glEnd();
+
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
+
+	Rect r;
+	r.bot = g.yres/3;
+	r.left = g.xres/2;
+	r.center = 1;
+
+	switch (selectedOption) {
+		case 0:
+			ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+			ggprint8b(&r, 16, 0xffffff, "CREDITS");
+			ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+			ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+			break;
+		case 1: 
+			ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+			ggprint8b(&r, 16, 0x123fff, "CREDITS");
+			ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+			ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+			break;
+		case 2:
+			ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+			ggprint8b(&r, 16, 0xffffff, "CREDITS");
+			ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+			ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+			break;
+		case 3:
+			ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+			ggprint8b(&r, 16, 0xffffff, "CREDITS");
+			ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+			ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+			break;
+		default:
+			break;
+	}
+}
+
+void checkKeysWin()
+{
+	double menuSelectionDelay = 0.15;
+	if (g.keys[XK_Up]) {
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
+		&timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+	    selectedOption = (((selectedOption-1)+4)%4);
+	    timers.recordTime(&timers.menuSelectionTime);
+
+	}
+  }
+	if (g.keys[XK_Down]) {
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
+		&timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+	    selectedOption = (((selectedOption+1)+4)%4);
+	    timers.recordTime(&timers.menuSelectionTime);
+
+	}
+  }
+	if (g.keys[XK_Return]) {
+	timers.recordTime(&timers.timeCurrent);
+	double timeSpan = timers.timeDiff(&timers.menuSelectionTime,
+		&timers.timeCurrent);
+	if (timeSpan > menuSelectionDelay) {
+		acceptGameState(selectedOption);
+		timers.recordTime(&timers.menuSelectionTime);
+	}
+	}
 }

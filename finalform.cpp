@@ -63,10 +63,7 @@ Image img[] = {"images/Goku.gif", "images/cloud.gif", "images/seanPic.gif",
 	"images/ss3Outline.png", "images/ss4Outline.png", "images/energy_down.png",
 	"images/dragonball1.png","images/dragonball2.png", "images/dragonball3.png",
 	"images/dragonball4.png", "images/dragonball5.png", "images/dragonball6.png",
-	"images/dragonball7.png"};
-
-
-
+	"images/dragonball7.png", "images/winScreenTexture.gif"};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -750,28 +747,43 @@ void initOpengl(void)
 	   //---------------------------------------------------------------------------
 
 	   //---------------------DragonBall 6------------------------------------------
-	   w = img[36].width;
-		   h = img[36].height;
-		   glGenTextures(1, &g.dball6Texture);
-		   glBindTexture(GL_TEXTURE_2D, g.dball6Texture);
-		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		   walkData = buildAlphaData(&img[36]);
-		   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-		   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+	  	w = img[36].width;
+		h = img[36].height;
+		glGenTextures(1, &g.dball6Texture);
+		glBindTexture(GL_TEXTURE_2D, g.dball6Texture);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		walkData = buildAlphaData(&img[36]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 	   //----------------------------------------------------------------------------
 
 	   //---------------------DragonBall 7-------------------------------------------
-		   w = img[37].width;
-		   h = img[37].height;
-		   glGenTextures(1, &g.dball7Texture);
-		   glBindTexture(GL_TEXTURE_2D, g.dball7Texture);
-		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		   walkData = buildAlphaData(&img[37]);
-		   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-		   GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+		w = img[37].width;
+		h = img[37].height;
+		glGenTextures(1, &g.dball7Texture);
+		glBindTexture(GL_TEXTURE_2D, g.dball7Texture);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		walkData = buildAlphaData(&img[37]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
 
+		//----------------------------------------------------------------------------
+
+		//---------------------Win Screen Texture-------------------------------------------
+
+		w = img[38].width;
+		h = img[38].height;
+		glGenTextures(1, &g.winScreenTexture);
+		glBindTexture(GL_TEXTURE_2D, g.winScreenTexture);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		walkData = buildAlphaData(&img[38]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, walkData);
+
+		//----------------------------------------------------------------------------
 
 }
 
@@ -1002,6 +1014,7 @@ extern void checkKeysMainMenu();
 extern void checkKeysPauseMenu();
 extern void checkKeysLost();
 extern void checkKeysCreditMenu();
+extern void checkKeysWin();
 extern void braceHandler(int);
 extern void namekPhysics();
 extern void blastPhysics();
@@ -1023,7 +1036,7 @@ void physics(void)
 		checkKeysCreditMenu();
 		break;
 	case WIN:
-		// checkKeysWin();
+		checkKeysWin();
 		break;
 	case INGAME:
 		if (g.walk) {
@@ -1092,6 +1105,7 @@ extern void blastPowerupRender(GLuint);
 extern void renderHealthBar();
 extern void renderCounter();
 extern void blastRender();
+extern void renderWinScreen(int, int, GLuint);
 void render(void)
 {
 	switch(gameState)
@@ -1118,8 +1132,15 @@ void render(void)
 			break;
 		case CREDITS:
 			renderCredit();
+			if(g.controlFlag == 1) {
+				renderControls();
+			}
 			break;
 		case WIN:
+			renderWinScreen(g.xres,g.yres,g.winScreenTexture);
+			if(g.controlFlag == 1) {
+				renderControls();
+			}
 			//insert win screen
 			break;
 		case INGAME: {

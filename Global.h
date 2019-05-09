@@ -72,6 +72,7 @@ class Global {
 	GLuint dball5Texture;
 	GLuint dball6Texture;
 	GLuint dball7Texture;
+	GLuint winScreenTexture;
 
 	Vec box[20];
 	Global() {
