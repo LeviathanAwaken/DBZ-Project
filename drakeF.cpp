@@ -33,6 +33,8 @@ extern void bossCollision();
 extern void saibaCollision();
 extern void score_update(int);
 float nticks = 0.0;
+//float *gokuX;
+//float *gokuY;
 void Enemy_init();
 void pattern_1(Enemy&);
 void pattern_2(Enemy&);
@@ -44,6 +46,7 @@ int amp_Randomizer(void);
 void detection();
 void difficulty(Enemy&);
 void blastInit();
+void fireCollision(float, float);
 //int healthMod = 0;
 
 
@@ -139,7 +142,7 @@ void blastInit() {
 		blastDwn[i].width = img[30].width / (7 * 1.5);
 		blastDwn[i].spriteSheetIndex = 30;
 		blastDwn[i].frame = 0;
-		blastDwn[i].live = false;
+		blastDwn[i].live = true;
 		space+= 200;
 	}
 }
@@ -672,4 +675,15 @@ void bossDetection ()
 		score_update(10000);
 	}
 
+}
+
+void fireCollision (float* x, float* y)
+{
+
+	for (int i = 0; i < 4; i++) {
+		if ((blastDwn[i].centerX == *x) && (blastDwn[i].centerY == *y) ){
+			createExplosion(blastDwn[i].centerX, blastDwn[i].centerY);
+			
+		}
+	}
 }
