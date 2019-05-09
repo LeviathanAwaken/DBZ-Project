@@ -32,6 +32,7 @@ extern void bossReference(Boss *);
 extern void bossCollision();
 extern void saibaCollision();
 extern void score_update(int);
+extern void fireDetect();
 float nticks = 0.0;
 float *gokuX;
 float *gokuY;
@@ -694,7 +695,9 @@ for (int i = 0; i < 4; i++) {
 		&& *gokuY+100 >= blastDwn[i].centerY;
 		if (xColl && yColl) {
 			createExplosion(blastDwn[i].centerX, blastDwn[i].centerY);
+			fireDetect();
 		}
 	}
 
 }
+

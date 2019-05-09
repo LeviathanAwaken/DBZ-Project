@@ -307,15 +307,15 @@ void dballInit(GLuint dball1, GLuint dball2, GLuint dball3,
 
 void dballPhysics()
 {
-    xticks += 0.3;
+    xticks += 2.7;
 	dball.pos[0] -= (dball.xSpeed+5);
-	dball.pos[1] -= 3.0;
+	dball.pos[1] = (70 * sin(xticks/50) + g.yres/2);
 
 	if (dball.pos[0] < -50){
 	dball.pos[0] = g.xres + 1000;
 	dball.xSpeed = speed_Randomizer();
-	//dball.pos[1] = (rand() % (g.yres));
-    dball.pos[1] = (70 * sin(xticks/50) + g.yres/2);
+	dball.pos[1] = (rand() % (g.yres));
+    
 	}
 
 	blastCollision();
