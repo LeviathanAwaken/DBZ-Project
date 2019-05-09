@@ -302,13 +302,14 @@ void dballInit(GLuint dball1, GLuint dball2, GLuint dball3,
 	dball.pics[5] = dball6;
 	dball.pics[6] = dball7;
 	dball.currentPic = 0;
+    dball.pos[0] = g.xres;
+    dball.pos[1] = g.yres/2;
 	blastPowerReference(&dball.pos[0], &dball.pos[1]);
 }
 
+
 void dballPhysics()
-{
-    if (g.score > (dball.currentPic + 1 % 2000)) 
-    {
+{    
     xticks += 2.7;
 	dball.pos[0] -= (dball.xSpeed+5);
 	dball.pos[1] = (70 * sin(xticks/50) + g.yres/2);
@@ -319,10 +320,21 @@ void dballPhysics()
 	dball.pos[1] = (rand() % (g.yres));
     
 	}
-    }
+    
 	blastCollision();
     
 }
+
+void dballScore()
+{
+    int range = g.score % 2000;
+
+    if(abs(2000 - range) <= 100 && dball.pos[0] > -50)
+    {
+        dballPhysics();
+    }
+}
+
 void dballWinCondition()
 {
 	if (dball.currentPic > 6) {
