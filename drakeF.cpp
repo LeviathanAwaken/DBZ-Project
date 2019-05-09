@@ -47,7 +47,7 @@ int amp_Randomizer(void);
 void detection();
 void difficulty(Enemy&);
 void blastInit();
-
+void fireCollision();
 //int healthMod = 0;
 
 
@@ -484,6 +484,7 @@ void blastPhysics () {
 			}
 		}
 	}
+	fireCollision();
 }
 
 //------------------------Draw the enemies-----------------------------------------

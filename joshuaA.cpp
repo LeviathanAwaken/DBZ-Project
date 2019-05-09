@@ -318,8 +318,8 @@ void dballInit(GLuint dball1, GLuint dball2, GLuint dball3,
 void dballPhysics()
 {    
     xticks += 2.7;
-    dball.pos[0] -= (dball.xSpeed + 0.7);
-    dball.pos[1] = (50 * sin(xticks/70) + g.yres/2);
+    dball.pos[0] -= (dball.xSpeed + 4);
+    dball.pos[1] = (50 * sin(xticks/150) + g.yres/2);
 
     if (dball.pos[0] < -50){
 	dball.pos[0] = g.xres + 500;

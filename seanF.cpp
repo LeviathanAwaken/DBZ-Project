@@ -266,7 +266,6 @@ void gokuIMove(int key)
 				goku.pos[1] = 0;
 			break;
 	}
-	fireCollision();
 	
 }
 
