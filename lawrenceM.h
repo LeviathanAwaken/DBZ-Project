@@ -96,7 +96,7 @@ struct healthSSD
             screen = bitset<7>("1110011");
             break;
         default:
-            screen = bitset<7>("1001111");
+            screen = bitset<7>("1111001");
             break;
         }
     }
