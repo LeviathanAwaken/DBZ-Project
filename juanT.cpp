@@ -426,13 +426,10 @@ void get_page_and_print(SSL *ssl, char *hostname, char *pagename)
     nerrs = 0;
     char tmp_scrs[10000];
     int scrs[1000];
-    int parse[10000];
     for (int i = 0; i < 10000; i++) {
-        parse[i] = -222;
 	scrs[i] = -222;
     }
     int ij = 0;
-    int kl = 0;
     int ch = 0;
     int bn = 0;
     int bn2 = 0;
@@ -452,11 +449,9 @@ void get_page_and_print(SSL *ssl, char *hostname, char *pagename)
     while (buf[ij] != '\0') {
         if (isalpha(buf[ij])) {
 	    tmp_inits[op] = buf[ij];
-            //kl++;
 	    op++;
 	} else if (isdigit(buf[ij])) {
 	    tmp_scrs[ch] = buf[ij];
-            //kl++;
 	    ch++;
          } else {  
 	    if (op > 0) {
@@ -474,7 +469,6 @@ void get_page_and_print(SSL *ssl, char *hostname, char *pagename)
 		ch = 0;
 		bn++;
 	    }
-            //kl++;
 	}
         ij++;
     }
