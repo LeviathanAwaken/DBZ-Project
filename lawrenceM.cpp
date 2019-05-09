@@ -139,8 +139,13 @@ int acceptGameState(int selectedOption)
             break;
         case 1:
             // cout << "score" << endl;
-            gameState = CREDITS;
-            // g.creditFlag = ((g.creditFlag + 1) % 2);
+            g.creditFlag = ((g.creditFlag + 1) % 2);
+            if(g.creditFlag == 1) {
+              gameState = CREDITS;
+            }
+            else {
+              gameState = MAINMENU;
+            }
             //make leaderboard function           
             break;
         case 2:
