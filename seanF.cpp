@@ -721,6 +721,12 @@ void Energy::draw()
 	}
 }
 
+void fireDetect () 
+{
+	goku.health--;
+	healthBar.updateHealthCounter(goku.health);
+	healthCheck();
+}
 //Sound handler, not functioning yet.
 void soundHandle()
 {
