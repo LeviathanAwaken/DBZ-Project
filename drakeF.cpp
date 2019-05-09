@@ -142,7 +142,7 @@ void blastInit() {
 		blastDwn[i].width = img[30].width / (7 * 1.5);
 		blastDwn[i].spriteSheetIndex = 30;
 		blastDwn[i].frame = 0;
-		blastDwn[i].live = true;
+		blastDwn[i].live = false;
 		space+= 200;
 	}
 }
