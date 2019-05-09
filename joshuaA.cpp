@@ -282,7 +282,7 @@ void namekPhysics()
 //--------------------Dragon Balls--------------------------------------------------
 class Dragonball{
 	public:
-	GLuint pics[6];
+	GLuint pics[7];
 	int currentPic;
 	float pos[2];
 	int xSpeed = 0;
