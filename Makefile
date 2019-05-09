@@ -1,13 +1,13 @@
 CFLAGS = -I ./include
 LFLAGS = -lrt -lX11 -lGLU -lGL -pthread -lm #-lXrandr
 
-all: walk
+all: finalform
 
 mac: lab1mac
 
 
-walk: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
-	g++ $(CFLAGS) walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp libggfonts.a -Wall -Wextra -std=c++11 -lssl -lcrypto $(LFLAGS) -owalk -DPROFILE
+finalform: finalform.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
+	g++ $(CFLAGS) finalform.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp libggfonts.a -Wall -Wextra -std=c++11 -lssl -lcrypto $(LFLAGS) -o finalform -DPROFILE
 
 lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 	g++ -DPROFILE walk.cpp lawrenceM.cpp \
@@ -23,9 +23,9 @@ lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 	-L/usr/local/opt/openssl/lib -lssl -lcrypto \
 	-framework OpenGL \
 	-framework Cocoa -lm -lGL \
-	
+
 
 
 clean:
-	rm -f walk
+	rm -f finalform
 	rm -f *.o

@@ -19,6 +19,7 @@ public:
     int waveamp;
     int xSpeed;
     int eHealth;
+    bool fire;
     
 
     
@@ -27,6 +28,7 @@ public:
      srand(time(NULL));
      //pattern = 1;
      isRendered = false;
+     fire = false;
      eHealth = 0;
      wavepos = 0.0;
      xSpeed = 0;

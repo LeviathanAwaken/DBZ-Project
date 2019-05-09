@@ -1,7 +1,8 @@
 //3350
-//Program:  seanF.cpp
-//Author:   Sean Fontes
-//Date:     2-14-19
+//Program:  		seanF.cpp
+//Author:   		Sean Fontes
+//Date:     		2-14-19
+//Last Modified:	5-7-19
 
 /*
  * Description:
@@ -23,7 +24,6 @@
 #include "Boss.h"
 #include "Image.h"
 #include "lawrenceM.h"
-#include "BlastPowerup.h"
 #ifdef SOUND
 	#include </usr/include/AL/alut.h>
 	#include <unistd.h>
@@ -37,7 +37,8 @@ const int MAX_ENEM = 15;
 Enemy *enemyRef[MAX_ENEM];
 Boss *finBoss;
 Powerups *powRef[2];
-BlastPowerup *blastPower;
+float *dballX;
+float *dballY;
 int elimiter;
 int plimiter;
 extern int gameState;
@@ -57,6 +58,10 @@ extern void detection(int, bool);
 extern void bossDetection();
 extern int score_update(int);
 extern void energyRender();
+extern void dballCollected();
+extern void createExplosion(float, float);
+extern void fireReference(float *, float *);
+extern void fireCollision();
 
 //Class encompassing the main character's position and other attributes.
 class Protag {
@@ -125,9 +130,11 @@ void powerReference(Powerups* power)
 	plimiter++;
 }
 
-void blastPowerReference(BlastPowerup* blast)
+//Establishes a pointer to dragon balls being handled in Josh's file.
+void blastPowerReference(float* x, float* y)
 {
-	blastPower = blast;
+	dballX = x;
+	dballY = y;
 }
 
 //Initializes the kiClass for use.
@@ -159,6 +166,7 @@ void gokuInit()
 	goku.currentPic = 0;
 	healthBar.updateHealthCounter(goku.health);
 	healthBar.updateDBallCounter(goku.dballs);
+	fireReference(&goku.pos[0], &goku.pos[1]);
 }
 
 void outlineInit()
@@ -258,6 +266,8 @@ void gokuIMove(int key)
 				goku.pos[1] = 0;
 			break;
 	}
+	fireCollision();
+	
 }
 
 //Logic handling for the bounds on character's movement.
@@ -330,7 +340,7 @@ void launchKi()
 {
 	int kiNum = kiLimitCheck();
 	if (kiNum != -1) {
-		ki.kiTracker[kiNum][0] = goku.pos[0] + 50;
+		ki.kiTracker[kiNum][0] = goku.pos[0] + 20;
 		ki.kiTracker[kiNum][1] = goku.pos[1];
 	}
 }
@@ -509,6 +519,7 @@ void braceCollision(int braceID)
 			goku.moveS -= 2;
 			goku.currentPic--;
 		}
+		createExplosion(goku.pos[0], goku.pos[1]);
 		braceFree(braceID);
 		healthCheck();
 	}
@@ -578,15 +589,14 @@ void powerCollision()
 
 void blastCollision()
 {
-	bool xColl = blastPower->pos[0] + 70 >= goku.pos[0]
-		&& goku.pos[0] + goku.width >= blastPower->pos[0];
-	bool yColl = blastPower->pos[1] + 50 >= goku.pos[1]
-		&& goku.pos[1] + goku.height >= blastPower->pos[1];
+	bool xColl = *dballX + 70 >= goku.pos[0]
+		&& goku.pos[0] + goku.width >= *dballX;
+	bool yColl = *dballY + 50 >= goku.pos[1]
+		&& goku.pos[1] + goku.height >= *dballY;
 	if (xColl && yColl) {
 		goku.dballs++;
 		dBallCounter.updateDBallCounter(goku.dballs);
-		blastPower->pos[0] = g.xres;
-		blastPower->pos[1] = (rand() % (g.yres - 100) + 1);
+		dballCollected();
 	}
 }
 
@@ -655,6 +665,10 @@ void Energy::draw()
 		text = g.redTexture;
 	else if (goku.currentPic == 5)
 		text = g.blueTexture;
+	else if (goku.currentPic == 2)
+		text = g.ss3Outline;
+	else if (goku.currentPic == 3)
+		text = g.ss4Outline;
 	else
 		text = g.outlineTexture;
 	glPushMatrix();

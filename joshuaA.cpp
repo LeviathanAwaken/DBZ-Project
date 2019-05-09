@@ -19,19 +19,24 @@
  */
 extern Global g;
 extern void powerReference(Powerups *);
-extern void blastPowerReference(BlastPowerup *);
+extern void blastPowerReference(float *, float *);
 extern void powerCollision();
 extern void blastCollision();
+float xticks = 0.0;
+int speed_Randomizer(void);
+int freq_Randomizer(void);
+int amp_Randomizer(void);
+
 Powerups powerups;
 BlastPowerup blastPowerup;
 
 class NamekBackground
 {
-  public:
+	public:
 	float xc[2];
 	float yc[2];
 
-  public:
+	public:
 	NamekBackground();
 	NamekBackground(float xc1, float xc2, int);
 	NamekBackground(float yc1, float yc2, std::string);
@@ -85,10 +90,8 @@ void setBackgroundNamek(int x, int y, GLuint textInt)
 	glTexCoord2f(background.xc[1], background.yc[0]);
 	glVertex2i(x, y);
 
-	// glVertex2i(background.xres, background.yres);
 	glTexCoord2f(background.xc[1], background.yc[1]);
 	glVertex2i(x, 35);
-	// glVertex2i(background.xres, 0);
 
 	glEnd();
 }
@@ -138,8 +141,8 @@ void powerupsPhysics()
 	powerups.pos[0] -= 2;
 	if (powerups.pos[0] < -50)
 	{
-		powerups.pos[0] = g.xres;
-		powerups.pos[1] = (rand() % (g.yres - 100) + 1);
+	powerups.pos[0] = g.xres;
+	powerups.pos[1] = (rand() % (g.yres - 100) + 1);
 	}
 	powerCollision();
 }
@@ -179,17 +182,17 @@ void blastPowerup_init()
 	//srand(time(NULL));
 	blastPowerup.pos[0] = g.xres + (rand() % 100);
 	blastPowerup.pos[1] = (rand() % g.yres);
-	blastPowerReference(&blastPowerup);
+	//blastPowerReference(&blastPowerup);
 }
 void blastPowerupPhysics()
 {
 	blastPowerup.pos[0] -= 2;
 	if (blastPowerup.pos[0] < -50)
 	{
-		blastPowerup.pos[0] = g.xres;
-		blastPowerup.pos[1] = (rand() % (g.yres - 100) + 1);
+	blastPowerup.pos[0] = g.xres;
+	blastPowerup.pos[1] = (rand() % (g.yres - 100) + 1);
 	}
-	blastCollision();
+	//blastCollision();
 }
 void blastPowerupRender(GLuint image)
 {
@@ -275,4 +278,95 @@ void namekPhysics()
 {
 	background.xc[0] += 0.001;
 	background.xc[1] += 0.001;
+}
+//--------------------Dragon Balls--------------------------------------------------
+class Dragonball{
+	public:
+	GLuint pics[6];
+	int currentPic;
+	float pos[2];
+	int xSpeed = 0;
+	int waveamp = 0;
+	int wavefreq = 0;
+	int wavepos = 0;
+} dball;
+
+void dballInit(GLuint dball1, GLuint dball2, GLuint dball3,
+	GLuint dball4, GLuint dball5, GLuint dball6, GLuint dball7)
+{
+	dball.pics[0] = dball1;
+	dball.pics[1] = dball2;
+	dball.pics[2] = dball3;
+	dball.pics[3] = dball4;
+	dball.pics[4] = dball5;
+	dball.pics[5] = dball6;
+	dball.pics[6] = dball7;
+	dball.currentPic = 0;
+	blastPowerReference(&dball.pos[0], &dball.pos[1]);
+}
+
+void dballPhysics()
+{
+    xticks += 0.3;
+	dball.pos[0] -= (dball.xSpeed+5);
+	dball.pos[1] -= 3.0;
+
+	if (dball.pos[0] < -50){
+	dball.pos[0] = g.xres + 1000;
+	dball.xSpeed = speed_Randomizer();
+	//dball.pos[1] = (rand() % (g.yres));
+    dball.pos[1] = (70 * sin(xticks/50) + g.yres/2);
+	}
+
+	blastCollision();
+    
+}
+void dballWinCondition()
+{
+	if (dball.currentPic > 6) {
+		//INSERT WIN SCREEN CALL HERE
+	}
+}
+
+void dballCollected()
+{
+	dball.currentPic++;
+    
+	dball.pos[0] = g.xres;
+	dball.pos[1] = (rand() % (g.yres - 100) + 1);
+
+    if (g.score > (dball.currentPic + 1 % 2000)) 
+            {
+            dball.pos[0] = g.xres;
+            dball.pos[1] = (rand() % (g.yres - 100) + 1);
+            }
+	dballWinCondition();
+}   
+    
+void dballRender()
+{   
+	glPushMatrix();
+	glTranslatef(dball.pos[0], dball.pos[1], 0);
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, dball.pics[dball.currentPic]);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0f);
+	glColor4ub(255,255,255,255);
+	float tx = 0.0;
+	float ty = 0.0;
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(tx+1, ty+1);
+	glVertex2i(0, 0);
+	glTexCoord2f(tx+1, ty);
+	glVertex2i(0, 50);
+	glTexCoord2f(tx, ty);
+	glVertex2i(70, 50);
+	glTexCoord2f(tx, ty+1);
+	glVertex2i(70, 0);
+	glEnd();
+
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_ALPHA_TEST);
 }

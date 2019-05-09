@@ -3,6 +3,11 @@
 //Author:   Drake Floyd
 //Date:     3/25/19
 
+/* This file handles logic for enemy physics and rendering
+ * as well as the logic for explosion animations and boss'
+ * fireball rain animation
+ */
+
 
 #include <X11/Xlib.h>
 #include <GL/glx.h>
@@ -28,6 +33,8 @@ extern void bossCollision();
 extern void saibaCollision();
 extern void score_update(int);
 float nticks = 0.0;
+float *gokuX;
+float *gokuY;
 void Enemy_init();
 void pattern_1(Enemy&);
 void pattern_2(Enemy&);
@@ -38,6 +45,8 @@ int freq_Randomizer(void);
 int amp_Randomizer(void);
 void detection();
 void difficulty(Enemy&);
+void blastInit();
+
 //int healthMod = 0;
 
 
@@ -56,6 +65,18 @@ public:
 };
 
 std::vector<Explosion> explosions;
+
+class BlastDwn {
+public:
+	float centerX;
+	float centerY;
+	float height;
+	float width;
+	int spriteSheetIndex;
+	int frame;
+	bool live;
+	void draw();
+}blastDwn[4];
 
 //-----------------------credit screen stuff-----------------------------------------
 
@@ -87,8 +108,7 @@ void showDrake(int x, int y, GLuint textInt)
 
 }
 
-//-----------------------------movement for enemies-----------------------------
-
+//-----------------------------physics/movement initializers for all enemies-----------------------------
 void Enemy_init ()
 {
 	srand(time(NULL));
@@ -105,16 +125,31 @@ void Enemy_init ()
 		enemy[i].image = g.saibaTexture;
 		enemyReference(&enemy[i]);
 	}
-	boss.eHealth = 20;
+	boss.eHealth = 50;
 	boss.pos[0] = (g.xres + 200);
 	boss.pos[1] = (g.yres/2);
 	bossReference(&boss);
+	blastInit();
 
 }
 
+void blastInit() {
+	int space = 0;
+	for (int i = 0; i < 4; i++) {
+		blastDwn[i].centerX = -20 + space;
+		blastDwn[i].centerY = (g.yres+20) + space; /*(rand() % 300 + 100)*/
+		blastDwn[i].height = img[30].height / 0.5;
+		blastDwn[i].width = img[30].width / (7 * 1.5);
+		blastDwn[i].spriteSheetIndex = 30;
+		blastDwn[i].frame = 0;
+		blastDwn[i].live = true;
+		space+= 200;
+	}
+}
+
+//-----------------------------enemy/boss physics directions----------------------------------------
 void saibaPhysics ()
 {
-
 
 	for (int i = 0; i < count; i++) {
 		if(enemy[i].pattern == 1)
@@ -135,21 +170,27 @@ void bossPhysics ()
 	if (g.score >= 5000) {
 		if (boss.eHealth > 0) {	
 			if (boss.pos[0] > g.xres/2) {
-				boss.pos[0] -= 1.0;
+				boss.pos[0] -= 2.0;
 				if (boss.pos[0] < g.xres + 100) {
 					boss.isRendered = true;
 				}
 
 			}
 		} else if (boss.eHealth <= 0){
-			boss.pos[0] +=2.5;
+			boss.pos[0] +=5.5;
 			if (boss.pos[0] > g.xres + 1000) {
-				boss.eHealth = 50;
+				boss.eHealth = 70;
+				boss.fire = true;
 			}
 		}
 		nticks+= 0.3;
 		boss.pos[1] = (70 * sin(nticks/50) + (g.yres/2));
 		bossCollision();
+		if ((boss.pos[0] <= g.xres/2) && (boss.fire)) {
+			for (int i = 0; i < 4; i++) {
+				blastDwn[i].live = true;
+			}
+		}
 	}
 }
 
@@ -230,7 +271,7 @@ void bossRender (GLuint image)
 
 }
 
-
+//-------------------------------explosion rendering-----------------------------
 void explosionRender ()
 {
 	for (unsigned int i = 0; i < explosions.size(); i++) {
@@ -344,6 +385,106 @@ void Explosion::draw()
 
 }
 
+//------------------------------------------blast rendering & physics------------------------------
+void blastRender ()
+{
+	for (int i = 0; i < 4; i++) {
+		blastDwn[i].draw();
+	}
+}
+
+
+void BlastDwn::draw()
+{
+		glPushMatrix();
+		glColor3f(1.0, 1.0, 1.0);
+		glBindTexture(GL_TEXTURE_2D, g.energy_downTexture);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		glColor4ub(255,255,255,255);
+
+		float ssWidth = (float)1.0/img[spriteSheetIndex].columns;
+		float ssHeight = (float)1.0/img[spriteSheetIndex].rows;
+
+		int ix = this->frame % img[spriteSheetIndex].columns;
+		int iy = 0;
+
+		if (frame >= img[spriteSheetIndex].columns) {
+			iy = 1;
+		}
+
+
+		if (frame >= (img[spriteSheetIndex].columns*2)) {
+			iy = 2;
+		}
+
+		if (frame >= (img[spriteSheetIndex].columns*3)) {
+			iy = 3;
+		}
+
+		if (frame >= img[spriteSheetIndex].columns*4) {
+			iy = 4;
+		}
+
+		if (frame >= (img[spriteSheetIndex].columns*5)) {
+			iy = 5;
+		}
+
+		if (frame >= (img[spriteSheetIndex].columns*6)) {
+			iy = 6;
+		}
+
+		if (frame >= img[spriteSheetIndex].columns*7) {
+			iy = 7;
+		}
+
+		if (frame >= img[spriteSheetIndex].columns*8) {
+			iy = 8;
+		}
+
+		float textureX = (float)ix / img[spriteSheetIndex].columns;
+		float textureY = (float)iy / img[spriteSheetIndex].rows;
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(textureX, textureY+ssHeight);
+		glVertex2i(centerX-width, centerY-height);
+
+		glTexCoord2f(textureX, textureY);
+		glVertex2i(centerX-width, centerY+height);
+
+		glTexCoord2f(textureX+ssWidth, textureY);
+		glVertex2i(centerX+width, centerY+height);
+
+		glTexCoord2f(textureX+ssWidth, textureY+ssHeight);
+		glVertex2i(centerX+width, centerY-height);
+		glEnd();
+
+		glPopMatrix();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_ALPHA_TEST);
+
+		//advance frame
+		frame++;
+		if(frame >= img[spriteSheetIndex].columns*8){
+			frame = 0;
+			//done = true;
+		}
+
+}
+
+void blastPhysics () {
+	
+	for (int i = 0; i < 4; i++) {
+		if (blastDwn[i].live) {
+			blastDwn[i].centerX += 0.5;
+			blastDwn[i].centerY -= 3;
+			if (blastDwn[3].centerY < 0) {
+				blastInit();
+			}
+		}
+	}
+}
+
 //------------------------Draw the enemies-----------------------------------------
 
 void enemyHandler (GLuint image1) {
@@ -372,7 +513,7 @@ void pattern_2 (Enemy &e)
 {
 
 	nticks+= 0.3;
-	e.pos[0] -= e.xSpeed;
+	e.pos[0] -= (e.xSpeed+2);
 	e.pos[1] = (e.waveamp * sin(nticks/e.wavefreq) + (e.wavepos));
 
 	if (e.pos[0] < -50){
@@ -402,7 +543,7 @@ void pattern_4 (Enemy &e)
 {
 
 	nticks+= 0.3;
-	e.pos[0] -= e.xSpeed;
+	e.pos[0] -= (e.xSpeed+2);
 	e.pos[1] = (e.waveamp * cos(nticks/e.wavefreq) + (e.wavepos));
 
 	if (e.pos[0] < -50){
@@ -532,6 +673,28 @@ void bossDetection ()
 		//boss.pos[0] = 5000;
 		//boss.eHealth = 120;
 		score_update(10000);
+	}
+
+}
+
+void fireReference (float* x, float* y)
+{
+	 gokuX = x;
+	 gokuY = y;
+	
+}
+
+void fireCollision () 
+{
+
+for (int i = 0; i < 4; i++) {
+		bool xColl = blastDwn[i].centerX + blastDwn[i].width/2 >= *gokuX 
+		&& *gokuX + 100 >= blastDwn[i].centerX;
+		bool yColl = blastDwn[i].centerY + blastDwn[i].height/2 >= *gokuY 
+		&& *gokuY+100 >= blastDwn[i].centerY;
+		if (xColl && yColl) {
+			createExplosion(blastDwn[i].centerX, blastDwn[i].centerY);
+		}
 	}
 
 }
