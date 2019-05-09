@@ -307,18 +307,20 @@ void dballInit(GLuint dball1, GLuint dball2, GLuint dball3,
 
 void dballPhysics()
 {
+    xticks += 0.3;
 	dball.pos[0] -= (dball.xSpeed+5);
 	dball.pos[1] -= 3.0;
 
 	if (dball.pos[0] < -50){
 	dball.pos[0] = g.xres + 1000;
 	dball.xSpeed = speed_Randomizer();
-	dball.pos[1] = (rand() % (g.yres));
+	//dball.pos[1] = (rand() % (g.yres));
+    dball.pos[1] = (70 * sin(xticks/50) + g.yres/2);
 	}
 
 	blastCollision();
+    
 }
-
 void dballWinCondition()
 {
 	if (dball.currentPic > 6) {
@@ -328,25 +330,21 @@ void dballWinCondition()
 
 void dballCollected()
 {
-	//This updates the picture to the next in the array.
 	dball.currentPic++;
-
-	//THIS CURRENTLY MOVES IT TO THE RIGHT SIDE OF THE SCREEN
-	//CHANGE TO WHATEVER YOU NEED WHEN YOU WANT IT TO SPAWN AT DIFFERENT TIMES
+    
 	dball.pos[0] = g.xres;
 	dball.pos[1] = (rand() % (g.yres - 100) + 1);
-	/* 	Sample logic to get you started here, this would work under the idea of
-		spawning the dragon ball every 2000 points. However you would still need
-		logic to remove the dragon ball until the respawn.
-	if (g.score > (dball.currentPic + 1 * 2000)) {
-		spawn the next dragon ball here
-	}
-	*/
-	dballWinCondition();
-}
 
+    if (g.score > (dball.currentPic + 1 % 2000)) 
+            {
+            dball.pos[0] = g.xres;
+            dball.pos[1] = (rand() % (g.yres - 100) + 1);
+            }
+	dballWinCondition();
+}   
+    
 void dballRender()
-{
+{   
 	glPushMatrix();
 	glTranslatef(dball.pos[0], dball.pos[1], 0);
 	glColor3f(1.0, 1.0, 1.0);
