@@ -27,5 +27,5 @@ lab1mac: walk.cpp joshuaA.cpp seanF.cpp juanT.cpp drakeF.cpp lawrenceM.cpp
 
 
 clean:
-	rm -f walk
+	rm -f finalform
 	rm -f *.o
