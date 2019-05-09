@@ -135,15 +135,8 @@ int acceptGameState(int selectedOption)
             newGame();
             break;
         case 1:
-            // cout << "score" << endl;
-            g.creditFlag = ((g.creditFlag + 1) % 2);
-            if(g.creditFlag == 1) {
-              gameState = CREDITS;
-            }
-            else {
-              gameState = MAINMENU;
-            }
-            //make leaderboard function           
+            // g.creditFlag = ((g.creditFlag + 1) % 2);
+            gameState = CREDITS;
             break;
         case 2:
             g.controlFlag = ((g.controlFlag + 1) % 2);
@@ -350,34 +343,33 @@ r.left = g.xres/2;
 r.center = 1;
 
 switch (selectedOption) {
-case 0:
-  ggprint8b(&r, 16, 0x123fff, "NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "CREDITS");
-  ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-  break;
-case 1:
-  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0x123fff, "CREDITS");
-  ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-  break;
-case 2:
-  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "CREDITS");
-  ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
-  ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
-  break;
-case 3:
-  ggprint8b(&r, 16, 0xffffff, "NEW GAME");
-  ggprint8b(&r, 16, 0xffffff, "CREDITS");
-  ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
-  ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
-  break;
-default:
-  break;
-}
-
+  case 0:
+    ggprint8b(&r, 16, 0x123fff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 1:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0x123fff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 2:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0x123fff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0xffffff, "EXIT GAME");
+    break;
+  case 3:
+    ggprint8b(&r, 16, 0xffffff, "NEW GAME");
+    ggprint8b(&r, 16, 0xffffff, "CREDITS");
+    ggprint8b(&r, 16, 0xffffff, "TOGGLE CONTROLS");
+    ggprint8b(&r, 16, 0x123fff, "EXIT GAME");
+    break;
+  default:
+    break;
+  }
 }
 
 void renderPauseMenu()
