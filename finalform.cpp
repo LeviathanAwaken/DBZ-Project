@@ -1022,6 +1022,9 @@ void physics(void)
 	case CREDITS:
 		checkKeysCreditMenu();
 		break;
+	case WIN:
+		// checkKeysWin();
+		break;
 	case INGAME:
 		if (g.walk) {
 			//man is walking...
