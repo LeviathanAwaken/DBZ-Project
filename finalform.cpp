@@ -903,6 +903,8 @@ int checkKeys(XEvent *e)
 		break;
 	case CREDITS:
 		break;
+	case WIN:
+		break;
 	case INGAME:
 		g.delay = 0.01; // Sets speed to max at start of game
 		switch (key)
@@ -1113,6 +1115,9 @@ void render(void)
 			break;
 		case CREDITS:
 			renderCredit();
+			break;
+		case WIN:
+			//insert win screen
 			break;
 		case INGAME: {
 		//Put picture functions here

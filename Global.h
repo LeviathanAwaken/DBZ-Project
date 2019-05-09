@@ -10,6 +10,7 @@ typedef double Vec[3];
 #define PAUSEMENU 2
 #define DEATH 3
 #define CREDITS 4
+#define WIN 5
 
 //menu options
 #define NEWGAME 0

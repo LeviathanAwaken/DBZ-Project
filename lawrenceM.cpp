@@ -10,9 +10,6 @@ Working on since: Februrary.
 #include "fonts.h"
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 #include <fcntl.h>
 #include "Global.h"
 #include "Timers.h"
@@ -583,3 +580,4 @@ glTranslated(g.xres-50,0,1);
 dBallCounter.renderDBallCounterSSD();
 glPopMatrix();
 }
+
