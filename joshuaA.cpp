@@ -388,7 +388,8 @@ void dballRender()
 }
 
 void renderWinScreen(int x, int y, GLuint textint) {
-	
+	glClearColor(0.1, 0.1, 0.1, 1.0);
+  	glClear(GL_COLOR_BUFFER_BIT);
 	glPushMatrix();
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, textint);
