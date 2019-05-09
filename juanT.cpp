@@ -379,7 +379,7 @@ void get_a_page(SSL *ssl, char *hostname, char *pagename)
     req_len = strlen(req);
     ret = SSL_write(ssl, req, req_len);
     if (ret <= 0) {
-    	fprintf(stderr, "ERROR: SSL_write\n");fflush(stderr);
+        fprintf(stderr, "ERROR: SSL_write\n");fflush(stderr);
     }
     if (ret <= 0) {
         fprintf(stderr, "ERROR: SSL_write\n");
@@ -427,7 +427,7 @@ void get_page_and_print(SSL *ssl, char *hostname, char *pagename)
     char tmp_scrs[10000];
     int scrs[1000];
     for (int i = 0; i < 10000; i++) {
-	scrs[i] = -222;
+        scrs[i] = -222;
     }
     int ij = 0;
     int ch = 0;
@@ -448,52 +448,50 @@ void get_page_and_print(SSL *ssl, char *hostname, char *pagename)
     }
     while (buf[ij] != '\0') {
         if (isalpha(buf[ij])) {
-	    tmp_inits[op] = buf[ij];
-	    op++;
-	} else if (isdigit(buf[ij])) {
-	    tmp_scrs[ch] = buf[ij];
-	    ch++;
-         } else {  
-	    if (op > 0) {
-	    tmp_inits[op] = '\0';
-	    inits[bn2] = tmp_inits;
-	    initss[bn2] = inits[bn2];
-	    bn2++;
-	    tmp_inits[0] = '\0';
-	    op = 0;
-	    }
-	    if (ch > 0) {
-		tmp_scrs[ch] = '\0';
-		scrs[bn] = atoi(tmp_scrs);
-		tmp_scrs[0] = '\0';
-		ch = 0;
-		bn++;
-	    }
-	}
+            tmp_inits[op] = buf[ij];
+            op++;
+    } else if (isdigit(buf[ij])) {
+        tmp_scrs[ch] = buf[ij];
+        ch++;
+    } else {  
+        if (op > 0) {
+            tmp_inits[op] = '\0';
+            inits[bn2] = tmp_inits;
+            initss[bn2] = inits[bn2];
+            bn2++;
+            tmp_inits[0] = '\0';
+            op = 0;
+        }
+        if (ch > 0) {
+            tmp_scrs[ch] = '\0';
+            scrs[bn] = atoi(tmp_scrs);
+            tmp_scrs[0] = '\0';
+            ch = 0;
+            bn++;
+        }
+    }
         ij++;
     }
     int ii, jj, key, numLength = 1000;
     string key2;
-     for(jj = 1; jj < numLength; jj++)
-    {
-           key = scrs[jj];
-	   key2 = initss[jj];
-           for(ii = jj - 1; (ii >= 0) && (scrs[ii] < key); ii--)
-          {
-                 scrs[ii+1] = scrs[ii];
-		 initss[ii+1] = initss[ii];
-          }
-         scrs[ii+1] = key;
-         initss[ii+1] = key2;
-     }
+    for (jj = 1; jj < numLength; jj++) {
+        key = scrs[jj];
+        key2 = initss[jj];
+        for (ii = jj - 1; (ii >= 0) && (scrs[ii] < key); ii--) {
+            scrs[ii+1] = scrs[ii];
+             initss[ii+1] = initss[ii];
+        }
+        scrs[ii+1] = key;
+        initss[ii+1] = key2;
+    }
     cout << "\n\n";
     bn = 0;
     while (bn < 1000) {
-	    if (scrs[bn] != -222) {
-	    cout <<  initss[bn];
-	    printf(" %d\n", scrs[bn]);
-	    }
-	    bn++;
+        if (scrs[bn] != -222) {
+            cout <<  initss[bn];
+            printf(" %d\n", scrs[bn]);
+        }
+        bn++;
     }
     cout << endl;
     //check from outside the above while loop
